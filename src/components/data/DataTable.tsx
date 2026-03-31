@@ -1,10 +1,16 @@
-import 'ag-grid-community/styles/ag-grid.css';
 import './ag-grid-meridian.css';
 
 import { useMemo, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import {
+  AllCommunityModule,
+  ModuleRegistry,
+  themeQuartz,
+  colorSchemeDark,
+  colorSchemeLight,
+} from 'ag-grid-community';
 import type { ColDef, RowClickedEvent } from 'ag-grid-community';
+import { useTheme } from '@/hooks/useTheme';
 
 import {
   NumericCell,
@@ -15,6 +21,42 @@ import {
 } from './cell-renderers';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
+
+const darkTheme = themeQuartz.withPart(colorSchemeDark).withParams({
+  backgroundColor: '#24283b',
+  foregroundColor: '#c0caf5',
+  borderColor: '#292e42',
+  chromeBackgroundColor: '#24283b',
+  headerFontSize: 11,
+  headerFontWeight: 500,
+  fontSize: 13,
+  rowHeight: 32,
+  headerHeight: 28,
+  cellHorizontalPadding: 8,
+  borderRadius: 0,
+  oddRowBackgroundColor: '#292e42',
+  rowHoverColor: '#3b4261',
+  selectedRowBackgroundColor: '#343a52',
+  fontFamily: "var(--font-sans)",
+});
+
+const lightTheme = themeQuartz.withPart(colorSchemeLight).withParams({
+  backgroundColor: '#f8f8fb',
+  foregroundColor: '#1a1b26',
+  borderColor: '#d8d8de',
+  chromeBackgroundColor: '#f8f8fb',
+  headerFontSize: 11,
+  headerFontWeight: 500,
+  fontSize: 13,
+  rowHeight: 32,
+  headerHeight: 28,
+  cellHorizontalPadding: 8,
+  borderRadius: 0,
+  oddRowBackgroundColor: '#e8e8ed',
+  rowHoverColor: '#e0e0e6',
+  selectedRowBackgroundColor: '#d8d8de',
+  fontFamily: "var(--font-sans)",
+});
 
 interface DataTableProps {
   columns: ColDef[];
@@ -31,6 +73,9 @@ export function DataTable({
   onRowClick,
   groupBy,
 }: DataTableProps) {
+  const { theme: currentTheme } = useTheme();
+  const agTheme = currentTheme === 'dark' ? darkTheme : lightTheme;
+
   const densityClass =
     density === 'compact'
       ? 'density-compact'
@@ -76,6 +121,7 @@ export function DataTable({
       style={{ width: '100%', height: '100%' }}
     >
       <AgGridReact
+        theme={agTheme}
         columnDefs={columns}
         rowData={processedRows}
         components={components}
