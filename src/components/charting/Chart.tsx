@@ -17,6 +17,7 @@ export function Chart({ data, layout, config }: ChartProps) {
   const mergedLayout: Partial<Plotly.Layout> = {
     ...baseLayout,
     ...layout,
+    datarevision: theme, // force Plotly to re-render on theme change
     xaxis: {
       ...baseLayout.xaxis,
       ...(layout?.xaxis ?? {}),

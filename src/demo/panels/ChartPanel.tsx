@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Panel } from '@/components/layout/Panel';
 import { Chart } from '@/components/charting/Chart';
 import { useDataContext } from '@/providers/DataProvider';
+import { useTheme } from '@/hooks/useTheme';
 import type { Candle } from '../data/types';
 
 export function ChartPanel() {
   const { provider, selectedSymbol } = useDataContext();
+  const { theme } = useTheme();
   const [candles, setCandles] = useState<Candle[]>([]);
 
   useEffect(() => {
@@ -45,16 +47,12 @@ export function ChartPanel() {
               close: candles.map((c) => c.close),
               increasing: {
                 line: {
-                  color: getComputedStyle(document.documentElement)
-                    .getPropertyValue('--color-positive')
-                    .trim(),
+                  color: theme === 'dark' ? '#9ece6a' : '#1e7a1e',
                 },
               },
               decreasing: {
                 line: {
-                  color: getComputedStyle(document.documentElement)
-                    .getPropertyValue('--color-negative')
-                    .trim(),
+                  color: theme === 'dark' ? '#f7768e' : '#c93545',
                 },
               },
             },
