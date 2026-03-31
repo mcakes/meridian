@@ -47,7 +47,8 @@ export class SimulatedMarketData implements MarketDataProvider {
       const { symbol, volatility, spreadPct, basePrice } = inst;
 
       // Stochastic price walk
-      const price = this.prices[symbol] * (1 + (Math.random() - 0.5) * volatility);
+      const currentPrice = this.prices[symbol] ?? basePrice;
+      const price = currentPrice * (1 + (Math.random() - 0.5) * volatility);
       this.prices[symbol] = price;
 
       // Volume increment
@@ -55,7 +56,7 @@ export class SimulatedMarketData implements MarketDataProvider {
         inst.assetClass === 'Equity'
           ? Math.floor(Math.random() * 10_000)
           : Math.floor(Math.random() * 1_000_000);
-      this.volumes[symbol] += volDelta;
+      this.volumes[symbol] = (this.volumes[symbol] ?? 0) + volDelta;
 
       const callbacks = this.subscribers.get(symbol);
       if (!callbacks || callbacks.size === 0) continue;
@@ -73,7 +74,7 @@ export class SimulatedMarketData implements MarketDataProvider {
         ask,
         change,
         changePct,
-        volume: this.volumes[symbol],
+        volume: this.volumes[symbol] ?? 0,
         timestamp: Date.now(),
       };
 
