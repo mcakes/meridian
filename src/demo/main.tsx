@@ -1,8 +1,16 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { ThemeProvider } from '@/providers/ThemeProvider';
+import { DataProvider } from '@/providers/DataProvider';
+import { App } from './App';
 import '../tokens/index.css';
 
-document.getElementById('root')!.innerHTML = `
-  <div class="bg-surface p-4 rounded-sm border border-subtle">
-    <h1 class="text-text-primary font-semibold">Meridian</h1>
-    <p class="text-text-secondary text-sm">Design system loaded</p>
-  </div>
-`;
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <ThemeProvider>
+      <DataProvider>
+        <App />
+      </DataProvider>
+    </ThemeProvider>
+  </StrictMode>,
+);
