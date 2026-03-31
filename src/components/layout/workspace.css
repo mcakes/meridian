@@ -1,0 +1,17 @@
+/* Hide react-mosaic default window chrome */
+.meridian-mosaic .mosaic-window-toolbar {
+  display: none;
+}
+.meridian-mosaic .mosaic-window-body {
+  top: 0 !important; /* fill entire tile since toolbar is hidden */
+}
+.meridian-mosaic .mosaic-window {
+  border-radius: 0;
+}
+/* Use Meridian border colors for split handles */
+.meridian-mosaic .mosaic-split {
+  background: var(--border-subtle);
+}
+.meridian-mosaic .mosaic-split:hover {
+  background: var(--border-active);
+}
