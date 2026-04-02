@@ -17,10 +17,10 @@
     "@radix-ui/react-tooltip": "^1.1.0",
     "ag-grid-community": "^33.0.0",
     "ag-grid-react": "^33.0.0",
+    "flexlayout-react": "^0.8.19",
     "plotly.js-finance-dist-min": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-mosaic-component": "^6.1.0",
     "react-plotly.js": "^2.6.0"
   },
   "devDependencies": {
