@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Model, Actions, DockLocation } from 'flexlayout-react';
+import { Model, Action, Actions, DockLocation } from 'flexlayout-react';
 import type { IJsonModel } from 'flexlayout-react';
 
 const STORAGE_KEY = 'meridian-workspace';
@@ -31,7 +31,7 @@ export function useWorkspace(
 
   // FlexLayout's onModelChange passes the same mutable Model instance, not a new one.
   // The model has already been mutated by the time this fires — we just persist and clear preset.
-  const handleModelChange = useCallback((model: Model) => {
+  const handleModelChange = useCallback((model: Model, _action: Action) => {
     setActivePreset(null);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(model.toJson()));
   }, []);

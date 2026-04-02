@@ -1,24 +1,13 @@
-import type { ReactNode } from 'react';
 import { Workspace } from '@/components/layout/Workspace';
 import { useWorkspace } from '@/hooks/useWorkspace';
 import { NavBar } from './NavBar';
-import { WatchlistPanel } from './panels/WatchlistPanel';
-import { ChartPanel } from './panels/ChartPanel';
-import { PricerPanel } from './panels/PricerPanel';
+import { panelFactory, PANEL_REGISTRY } from './panels/panel-registry';
 import { ToastContainer } from '@/components/feedback/Toast';
-import { PRESETS, EQUITY_TRADING } from './panels/workspace-presets';
-
-const PANEL_MAP: Record<string, () => ReactNode> = {
-  watchlist: () => <WatchlistPanel />,
-  chart: () => <ChartPanel />,
-  pricer: () => <PricerPanel />,
-};
+import { PRESETS, THREE_PANEL } from './panels/workspace-presets';
 
 export function App() {
-  const { layout, setLayout, presets, activePreset, loadPreset } = useWorkspace(
-    EQUITY_TRADING,
-    PRESETS,
-  );
+  const { model, handleModelChange, presets, activePreset, loadPreset, addPanel } =
+    useWorkspace(THREE_PANEL, 'Three Panel', PRESETS);
 
   return (
     <div
@@ -33,12 +22,14 @@ export function App() {
         currentPreset={activePreset}
         presets={Object.keys(presets)}
         onPresetChange={loadPreset}
+        panelTypes={PANEL_REGISTRY}
+        onAddPanel={addPanel}
       />
-      <div style={{ flex: 1, overflow: 'hidden' }}>
+      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
         <Workspace
-          layout={layout}
-          onChange={setLayout}
-          renderTile={(id) => PANEL_MAP[id]?.() ?? <div>Unknown panel: {id}</div>}
+          model={model}
+          factory={panelFactory}
+          onModelChange={handleModelChange}
         />
       </div>
       <ToastContainer />
