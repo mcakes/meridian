@@ -1,30 +1,86 @@
-import type { MosaicNode } from 'react-mosaic-component';
+import type { IJsonModel } from 'flexlayout-react';
 
-export const EQUITY_TRADING: MosaicNode<string> = {
-  direction: 'row',
-  first: 'watchlist',
-  second: {
-    direction: 'column',
-    first: 'chart',
-    second: 'pricer',
-    splitPercentage: 60,
+export const THREE_PANEL: IJsonModel = {
+  global: {
+    tabEnableClose: true,
+    tabSetEnableMaximize: false,
   },
-  splitPercentage: 35,
+  layout: {
+    type: 'row',
+    weight: 100,
+    children: [
+      {
+        type: 'tabset',
+        weight: 35,
+        children: [
+          { type: 'tab', name: 'Watchlist', component: 'watchlist' },
+        ],
+      },
+      {
+        type: 'row',
+        weight: 65,
+        children: [
+          {
+            type: 'tabset',
+            weight: 60,
+            children: [
+              { type: 'tab', name: 'Chart', component: 'chart' },
+            ],
+          },
+          {
+            type: 'tabset',
+            weight: 40,
+            children: [
+              { type: 'tab', name: 'Pricer', component: 'pricer' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 };
 
-export const OPTIONS_DESK: MosaicNode<string> = {
-  direction: 'column',
-  first: {
-    direction: 'row',
-    first: 'watchlist',
-    second: 'pricer',
-    splitPercentage: 40,
+export const STACKED: IJsonModel = {
+  global: {
+    tabEnableClose: true,
+    tabSetEnableMaximize: false,
   },
-  second: 'chart',
-  splitPercentage: 55,
+  layout: {
+    type: 'row',
+    weight: 100,
+    children: [
+      {
+        type: 'row',
+        weight: 55,
+        children: [
+          {
+            type: 'tabset',
+            weight: 40,
+            children: [
+              { type: 'tab', name: 'Watchlist', component: 'watchlist' },
+            ],
+          },
+          {
+            type: 'tabset',
+            weight: 60,
+            children: [
+              { type: 'tab', name: 'Pricer', component: 'pricer' },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'tabset',
+        weight: 45,
+        children: [
+          { type: 'tab', name: 'Chart', component: 'chart' },
+        ],
+      },
+    ],
+  },
 };
 
-export const PRESETS: Record<string, MosaicNode<string>> = {
-  'Equity Trading': EQUITY_TRADING,
-  'Options Desk': OPTIONS_DESK,
+export const PRESETS: Record<string, IJsonModel> = {
+  'Three Panel': THREE_PANEL,
+  'Stacked': STACKED,
 };
