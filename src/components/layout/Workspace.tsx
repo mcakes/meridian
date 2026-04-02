@@ -1,21 +1,43 @@
 import type { ReactNode } from 'react';
-import { Mosaic, type MosaicNode } from 'react-mosaic-component';
-import 'react-mosaic-component/react-mosaic-component.css';
+import {
+  Layout,
+  type Model,
+  type TabNode,
+  type TabSetNode,
+  type BorderNode,
+  type ITabSetRenderValues,
+  type ITabRenderValues,
+} from 'flexlayout-react';
+import 'flexlayout-react/style/gray.css';
 import './workspace.css';
 
 interface WorkspaceProps {
-  layout: MosaicNode<string>;
-  onChange: (layout: MosaicNode<string> | null) => void;
-  renderTile: (id: string) => ReactNode;
+  model: Model;
+  factory: (node: TabNode) => ReactNode;
+  onModelChange: (model: Model) => void;
 }
 
-export function Workspace({ layout, onChange, renderTile }: WorkspaceProps) {
+function handleRenderTabSet(
+  _tabSetNode: TabSetNode | BorderNode,
+  _renderValues: ITabSetRenderValues,
+) {
+  // Augment the tabset header — styling is handled via CSS overrides in workspace.css.
+  // This callback is available for adding per-tabset action buttons in the future.
+}
+
+function handleRenderTab(_node: TabNode, _renderValues: ITabRenderValues) {
+  // Augment individual tab rendering — styling handled via CSS overrides.
+  // This callback is available for adding icons or badges per tab in the future.
+}
+
+export function Workspace({ model, factory, onModelChange }: WorkspaceProps) {
   return (
-    <Mosaic<string>
-      className="meridian-mosaic"
-      value={layout}
-      onChange={onChange}
-      renderTile={(id) => renderTile(id)}
+    <Layout
+      model={model}
+      factory={factory}
+      onModelChange={onModelChange}
+      onRenderTabSet={handleRenderTabSet}
+      onRenderTab={handleRenderTab}
     />
   );
 }
