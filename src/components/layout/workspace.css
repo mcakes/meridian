@@ -1,17 +1,74 @@
-/* Hide react-mosaic default window chrome */
-.meridian-mosaic .mosaic-window-toolbar {
-  display: none;
+/* FlexLayout base overrides — Meridian design tokens */
+
+/* Tab strip (tabset header) */
+.flexlayout__tabset_header {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
 }
-.meridian-mosaic .mosaic-window-body {
-  top: 0 !important; /* fill entire tile since toolbar is hidden */
+
+/* Individual tabs */
+.flexlayout__tab_button {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
 }
-.meridian-mosaic .mosaic-window {
-  border-radius: 0;
+
+.flexlayout__tab_button--selected {
+  color: var(--text-primary);
+  font-weight: 600;
 }
-/* Use Meridian border colors for split handles */
-.meridian-mosaic .mosaic-split {
+
+.flexlayout__tab_button:hover {
+  color: var(--text-primary);
+}
+
+/* Tab close button */
+.flexlayout__tab_button_trailing {
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.flexlayout__tab_button_trailing:hover {
+  color: var(--text-primary);
+}
+
+/* Tab content area */
+.flexlayout__tab {
+  background: var(--bg-base);
+  overflow: hidden;
+}
+
+/* Splitters */
+.flexlayout__splitter {
   background: var(--border-subtle);
 }
-.meridian-mosaic .mosaic-split:hover {
+
+.flexlayout__splitter:hover {
   background: var(--border-active);
+}
+
+/* Tabset */
+.flexlayout__tabset {
+  background: var(--bg-base);
+  overflow: hidden;
+}
+
+/* Drag indicator */
+.flexlayout__outline_rect {
+  border: 2px solid var(--border-active);
+}
+
+/* Tab strip bar (the row containing tab buttons) */
+.flexlayout__tabset_tabbar_outer {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Remove default border-radius */
+.flexlayout__tabset,
+.flexlayout__tab {
+  border-radius: 0;
 }
