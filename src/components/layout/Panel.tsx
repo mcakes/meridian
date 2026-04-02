@@ -1,15 +1,12 @@
 import type { ReactNode } from 'react';
-import { PanelHeader } from './PanelHeader';
 import { Toolbar } from './Toolbar';
 
 interface PanelProps {
-  title: string;
   toolbar?: ReactNode;
-  actions?: ReactNode;
   children: ReactNode;
 }
 
-export function Panel({ title, toolbar, actions, children }: PanelProps) {
+export function Panel({ toolbar, children }: PanelProps) {
   return (
     <div
       style={{
@@ -19,7 +16,6 @@ export function Panel({ title, toolbar, actions, children }: PanelProps) {
         overflow: 'hidden',
       }}
     >
-      <PanelHeader title={title} actions={actions} />
       {toolbar !== undefined && <Toolbar>{toolbar}</Toolbar>}
       <div
         style={{

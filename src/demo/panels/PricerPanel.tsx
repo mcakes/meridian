@@ -59,10 +59,8 @@ export function PricerPanel() {
   const { selectedSymbol } = useDataContext();
   const { price, bid, ask, volume } = useMarketData(selectedSymbol);
 
-  const title = `Pricer — ${selectedSymbol ?? ''}`;
-
   return (
-    <Panel title={title}>
+    <Panel>
       {!selectedSymbol ? (
         <div
           style={{
