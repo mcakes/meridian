@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import {
   Layout,
   type Model,
+  type Action,
   type TabNode,
   type TabSetNode,
   type BorderNode,
@@ -14,7 +15,7 @@ import './workspace.css';
 interface WorkspaceProps {
   model: Model;
   factory: (node: TabNode) => ReactNode;
-  onModelChange: (model: Model) => void;
+  onModelChange: (model: Model, action: Action) => void;
 }
 
 function handleRenderTabSet(
