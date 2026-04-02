@@ -50,16 +50,28 @@ const PANEL_REGISTRY: PanelDefinition[] = [
 ];
 ```
 
-The FlexLayout `factory` callback receives a tab node, reads its `component` field, and looks up the registry to render the right component. Multiple tabs of the same type are supported natively (e.g., two Chart tabs) — FlexLayout assigns unique node IDs internally.
+The FlexLayout `factory` callback receives a `TabNode` and looks up the registry by component type:
 
-An **"Add Panel" button** in the NavBar uses the registry to show available panel types and calls `model.doAction(Actions.addNode(...))` to insert a new tab into the active tabset.
+```ts
+function factory(node: TabNode): ReactNode {
+  const componentType = node.getComponent();
+  const def = PANEL_REGISTRY.find((p) => p.type === componentType);
+  return def ? def.component() : <div>Unknown panel: {componentType}</div>;
+}
+```
+
+Multiple tabs of the same type are supported natively (e.g., two Chart tabs) — FlexLayout assigns unique node IDs internally.
+
+An **"Add Panel" button** in the NavBar uses the registry to show available panel types and calls `model.doAction(Actions.addNode(...))` to insert a new tab into the active tabset. The active tabset is determined via `model.getActiveTabset()`. If no tabset exists (all panels closed), a new tabset is created.
 
 ### 3. Custom Tab Chrome
 
-FlexLayout's render override callbacks replace its default UI with Meridian styling:
+FlexLayout's render override callbacks augment its default UI with Meridian styling:
 
-- **`onRenderTabSet`** — renders the tabset header area styled like `PanelHeader`: 28px height, `--bg-surface` background, `--border-subtle` bottom border, containing tab buttons and an actions slot.
-- **`onRenderTab`** — styles individual tab buttons with Meridian tokens: `--text-primary` for active, `--text-muted` for inactive, with a subtle active indicator.
+- **`onRenderTabSet`** — augments the tabset header (does not replace it). Used to add per-tabset action buttons (e.g., an "add tab" button). The tab strip itself is styled via CSS class overrides.
+- **`onRenderTab`** — augments individual tab rendering to apply Meridian tokens: `--text-primary` for active, `--text-muted` for inactive, with a subtle active indicator.
+
+**CSS theming strategy:** FlexLayout's base CSS is imported but overridden via `workspace.css` targeting FlexLayout's class names (`.flexlayout__tab`, `.flexlayout__splitter`, `.flexlayout__tabset-header`, etc.) with Meridian design tokens. This is the same approach currently used for Mosaic — class overrides in a dedicated CSS file. FlexLayout's `classNameMapper` prop is not used; direct class overrides are simpler and sufficient.
 
 **Title migration:** The `Panel` component currently renders its own `PanelHeader` with the title. After migration, the title moves to the tab strip (managed by FlexLayout chrome). `Panel` simplifies to just optional `Toolbar` + content area. `PanelHeader` remains in the design system for non-workspace use cases.
 
@@ -76,7 +88,7 @@ FlexLayout's render override callbacks replace its default UI with Meridian styl
 
 **`useWorkspace` hook** adapts to FlexLayout's `Model`:
 
-- **Init:** Load serialised JSON from localStorage, or fall back to default preset. Create `Model` via `Model.fromJson()`.
+- **Init:** Load serialised JSON from localStorage, or fall back to default preset. Create `Model` via `Model.fromJson()`. The init logic wraps `Model.fromJson()` in a try/catch — if the stored JSON is valid JSON but an invalid `IJsonModel` (e.g., corrupted or from an older schema), it falls back to the default preset.
 - **On change:** `onModelChange` callback serialises with `model.toJson()` and persists to localStorage.
 - **`loadPreset(name)`:** Create a fresh `Model.fromJson(presetJson)`, replace current model, persist.
 - **`resetLayout()`:** Same as `loadPreset` with the default.
@@ -139,7 +151,7 @@ All nine markdown files that reference Mosaic are updated to reflect the FlexLay
 
 - `src/components/layout/PanelHeader.tsx` — stays in design system
 - `src/components/layout/Toolbar.tsx` — stays in design system
-- `src/components/index.ts` — exports unchanged (Workspace still exported)
+- `src/components/index.ts` — exports unchanged (Workspace still exported). Note: this is a **breaking change** to the `Workspace` public API — its props change from `layout`/`onChange`/`renderTile` to a `model`-based interface. This is acceptable since Meridian is pre-1.0 and has no external consumers yet.
 - All other components, hooks, providers, tokens
 
 ---
