@@ -44,6 +44,7 @@ export const STACKED: IJsonModel = {
   global: {
     tabEnableClose: true,
     tabSetEnableMaximize: false,
+    rootOrientationVertical: true,
   },
   layout: {
     type: 'row',
@@ -51,7 +52,7 @@ export const STACKED: IJsonModel = {
     children: [
       {
         type: 'row',
-        weight: 55,
+        weight: 45,
         children: [
           {
             type: 'tabset',
@@ -71,7 +72,7 @@ export const STACKED: IJsonModel = {
       },
       {
         type: 'tabset',
-        weight: 45,
+        weight: 55,
         children: [
           { type: 'tab', name: 'Chart', component: 'chart' },
         ],
