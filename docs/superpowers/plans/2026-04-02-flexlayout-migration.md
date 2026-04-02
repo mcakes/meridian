@@ -405,12 +405,11 @@ interface WorkspaceProps {
 }
 
 function handleRenderTabSet(
-  tabSetNode: TabSetNode,
-  renderValues: ITabSetRenderValues,
+  _tabSetNode: TabSetNode,
+  _renderValues: ITabSetRenderValues,
 ) {
   // Augment the tabset header — styling is handled via CSS overrides in workspace.css.
   // This callback is available for adding per-tabset action buttons in the future.
-  renderValues.stickyButtons.push();
 }
 
 function handleRenderTab(node: TabNode, renderValues: ITabRenderValues) {
@@ -431,7 +430,7 @@ export function Workspace({ model, factory, onModelChange }: WorkspaceProps) {
 }
 ```
 
-Note: The `onRenderTabSet` and `onRenderTab` callbacks are wired up as no-op stubs for now. They provide the hooks for future customisation (per-tabset action buttons, tab icons/badges). All visual styling is handled by CSS class overrides in `workspace.css`. If the `handleRenderTabSet` push causes a lint/runtime issue (pushing undefined), remove the `push()` call — the empty callback body is sufficient.
+Note: The `onRenderTabSet` and `onRenderTab` callbacks are wired up as no-op stubs for now. They provide the hooks for future customisation (per-tabset action buttons, tab icons/badges). All visual styling is handled by CSS class overrides in `workspace.css`. The underscore-prefixed params satisfy `noUnusedParameters`. If FlexLayout doesn't accept empty callbacks, remove these props entirely — the CSS overrides are the primary theming mechanism.
 
 - [ ] **Step 2: Verify TypeScript compiles (expect errors only in App.tsx due to prop changes)**
 
