@@ -27,10 +27,8 @@ export function ChartPanel() {
     setCandles(provider.getHistory(selectedSymbol, '3M'));
   }, [selectedSymbol, provider]);
 
-  const title = `Chart — ${selectedSymbol ?? ''}`;
-
   return (
-    <Panel title={title}>
+    <Panel>
       {!selectedSymbol ? (
         <div
           style={{

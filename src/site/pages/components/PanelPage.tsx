@@ -25,7 +25,8 @@ export default function PanelPage() {
           lineHeight: 1.7,
         }}
       >
-        Panel composes PanelHeader, optional Toolbar, and a scrollable content area. Total chrome
+        Panel composes an optional Toolbar and a scrollable content area. In FlexLayout, the panel
+        title lives in the tab strip — Panel itself handles toolbar and content. Total chrome
         budget: 64px maximum.
       </p>
 
@@ -33,7 +34,6 @@ export default function PanelPage() {
         <ComponentDemo label="Panel with Header and Toolbar">
           <div style={{ height: 200 }}>
             <Panel
-              title="Market Data"
               toolbar={
                 <>
                   <span

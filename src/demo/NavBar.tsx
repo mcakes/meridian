@@ -1,12 +1,21 @@
 import { useTheme } from '@/hooks/useTheme';
+import type { PanelDefinition } from './panels/panel-registry';
 
 interface NavBarProps {
   currentPreset: string | null;
   presets: string[];
   onPresetChange: (name: string) => void;
+  panelTypes: PanelDefinition[];
+  onAddPanel: (type: string, title: string) => void;
 }
 
-export function NavBar({ currentPreset, presets, onPresetChange }: NavBarProps) {
+export function NavBar({
+  currentPreset,
+  presets,
+  onPresetChange,
+  panelTypes,
+  onAddPanel,
+}: NavBarProps) {
   const { theme, toggle } = useTheme();
 
   return (
@@ -45,8 +54,8 @@ export function NavBar({ currentPreset, presets, onPresetChange }: NavBarProps) 
         </span>
       </div>
 
-      {/* Center: Workspace preset selector */}
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+      {/* Center: Workspace preset selector + Add Panel */}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: 8 }}>
         <select
           value={currentPreset ?? ''}
           onChange={(e) => onPresetChange(e.target.value)}
@@ -69,6 +78,33 @@ export function NavBar({ currentPreset, presets, onPresetChange }: NavBarProps) 
           {presets.map((name) => (
             <option key={name} value={name}>
               {name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value=""
+          onChange={(e) => {
+            const def = panelTypes.find((p) => p.type === e.target.value);
+            if (def) onAddPanel(def.type, def.title);
+          }}
+          style={{
+            backgroundColor: 'var(--bg-muted)',
+            border: '1px solid var(--border-subtle)',
+            color: 'var(--text-primary)',
+            fontSize: 13,
+            padding: '2px 8px',
+            borderRadius: 4,
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="" disabled>
+            + Add Panel
+          </option>
+          {panelTypes.map((def) => (
+            <option key={def.type} value={def.type}>
+              {def.title}
             </option>
           ))}
         </select>

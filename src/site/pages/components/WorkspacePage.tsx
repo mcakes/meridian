@@ -1,20 +1,49 @@
-import { useState } from 'react';
-import type { MosaicNode } from 'react-mosaic-component';
+import { useState, useCallback } from 'react';
+import { Model, type IJsonModel, type Action, type TabNode } from 'flexlayout-react';
 import { Workspace } from '@/components/layout/Workspace';
 import { Panel } from '@/components/layout/Panel';
 import { Section } from '@/site/components/Section';
 import { ComponentDemo } from '@/site/components/ComponentDemo';
 
-const initialLayout: MosaicNode<string> = {
-  direction: 'row',
-  first: 'panel-a',
-  second: {
-    direction: 'column',
-    first: 'panel-b',
-    second: 'panel-c',
-    splitPercentage: 50,
+const DEMO_LAYOUT: IJsonModel = {
+  global: {
+    tabEnableClose: false,
+    tabSetEnableMaximize: false,
+    splitterSize: 3,
   },
-  splitPercentage: 40,
+  layout: {
+    type: 'row',
+    weight: 100,
+    children: [
+      {
+        type: 'tabset',
+        weight: 40,
+        children: [
+          { type: 'tab', name: 'Watchlist', component: 'panel-a' },
+        ],
+      },
+      {
+        type: 'row',
+        weight: 60,
+        children: [
+          {
+            type: 'tabset',
+            weight: 50,
+            children: [
+              { type: 'tab', name: 'Chart', component: 'panel-b' },
+            ],
+          },
+          {
+            type: 'tabset',
+            weight: 50,
+            children: [
+              { type: 'tab', name: 'Details', component: 'panel-c' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 };
 
 const titles: Record<string, string> = {
@@ -23,11 +52,11 @@ const titles: Record<string, string> = {
   'panel-c': 'Details',
 };
 
-export default function WorkspacePage() {
-  const [layout, setLayout] = useState<MosaicNode<string>>(initialLayout);
-
-  const renderTile = (id: string) => (
-    <Panel title={titles[id] ?? id}>
+function factory(node: TabNode) {
+  const component = node.getComponent() ?? '';
+  const label = titles[component] ?? component;
+  return (
+    <Panel>
       <div
         style={{
           display: 'flex',
@@ -38,10 +67,18 @@ export default function WorkspacePage() {
           fontSize: 13,
         }}
       >
-        {titles[id] ?? id}
+        {label}
       </div>
     </Panel>
   );
+}
+
+export default function WorkspacePage() {
+  const [model] = useState(() => Model.fromJson(DEMO_LAYOUT));
+
+  const handleModelChange = useCallback((_model: Model, _action: Action) => {
+    // Model is mutated in place by FlexLayout — no state update needed
+  }, []);
 
   return (
     <div>
@@ -62,19 +99,17 @@ export default function WorkspacePage() {
           lineHeight: 1.7,
         }}
       >
-        react-mosaic tiling with serializable layouts and named presets. Panels can be split,
-        resized, and rearranged.
+        FlexLayout React tiling with serializable layouts, tabs, and named presets. Panels can be
+        split, resized, dragged, and rearranged.
       </p>
 
       <Section title="Tiling Demo">
         <ComponentDemo label="Three-Panel Layout">
           <div style={{ height: 400 }}>
             <Workspace
-              layout={layout}
-              onChange={(next) => {
-                if (next !== null) setLayout(next);
-              }}
-              renderTile={renderTile}
+              model={model}
+              factory={factory}
+              onModelChange={handleModelChange}
             />
           </div>
         </ComponentDemo>
@@ -100,9 +135,9 @@ export default function WorkspacePage() {
             margin: '12px 0',
           }}
         >
-          The demo app ships with two presets: Equity Trading (watchlist left, chart and pricer
-          right) and Options Desk (watchlist and pricer top, chart bottom). Presets store the full
-          mosaic tree plus split percentages.
+          The demo app ships with two presets: Three Panel (watchlist left, chart and pricer right)
+          and Stacked (watchlist and pricer top, chart bottom). Presets store the full FlexLayout
+          JSON model including tab positions and split weights.
         </p>
       </Section>
     </div>

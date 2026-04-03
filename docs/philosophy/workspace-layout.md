@@ -59,9 +59,9 @@ The layout itself should impose as little cognitive load as possible:
 
 Meridian uses a hybrid model: tiling for spatial organization, tabs for depth within a panel.
 
-**Tiling** (via [react-mosaic](https://github.com/nomcopter/react-mosaic)) organizes panels in a binary split tree. Any panel can be split horizontally or vertically. The tree is fully serializable to JSON. This handles the primary use case: "I need to see positions, a chart, and the order book simultaneously."
+**Tiling** (via [flexlayout-react](https://github.com/caplin/FlexLayout)) organizes panels in a tree of rows, tabsets, and tabs. Any panel can be split horizontally or vertically, and panels can be dragged between tabsets. The tree is fully serializable to a JSON model (`IJsonModel`). This handles the primary use case: "I need to see positions, a chart, and the order book simultaneously."
 
-**Tabs within panels** handle the secondary case: "I need 8 views but only have room for 5 panels." A panel can contain a tab strip (`MosaicTabsNode`), allowing multiple logical views to occupy the same spatial position while preserving the physical workspace layout.
+**Tabs within panels** handle the secondary case: "I need 8 views but only have room for 5 panels." FlexLayout React natively supports tabsets — multiple logical views occupy the same spatial position while preserving the physical workspace layout. Panels can be dynamically added or closed at runtime.
 
 **Named workspace presets** are saved/switched atomically. The snapshot includes:
 - The full panel tree (splits, sizes, positions)
@@ -87,9 +87,9 @@ Total chrome: ≤ 64px. This limit ensures that on a 1080px monitor, a five-pane
 
 ## Implementation
 
-Layout state is managed via react-mosaic's serializable tree structure. Workspace snapshots are stored in `localStorage` in the initial implementation, with the expectation that server-side persistence replaces this for production deployments where workspaces should follow the user across machines.
+Layout state is managed via FlexLayout React's serializable `IJsonModel` structure. Workspace snapshots are stored in `localStorage` in the initial implementation, with the expectation that server-side persistence replaces this for production deployments where workspaces should follow the user across machines.
 
-Panel split and resize operations use react-mosaic's built-in drag handles. The handle hit area is 8px wide — large enough to target without being visually obtrusive at 1px visual thickness.
+Panel split, resize, and drag operations use FlexLayout React's built-in drag handles. The handle hit area is 8px wide — large enough to target without being visually obtrusive at 1px visual thickness.
 
 ---
 
@@ -100,4 +100,4 @@ Panel split and resize operations use react-mosaic's built-in drag handles. The 
 - [Patel, V. (2025). "Psychology-Driven Layouts: Designing for How Traders Think."](https://medium.com/@p_viraj/psychology-driven-layouts-designing-for-how-traders-think-b11e2e7cac5c)
 - [Sweller, J. (1988). "Cognitive Load During Problem Solving." *Cognitive Science*, 12(2).](https://www.tandfonline.com/doi/abs/10.1207/s15516709cog1202_4)
 - [Zeigarnik effect and notifications.](https://netpsychology.org/the-neuroscience-of-notifications-why-you-cant-ignore-them/)
-- [react-mosaic.](https://github.com/nomcopter/react-mosaic)
+- [flexlayout-react.](https://github.com/caplin/FlexLayout)

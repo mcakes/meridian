@@ -32,7 +32,7 @@ const techRows = [
   ['Styling', 'Tailwind CSS 4', 'MIT'],
   ['Data Grid', 'AG Grid Community', 'MIT'],
   ['Charting', 'Plotly.js', 'MIT'],
-  ['Layout', 'react-mosaic', 'Apache 2.0'],
+  ['Layout', 'FlexLayout React', 'MIT'],
 ];
 
 export default function Introduction() {

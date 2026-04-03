@@ -1,17 +1,165 @@
-/* Hide react-mosaic default window chrome */
-.meridian-mosaic .mosaic-window-toolbar {
-  display: none;
+/* FlexLayout base overrides — Meridian design tokens */
+
+/* Tab strip (tabset header) */
+.flexlayout__tabset_header {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: none;
 }
-.meridian-mosaic .mosaic-window-body {
-  top: 0 !important; /* fill entire tile since toolbar is hidden */
+
+/* Tab strip bar (the row containing tab buttons) */
+.flexlayout__tabset_tabbar_outer {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
 }
-.meridian-mosaic .mosaic-window {
-  border-radius: 0;
+
+/* Active tabset indicator — remove default gradient */
+.flexlayout__tabset-selected {
+  background-image: none;
+  background-color: var(--bg-base);
 }
-/* Use Meridian border colors for split handles */
-.meridian-mosaic .mosaic-split {
+
+/* Individual tabs — base state (unselected) */
+.flexlayout__tab_button {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 3px 12px;
+  border: none;
+  background: transparent;
+}
+
+.flexlayout__tab_button--unselected {
+  color: var(--text-muted);
+  background: transparent;
+}
+
+/* Selected tab */
+.flexlayout__tab_button--selected {
+  color: var(--text-primary);
+  font-weight: 600;
+  background: var(--bg-muted);
+}
+
+/* Tab hover */
+@media (hover: hover) {
+  .flexlayout__tab_button:hover {
+    color: var(--text-primary);
+    background: var(--bg-muted);
+  }
+}
+
+/* Tab close button (trailing icon) */
+.flexlayout__tab_button_trailing {
+  color: var(--text-muted);
+  margin-left: 4px;
+  background: transparent;
+}
+
+.flexlayout__tab_button_trailing:hover {
+  color: var(--text-primary);
+  background: var(--bg-highlight);
+}
+
+.flexlayout__tab_button--selected .flexlayout__tab_button_trailing {
+  color: var(--text-muted);
+}
+
+/* Tab rename textbox */
+.flexlayout__tab_button_textbox {
+  color: var(--text-primary);
+  background-color: var(--bg-muted);
+  border: 1px solid var(--border-active);
+  outline: none;
+  padding: 1px 4px;
+}
+
+.flexlayout__tab_button_textbox:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Tab toolbar buttons (overflow menu, etc.) */
+.flexlayout__tab_toolbar_button {
+  color: var(--text-muted);
+}
+
+@media (hover: hover) {
+  .flexlayout__tab_toolbar_button:hover {
+    background: var(--bg-muted);
+  }
+}
+
+/* Tab content area */
+.flexlayout__tab {
+  background: var(--bg-base);
+  overflow: hidden;
+}
+
+/* Tabset */
+.flexlayout__tabset {
+  background: var(--bg-base);
+  overflow: hidden;
+}
+
+/* Splitters */
+.flexlayout__splitter {
   background: var(--border-subtle);
 }
-.meridian-mosaic .mosaic-split:hover {
+
+.flexlayout__splitter:hover {
   background: var(--border-active);
+}
+
+.flexlayout__splitter_drag {
+  background: var(--border-active);
+}
+
+/* Drag indicator */
+.flexlayout__outline_rect {
+  border: 2px solid var(--border-active);
+  background: transparent;
+}
+
+/* Drag rect overlay */
+.flexlayout__drag_rect {
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+}
+
+/* Overflow popup menu */
+.flexlayout__popup_menu_item {
+  color: var(--text-primary);
+  background: var(--bg-surface);
+}
+
+.flexlayout__popup_menu_item:hover {
+  background: var(--bg-muted);
+}
+
+/* Remove all default border-radius for clean edges */
+.flexlayout__tabset,
+.flexlayout__tab,
+.flexlayout__tabset_tabbar_outer,
+.flexlayout__tab_button,
+.flexlayout__tab_button--selected,
+.flexlayout__tab_button--unselected,
+.flexlayout__tab_button_textbox,
+.flexlayout__tab_button_trailing,
+.flexlayout__outline_rect,
+.flexlayout__outline_rect_edge,
+.flexlayout__drag_rect,
+.flexlayout__popup_menu_item,
+.flexlayout__border_button,
+.flexlayout__splitter,
+.flexlayout__splitter_drag,
+.flexlayout__splitter_handle {
+  border-radius: 0;
+}
+
+/* Override hover/media border-radius from base CSS */
+@media (hover: hover) {
+  .flexlayout__splitter:hover {
+    border-radius: 0;
+  }
 }

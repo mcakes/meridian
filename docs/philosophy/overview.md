@@ -53,7 +53,7 @@ Shape and radius choices signal precision rather than approachability. Research 
 | Charting (primary) | [Plotly.js](https://plotly.com/javascript/) | MIT | 40+ chart types, existing ecosystem, MIT license |
 | Charting (upgrade) | [SciChart.js](https://www.scichart.com/) or [ECharts](https://echarts.apache.org/) | Commercial / Apache 2.0 | Only when Plotly bottlenecks at multi-Hz or 5K+ bars |
 | Sparklines | Custom SVG | — | 50–200 simultaneous inline charts exceed what Canvas instances can handle cleanly |
-| Workspace layout | [react-mosaic](https://github.com/nomcopter/react-mosaic) | Apache 2.0 | Serializable tile tree; Palantir origins validate the approach for finance |
+| Workspace layout | [flexlayout-react](https://github.com/caplin/FlexLayout) | MIT | Serializable JSON model; tree of rows, tabsets, and tabs with drag-between-tabsets and dynamic panel add/close |
 
 AG Grid was chosen over [TanStack Table](https://tanstack.com/table/latest) for a specific reason: the features trading UIs need — virtualization, clipboard, row grouping, range selection — are built into AG Grid Community and require substantial custom work in TanStack. J.P. Morgan's [Salt design system](https://saltdesignsystem.com/) uses AG Grid, validating this trade-off for the finance context.
 

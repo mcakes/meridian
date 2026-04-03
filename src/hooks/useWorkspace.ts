@@ -1,56 +1,83 @@
 import { useState, useCallback } from 'react';
-import type { MosaicNode } from 'react-mosaic-component';
+import { Model, Action, Actions, DockLocation } from 'flexlayout-react';
+import type { IJsonModel } from 'flexlayout-react';
 
 const STORAGE_KEY = 'meridian-workspace';
 
+function createModel(json: IJsonModel): Model {
+  return Model.fromJson(json);
+}
+
 export function useWorkspace(
-  defaultLayout: MosaicNode<string>,
-  builtInPresets: Record<string, MosaicNode<string>>,
+  defaultPreset: IJsonModel,
+  defaultPresetName: string,
+  builtInPresets: Record<string, IJsonModel>,
 ) {
-  const [layout, setLayoutState] = useState<MosaicNode<string>>(() => {
+  const [model, setModel] = useState<Model>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      try { return JSON.parse(stored); } catch { /* fall through */ }
+      try {
+        return createModel(JSON.parse(stored));
+      } catch {
+        /* corrupted or invalid — fall through to default */
+      }
     }
-    return defaultLayout;
+    return createModel(defaultPreset);
   });
 
   const [activePreset, setActivePreset] = useState<string | null>(() => {
-    return localStorage.getItem(STORAGE_KEY) ? null : 'Equity Trading';
+    return localStorage.getItem(STORAGE_KEY) ? null : defaultPresetName;
   });
 
-  const setLayout = useCallback((newLayout: MosaicNode<string> | null) => {
-    if (newLayout) {
-      setLayoutState(newLayout);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newLayout));
-    }
+  // FlexLayout's onModelChange passes the same mutable Model instance, not a new one.
+  // The model has already been mutated by the time this fires — we just persist and clear preset.
+  const handleModelChange = useCallback((model: Model, _action: Action) => {
+    setActivePreset(null);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(model.toJson()));
   }, []);
 
   const loadPreset = useCallback((name: string) => {
     const preset = builtInPresets[name];
     if (preset) {
-      setLayoutState(preset);
+      const newModel = createModel(preset);
+      setModel(newModel);
       setActivePreset(name);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(preset));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newModel.toJson()));
     }
   }, [builtInPresets]);
 
-  const savePreset = useCallback((_name: string) => {
-    // Custom presets could be persisted to localStorage in future
-  }, []);
-
   const resetLayout = useCallback(() => {
-    setLayoutState(defaultLayout);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultLayout));
-  }, [defaultLayout]);
+    const newModel = createModel(defaultPreset);
+    setModel(newModel);
+    setActivePreset(defaultPresetName);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newModel.toJson()));
+  }, [defaultPreset, defaultPresetName]);
+
+  const addPanel = useCallback((type: string, title: string) => {
+    const activeTabset = model.getActiveTabset();
+    const targetId = activeTabset
+      ? activeTabset.getId()
+      : model.getRoot().getId();
+    const dockLocation = activeTabset
+      ? DockLocation.CENTER
+      : DockLocation.RIGHT;
+    model.doAction(
+      Actions.addNode(
+        { type: 'tab', name: title, component: type },
+        targetId,
+        dockLocation,
+        -1,
+      ),
+    );
+  }, [model]);
 
   return {
-    layout,
-    setLayout,
+    model,
+    handleModelChange,
     presets: builtInPresets,
     activePreset,
     loadPreset,
-    savePreset,
     resetLayout,
+    addPanel,
   };
 }

@@ -127,7 +127,7 @@ export function WatchlistPanel() {
   };
 
   return (
-    <Panel title="Watchlist">
+    <Panel>
       <div style={{ height: '100%', position: 'relative' }}>
         <style>{`
           ${groups.map((g, i) => `

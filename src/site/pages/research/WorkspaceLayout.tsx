@@ -30,8 +30,8 @@ export default function WorkspaceLayout() {
         <TokenTable
           columns={['Feature', 'Implementation', 'Status']}
           rows={[
-            ['Tiling', 'react-mosaic binary split tree', 'Implemented'],
-            ['Tabs', 'MosaicTabsNode within panels', 'Planned'],
+            ['Tiling', 'FlexLayout React split tree', 'Implemented'],
+            ['Tabs', 'FlexLayout tabsets', 'Implemented'],
             ['Named presets', 'Atomic save/restore of full tree', 'Implemented'],
             ['Persistence', 'JSON serialization to localStorage', 'Implemented'],
             ['Multi-monitor', 'Deferred (3x complexity)', 'Deferred'],
