@@ -119,7 +119,7 @@ function WorkspaceDemo() {
           </button>
         ))}
       </div>
-      <div style={{ height: 350 }}>
+      <div style={{ height: 350, position: 'relative' }}>
         <Workspace model={model} factory={demoFactory} onModelChange={handleModelChange} />
       </div>
     </div>
