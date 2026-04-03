@@ -100,3 +100,29 @@ export function hasNonShiftModifier(key: string): boolean {
   const parts = key.toLowerCase().split('+');
   return parts.some((p) => p === 'mod' || p === 'alt' || p === 'ctrl');
 }
+
+const MODIFIER_KEYS = new Set(['Meta', 'Control', 'Alt', 'Shift']);
+
+/**
+ * Converts a live KeyboardEvent into a combo string (e.g. "mod+shift+t").
+ * Returns null if the event is a modifier-only keypress.
+ */
+export function keyboardEventToCombo(e: KeyboardEvent): string | null {
+  if (MODIFIER_KEYS.has(e.key)) return null;
+
+  const parts: string[] = [];
+  if (e.metaKey || e.ctrlKey) parts.push('mod');
+  if (e.shiftKey) parts.push('shift');
+  if (e.altKey) parts.push('alt');
+
+  const key = e.key.toLowerCase();
+
+  // If shift is the only modifier and the key is a shifted character (like ?),
+  // don't include shift — the key itself encodes it
+  if (parts.length === 1 && parts[0] === 'shift' && key.length === 1 && /[^a-z0-9]/.test(key)) {
+    return key;
+  }
+
+  parts.push(key);
+  return parts.join('+');
+}
