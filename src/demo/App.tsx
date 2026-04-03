@@ -6,7 +6,7 @@ import { panelFactory, PANEL_REGISTRY } from './panels/panel-registry';
 import { ToastContainer } from '@/components/feedback/Toast';
 import { PRESETS, THREE_PANEL } from './panels/workspace-presets';
 import { useTheme } from '@/hooks/useTheme';
-import { CommandPaletteProvider, CommandPalette, useCommandPalette } from '@/components';
+import { CommandPaletteProvider, CommandPalette, useCommandPalette, ShortcutProvider, ShortcutOverlay, useShortcuts } from '@/components';
 import type { Command } from '@/components';
 
 function DemoCommands() {
@@ -95,38 +95,69 @@ function DemoCommands() {
   return null;
 }
 
+function DemoShortcuts() {
+  const { register } = useShortcuts();
+  const { toggle } = useTheme();
+  const { open } = useCommandPalette();
+
+  useEffect(() => {
+    return register([
+      {
+        id: 'demo.toggle-theme',
+        key: 'mod+t',
+        label: 'Toggle Theme',
+        category: 'Appearance',
+        execute: toggle,
+      },
+      {
+        id: 'demo.open-command-palette',
+        key: 'mod+shift+p',
+        label: 'Open Command Palette',
+        category: 'Navigation',
+        execute: open,
+      },
+    ]);
+  }, [register, toggle, open]);
+
+  return null;
+}
+
 export function App() {
   const { model, handleModelChange, presets, activePreset, loadPreset, addPanel } =
     useWorkspace(THREE_PANEL, 'Three Panel', PRESETS);
 
   return (
-    <CommandPaletteProvider>
-      <DemoCommands />
-      <div
-        style={{
-          height: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: 'var(--bg-base)',
-        }}
-      >
-        <NavBar
-          currentPreset={activePreset}
-          presets={Object.keys(presets)}
-          onPresetChange={loadPreset}
-          panelTypes={PANEL_REGISTRY}
-          onAddPanel={addPanel}
-        />
-        <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-          <Workspace
-            model={model}
-            factory={panelFactory}
-            onModelChange={handleModelChange}
+    <ShortcutProvider>
+      <ShortcutOverlay />
+      <CommandPaletteProvider>
+        <DemoCommands />
+        <DemoShortcuts />
+        <div
+          style={{
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: 'var(--bg-base)',
+          }}
+        >
+          <NavBar
+            currentPreset={activePreset}
+            presets={Object.keys(presets)}
+            onPresetChange={loadPreset}
+            panelTypes={PANEL_REGISTRY}
+            onAddPanel={addPanel}
           />
+          <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+            <Workspace
+              model={model}
+              factory={panelFactory}
+              onModelChange={handleModelChange}
+            />
+          </div>
+          <ToastContainer />
+          <CommandPalette />
         </div>
-        <ToastContainer />
-        <CommandPalette />
-      </div>
-    </CommandPaletteProvider>
+      </CommandPaletteProvider>
+    </ShortcutProvider>
   );
 }
