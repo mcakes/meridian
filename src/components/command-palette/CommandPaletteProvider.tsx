@@ -11,7 +11,6 @@ import type { ReactNode } from 'react';
 import type {
   Command,
   CommandPaletteContextValue,
-  FrequencyEntry,
   FrequencyMap,
 } from './types';
 

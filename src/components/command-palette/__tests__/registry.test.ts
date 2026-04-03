@@ -2,7 +2,6 @@
 import { describe, it, expect } from 'vitest';
 import {
   registryReducer,
-  type RegistryAction,
 } from '../CommandPaletteProvider';
 import type { Command } from '../types';
 

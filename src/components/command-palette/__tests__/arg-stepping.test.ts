@@ -1,6 +1,6 @@
 // src/components/command-palette/__tests__/arg-stepping.test.ts
 import { describe, it, expect } from 'vitest';
-import { argStepReducer, type ArgStepState, type ArgStepAction } from '../CommandPalette';
+import { argStepReducer, type ArgStepState } from '../CommandPalette';
 
 describe('argStepReducer', () => {
   const initialState: ArgStepState = {
