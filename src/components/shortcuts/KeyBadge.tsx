@@ -1,3 +1,4 @@
+// src/components/shortcuts/KeyBadge.tsx
 import { formatKeyForDisplay } from './hotkeys';
 
 const isMac =
@@ -7,13 +8,52 @@ const isMac =
 interface KeyBadgeProps {
   hotkey: string;
   muted?: boolean;
+  onClick?: () => void;
+  recording?: boolean;
 }
 
-export function KeyBadge({ hotkey, muted = false }: KeyBadgeProps) {
+export function KeyBadge({ hotkey, muted = false, onClick, recording = false }: KeyBadgeProps) {
+  if (recording) {
+    return (
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          padding: '1px 8px',
+          fontSize: 11,
+          fontFamily: 'monospace',
+          lineHeight: '18px',
+          color: 'var(--text-muted)',
+          border: '1px solid var(--color-info)',
+          borderRadius: 2,
+          animation: 'pulse-border 1.5s ease-in-out infinite',
+        }}
+      >
+        Press keys…
+      </span>
+    );
+  }
+
   const parts = formatKeyForDisplay(hotkey, isMac);
 
   return (
-    <span style={{ display: 'inline-flex', gap: 3 }}>
+    <span
+      onClick={onClick}
+      style={{
+        display: 'inline-flex',
+        gap: 3,
+        cursor: onClick ? 'pointer' : undefined,
+        borderRadius: 2,
+        padding: '0 2px',
+        transition: 'background-color 150ms ease',
+      }}
+      onMouseEnter={(e) => {
+        if (onClick) (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--bg-highlight)';
+      }}
+      onMouseLeave={(e) => {
+        if (onClick) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+      }}
+    >
       {parts.map((part, i) => (
         <kbd
           key={i}
