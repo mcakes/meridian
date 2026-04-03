@@ -209,7 +209,7 @@ WCAG 2.2 AA compliance. ≤6 categories use the core ramp with no secondary enco
 
 <a id="ref-34"></a>**[34]** Radix UI. [radix-ui.com/primitives/docs](https://www.radix-ui.com/primitives/docs/overview/introduction)
 
-<a id="ref-35"></a>**[35]** react-mosaic. [github.com/nomcopter/react-mosaic](https://github.com/nomcopter/react-mosaic)
+<a id="ref-35"></a>**[35]** flexlayout-react. [github.com/caplin/FlexLayout](https://github.com/caplin/FlexLayout)
 
 <a id="ref-36"></a>**[36]** Cleveland, W. & McGill, R. (1984). "Graphical Perception." JASA 79(387).
 

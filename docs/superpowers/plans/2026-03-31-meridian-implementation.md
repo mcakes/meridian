@@ -4,9 +4,9 @@
 
 **Goal:** Build a complete design system with token architecture, React component library, realistic trading workspace demo, and narrative + reference documentation.
 
-**Architecture:** CSS custom properties as the token source of truth, consumed by Tailwind CSS for utility-class DX. React components built on Radix UI primitives. AG Grid for data tables, Plotly.js for charts, react-mosaic for workspace tiling. Pluggable data layer with simulated market feed.
+**Architecture:** CSS custom properties as the token source of truth, consumed by Tailwind CSS for utility-class DX. React components built on Radix UI primitives. AG Grid for data tables, Plotly.js for charts, FlexLayout React for workspace tiling. Pluggable data layer with simulated market feed.
 
-**Tech Stack:** React, TypeScript, Vite, Tailwind CSS, Radix UI, AG Grid (Community), Plotly.js, react-mosaic
+**Tech Stack:** React, TypeScript, Vite, Tailwind CSS, Radix UI, AG Grid (Community), Plotly.js, flexlayout-react
 
 **Spec:** `docs/superpowers/specs/2026-03-31-meridian-design-system-design.md`
 
@@ -72,7 +72,7 @@
 - Create: `src/components/layout/PanelHeader.tsx`
 - Create: `src/components/layout/Toolbar.tsx`
 - Create: `src/components/layout/Panel.tsx`
-- Create: `src/components/layout/Workspace.tsx` — react-mosaic wrapper
+- Create: `src/components/layout/Workspace.tsx` — flexlayout-react wrapper
 
 ### Charting
 - Create: `src/components/charting/meridian-plotly-template.ts` — Plotly layout template + config
@@ -152,7 +152,7 @@ Then replace the generated `package.json` with:
     "plotly.js-finance-dist-min": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-mosaic-component": "^6.1.0",
+    "flexlayout-react": "^0.8.0",
     "react-plotly.js": "^2.6.0"
   },
   "devDependencies": {
@@ -1147,41 +1147,42 @@ git commit -m "feat: add layout components (Panel, PanelHeader, Toolbar)"
 
 ```typescript
 import { useState, useCallback } from 'react';
-import type { MosaicNode } from 'react-mosaic-component';
+import { Model } from 'flexlayout-react';
+import type { IJsonModel } from 'flexlayout-react';
 
 const STORAGE_KEY = 'meridian-workspace';
 const PRESETS_KEY = 'meridian-presets';
 
 export function useWorkspace(
-  defaultLayout: MosaicNode<string>,
-  builtInPresets: Record<string, MosaicNode<string>>,
+  defaultLayout: IJsonModel,
+  builtInPresets: Record<string, IJsonModel>,
 ) {
-  const [layout, setLayoutState] = useState<MosaicNode<string>>(() => {
+  const [model, setModelState] = useState<Model>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      try { return JSON.parse(stored); } catch { /* fall through */ }
+      try { return Model.fromJson(JSON.parse(stored)); } catch { /* fall through */ }
     }
-    return defaultLayout;
+    return Model.fromJson(defaultLayout);
   });
 
-  const setLayout = useCallback((newLayout: MosaicNode<string> | null) => {
-    if (newLayout) {
-      setLayoutState(newLayout);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newLayout));
-    }
+  const setModel = useCallback((newModel: Model) => {
+    setModelState(newModel);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newModel.toJson()));
   }, []);
 
   const loadPreset = useCallback((name: string) => {
     const preset = builtInPresets[name];
     if (preset) {
-      setLayoutState(preset);
+      const newModel = Model.fromJson(preset);
+      setModelState(newModel);
       setActivePreset(name);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(preset));
     }
   }, [builtInPresets]);
 
   const resetLayout = useCallback(() => {
-    setLayoutState(defaultLayout);
+    const newModel = Model.fromJson(defaultLayout);
+    setModelState(newModel);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultLayout));
   }, [defaultLayout]);
 
@@ -1191,13 +1192,13 @@ export function useWorkspace(
 
   const savePreset = useCallback((name: string) => {
     const custom = JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}');
-    custom[name] = layout;
+    custom[name] = model.toJson();
     localStorage.setItem(PRESETS_KEY, JSON.stringify(custom));
-  }, [layout]);
+  }, [model]);
 
   return {
-    layout,
-    setLayout,
+    model,
+    setModel,
     presets: builtInPresets,
     activePreset,
     loadPreset,
@@ -1209,35 +1210,30 @@ export function useWorkspace(
 
 - [ ] **Step 2: Create Workspace component**
 
-Wraps `react-mosaic-component`. Props: `layout`, `onChange`, `renderTile: (id: string) => ReactNode`. Applies Meridian styling: zero-radius tiles, `border-subtle` split borders, no default window chrome (we use our own Panel component). Import react-mosaic CSS and override with Meridian tokens.
+Wraps `flexlayout-react`. Props: `model`, `factory: (node: TabNode) => ReactNode`. Applies Meridian styling: zero-radius tiles, `border-subtle` splitter borders, no default window chrome (we use our own Panel component). Import flexlayout-react CSS and override with Meridian tokens.
 
 ```typescript
-import { Mosaic, type MosaicNode } from 'react-mosaic-component';
-import 'react-mosaic-component/react-mosaic-component.css';
+import { Layout, Model } from 'flexlayout-react';
+import type { TabNode } from 'flexlayout-react';
+import 'flexlayout-react/style/light.css';
 
 interface WorkspaceProps {
-  layout: MosaicNode<string>;
-  onChange: (layout: MosaicNode<string> | null) => void;
-  renderTile: (id: string) => React.ReactNode;
+  model: Model;
+  factory: (node: TabNode) => React.ReactNode;
 }
 
-export function Workspace({ layout, onChange, renderTile }: WorkspaceProps) {
+export function Workspace({ model, factory }: WorkspaceProps) {
   return (
-    <Mosaic<string>
-      value={layout}
-      onChange={onChange}
-      renderTile={(id, path) => (
-        <div className="h-full w-full" key={id}>
-          {renderTile(id)}
-        </div>
-      )}
-      className="meridian-mosaic"
+    <Layout
+      model={model}
+      factory={factory}
+      classNameMapper={(defaultClassName) => defaultClassName}
     />
   );
 }
 ```
 
-Add CSS overrides for react-mosaic in a co-located stylesheet or inline: hide default window toolbars, use `--border-subtle` for split borders, zero border-radius on tiles.
+Add CSS overrides for flexlayout-react in a co-located stylesheet: use `--border-subtle` for splitter borders, zero border-radius on tiles, hide default tab chrome where Meridian Panel provides its own header.
 
 - [ ] **Step 3: Commit**
 
@@ -1542,36 +1538,52 @@ git commit -m "feat: add barrel export for all components"
 
 - [ ] **Step 1: Create workspace-presets.ts**
 
-Define the two layout presets as react-mosaic node trees:
+Define the two layout presets as FlexLayout React `IJsonModel` objects:
 
 ```typescript
-import type { MosaicNode } from 'react-mosaic-component';
+import type { IJsonModel } from 'flexlayout-react';
 
-export const EQUITY_TRADING: MosaicNode<string> = {
-  direction: 'row',
-  first: 'watchlist',
-  second: {
-    direction: 'column',
-    first: 'chart',
-    second: 'pricer',
-    splitPercentage: 60,
+export const EQUITY_TRADING: IJsonModel = {
+  global: {},
+  layout: {
+    type: 'row',
+    children: [
+      {
+        type: 'tabset',
+        weight: 35,
+        children: [{ type: 'tab', id: 'watchlist', name: 'Watchlist' }],
+      },
+      {
+        type: 'column',
+        weight: 65,
+        children: [
+          { type: 'tabset', weight: 60, children: [{ type: 'tab', id: 'chart', name: 'Chart' }] },
+          { type: 'tabset', weight: 40, children: [{ type: 'tab', id: 'pricer', name: 'Pricer' }] },
+        ],
+      },
+    ],
   },
-  splitPercentage: 35,
 };
 
-export const OPTIONS_DESK: MosaicNode<string> = {
-  direction: 'column',
-  first: {
-    direction: 'row',
-    first: 'watchlist',
-    second: 'pricer',
-    splitPercentage: 40,
+export const OPTIONS_DESK: IJsonModel = {
+  global: {},
+  layout: {
+    type: 'column',
+    children: [
+      {
+        type: 'row',
+        weight: 55,
+        children: [
+          { type: 'tabset', weight: 40, children: [{ type: 'tab', id: 'watchlist', name: 'Watchlist' }] },
+          { type: 'tabset', weight: 60, children: [{ type: 'tab', id: 'pricer', name: 'Pricer' }] },
+        ],
+      },
+      { type: 'tabset', weight: 45, children: [{ type: 'tab', id: 'chart', name: 'Chart' }] },
+    ],
   },
-  second: 'chart',
-  splitPercentage: 55,
 };
 
-export const PRESETS: Record<string, MosaicNode<string>> = {
+export const PRESETS: Record<string, IJsonModel> = {
   'Equity Trading': EQUITY_TRADING,
   'Options Desk': OPTIONS_DESK,
 };
@@ -1797,7 +1809,7 @@ Narrative covering:
 - Psychology: Zeigarnik effect (rebuilding layouts = cognitive tax), Sweller's Cognitive Load Theory
 - Three principles: persist by default, progressive disclosure, reduce layout cognitive load
 - Recommendation: hybrid tiling + tabs + named presets
-- Implementation: react-mosaic, JSON serialization, localStorage persistence
+- Implementation: FlexLayout React, IJsonModel serialization, localStorage persistence
 - References: Bloomberg Launchpad PDF, OpenFin, Patel 2025, Sweller
 
 - [ ] **Step 6: Create notifications.md**

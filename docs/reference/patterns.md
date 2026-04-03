@@ -43,36 +43,35 @@ const { getHistory } = useMarketData(selectedSymbol);
 
 **The problem:** panel positions, sizes, and the active layout preset should survive a page reload.
 
-**How it works:** `useWorkspace` (in `src/hooks/useWorkspace.ts`) wraps react-mosaic layout state with `localStorage` read/write. On mount it reads from `localStorage.getItem('meridian-workspace')`. On every layout change it writes the serialised tree back.
+**How it works:** `useWorkspace` (in `src/hooks/useWorkspace.ts`) wraps FlexLayout React model state with `localStorage` read/write. On mount it reads from `localStorage.getItem('meridian-workspace')`. On every layout change it writes the serialised `IJsonModel` back.
 
 **Storage key:** `meridian-workspace`
 
-**Serialisation format:** The react-mosaic `MosaicNode<string>` tree serialises to JSON naturally. A leaf node is a string (panel ID). A split node is an object with `direction`, `first`, `second`, and `splitPercentage`.
+**Serialisation format:** The FlexLayout React `Model` serialises to an `IJsonModel` JSON object via `model.toJson()`. The JSON describes the full tree of rows, tabsets, and tabs, including sizes and active tab indices.
 
 ```ts
-// Example stored value
+// Example stored value (IJsonModel)
 {
-  "direction": "row",
-  "first": "watchlist",
-  "second": {
-    "direction": "column",
-    "first": "chart",
-    "second": "orderbook",
-    "splitPercentage": 60
-  },
-  "splitPercentage": 30
+  "global": {},
+  "layout": {
+    "type": "row",
+    "children": [
+      { "type": "tabset", "weight": 30, "children": [{ "type": "tab", "id": "watchlist", "name": "Watchlist" }] },
+      { "type": "tabset", "weight": 70, "children": [{ "type": "tab", "id": "chart", "name": "Chart" }] }
+    ]
+  }
 }
 ```
 
-**Preset system:** `useWorkspace` accepts a `builtInPresets` record mapping preset names to `MosaicNode<string>` trees. `loadPreset(name)` sets the active layout to the preset tree and persists it. Custom preset saving is currently a stub (`savePreset` is a no-op).
+**Preset system:** `useWorkspace` accepts a `builtInPresets` record mapping preset names to `IJsonModel` objects. `loadPreset(name)` creates a new `Model` from the preset JSON and persists it. Custom preset saving is currently a stub (`savePreset` is a no-op).
 
 **Hook API:**
 
 | Return value | Type | Description |
 |--------------|------|-------------|
-| `layout` | `MosaicNode<string>` | Current layout tree. Pass to `<Workspace layout={layout}>`. |
-| `setLayout` | `(layout: MosaicNode<string> \| null) => void` | Called by `<Workspace onChange={...}>`. Persists the new tree. |
-| `presets` | `Record<string, MosaicNode<string>>` | The built-in preset map passed to the hook. |
+| `model` | `Model` | Current FlexLayout React model. Pass to `<Workspace model={model}>`. |
+| `setModel` | `(model: Model) => void` | Called when the model changes. Persists the serialised JSON. |
+| `presets` | `Record<string, IJsonModel>` | The built-in preset map passed to the hook. |
 | `activePreset` | `string \| null` | Name of the last loaded preset, or `null` if layout was modified manually. |
 | `loadPreset` | `(name: string) => void` | Activate a named preset and persist it. |
 | `savePreset` | `(name: string) => void` | Stub — no-op in current implementation. |
@@ -80,12 +79,12 @@ const { getHistory } = useMarketData(selectedSymbol);
 
 **Usage:**
 ```tsx
-const { layout, setLayout, loadPreset, activePreset } = useWorkspace(
+const { model, setModel, loadPreset, activePreset } = useWorkspace(
   defaultLayout,
   { 'Equity Trading': equityPreset, 'FX Desk': fxPreset }
 );
 
-<Workspace layout={layout} onChange={setLayout} renderTile={renderTile} />
+<Workspace model={model} factory={factory} />
 ```
 
 **Source file:** `src/hooks/useWorkspace.ts`

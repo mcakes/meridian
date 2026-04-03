@@ -21,7 +21,7 @@ Core design principles:
 | Data Grid | AG Grid (Community) | MIT | Virtualization at 100K+ rows, column features, clipboard. Upgrade to Enterprise at paywall. |
 | Charting | Plotly.js (finance bundle) | MIT | 40+ chart types, existing knowledge. Upgrade path to SciChart.js or ECharts at 5K+ bars / multi-Hz. |
 | Sparklines | Custom SVG | — | 50-200 simultaneous instances; Canvas/WebGL overhead not justified |
-| Layout | react-mosaic | Apache 2.0 | Tree-of-splits tiling, Palantir origins, JSON-serializable state |
+| Layout | flexlayout-react | MIT | Tree of rows, tabsets, and tabs; Caplin Systems; JSON-serializable IJsonModel state; tab support, drag-between-tabsets, dynamic panel add/close |
 | Build | Vite | MIT | Fast dev server, ESBuild/Rollup bundling |
 | Language | TypeScript | MIT | Type safety, exported prop types |
 
@@ -400,10 +400,10 @@ Components use Tailwind classes (`bg-surface`, `text-positive`, `border-subtle`)
 ### Layout Components
 
 **Workspace**
-- Wraps react-mosaic
-- Props: `defaultLayout?: MosaicNode`, `presets?: Record<string, MosaicNode>`, `onLayoutChange?: (layout: MosaicNode) => void`
-- Manages split tree (horizontal/vertical splits)
-- Serializes layout state to JSON for persistence
+- Wraps flexlayout-react
+- Props: `model: Model`, `factory: (node: TabNode) => ReactNode`
+- Manages tree of rows, tabsets, and tabs; supports tab support, drag-between-tabsets, and dynamic panel add/close
+- Serializes layout state to `IJsonModel` JSON for persistence
 - Provides named workspace presets ("Equity Trading", "Options Desk")
 - Exposes panel registry: maps panel IDs to component factories
 
@@ -470,8 +470,8 @@ The "passive" tier (background status, ongoing processes) is handled by dedicate
 - Persists preference to `localStorage`
 
 **useWorkspace**
-- Returns: `{ layout, setLayout, presets, savePreset, loadPreset, resetLayout }`
-- Serializes/deserializes react-mosaic layout state
+- Returns: `{ model, setModel, presets, savePreset, loadPreset, resetLayout }`
+- Serializes/deserializes FlexLayout React `IJsonModel` state
 - Persists to `localStorage`
 - Ships with 2-3 default presets
 
@@ -554,7 +554,7 @@ Simple pub/sub via context — no event bus library.
 
 ### Layout
 
-React-mosaic workspace with pre-built defaults:
+FlexLayout React workspace with pre-built defaults:
 
 **"Equity Trading" preset:**
 ```

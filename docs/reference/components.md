@@ -371,26 +371,24 @@ A 32px horizontal bar for panel-level controls. Renders its children in a flex r
 
 ### Workspace
 
-A thin wrapper around `react-mosaic-component` `<Mosaic>`. Manages a serialisable binary tree of panel tiles. The caller owns the layout state — use `useWorkspace` for persistence.
+A thin wrapper around `flexlayout-react` `<Layout>`. Manages a serialisable JSON model (`IJsonModel`) of rows, tabsets, and tabs. The caller owns the model state — use `useWorkspace` for persistence. Supports drag-between-tabsets and dynamic panel add/close out of the box.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `layout` | `MosaicNode<string>` | — | The current mosaic layout tree. Panel IDs are strings. |
-| `onChange` | `(layout: MosaicNode<string> \| null) => void` | — | Called whenever the user drags or resizes a panel. |
-| `renderTile` | `(id: string) => ReactNode` | — | Factory function that maps a panel ID to its content node. |
+| `model` | `Model` | — | The FlexLayout React model instance. Created from an `IJsonModel` via `Model.fromJson`. |
+| `factory` | `(node: TabNode) => ReactNode` | — | Factory function that maps a tab node to its content node. |
 
 **Usage:**
 ```tsx
-const { layout, setLayout } = useWorkspace(defaultLayout, presets);
+const { model, setModel } = useWorkspace(defaultLayout, presets);
 
 <Workspace
-  layout={layout}
-  onChange={setLayout}
-  renderTile={(id) => <PanelRegistry id={id} />}
+  model={model}
+  factory={(node) => <PanelRegistry id={node.getId()} />}
 />
 ```
 
-**Tokens:** `workspace.css` applies `--bg-base`, `--border-subtle` to mosaic split bars and the container background.
+**Tokens:** `workspace.css` applies `--bg-base`, `--border-subtle` to FlexLayout React splitter bars and the container background.
 
 ---
 
