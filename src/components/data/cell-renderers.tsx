@@ -1,4 +1,5 @@
 import type { ICellRendererParams } from 'ag-grid-community';
+import { useFlash } from '@/hooks/useFlash';
 import { fmt } from '@/lib/format';
 import { PriceChange } from '@/components/primitives/PriceChange';
 import { Tag } from '@/components/primitives/Tag';
@@ -7,9 +8,27 @@ import { Sparkline } from '@/components/data/Sparkline';
 export function NumericCell(params: ICellRendererParams) {
   const decimals: number = (params.colDef?.cellRendererParams as { decimals?: number } | undefined)?.decimals ?? 2;
   const value = params.value as number | null | undefined;
+  const flash = useFlash(value ?? 0);
+
   if (value == null) return null;
+
+  const bgColor =
+    flash === 'up'
+      ? 'color-mix(in srgb, var(--color-positive) 15%, transparent)'
+      : flash === 'down'
+        ? 'color-mix(in srgb, var(--color-negative) 15%, transparent)'
+        : 'transparent';
+
   return (
-    <span style={{ display: 'block', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+    <span
+      style={{
+        display: 'block',
+        textAlign: 'right',
+        fontVariantNumeric: 'tabular-nums',
+        backgroundColor: bgColor,
+        transition: 'background-color 100ms ease',
+      }}
+    >
       {fmt(value, decimals)}
     </span>
   );

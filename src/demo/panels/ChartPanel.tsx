@@ -1,14 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Panel } from '@/components/layout/Panel';
 import { Chart } from '@/components/charting/Chart';
 import { useDataContext } from '@/providers/DataProvider';
 import { useTheme } from '@/hooks/useTheme';
 import type { Candle } from '../data/types';
 
+function getCSSVar(name: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
 export function ChartPanel() {
   const { provider, selectedSymbol } = useDataContext();
   const { theme } = useTheme();
   const [candles, setCandles] = useState<Candle[]>([]);
+
+  const semanticColors = useMemo(() => ({
+    positive: getCSSVar('--color-positive'),
+    negative: getCSSVar('--color-negative'),
+  }), [theme]);
 
   useEffect(() => {
     if (!selectedSymbol) {
@@ -47,12 +56,12 @@ export function ChartPanel() {
               close: candles.map((c) => c.close),
               increasing: {
                 line: {
-                  color: theme === 'dark' ? '#9ece6a' : '#1e7a1e',
+                  color: semanticColors.positive,
                 },
               },
               decreasing: {
                 line: {
-                  color: theme === 'dark' ? '#f7768e' : '#c93545',
+                  color: semanticColors.negative,
                 },
               },
             },

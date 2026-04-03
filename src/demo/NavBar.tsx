@@ -56,7 +56,7 @@ export function NavBar({ currentPreset, presets, onPresetChange }: NavBarProps) 
             color: 'var(--text-primary)',
             fontSize: 13,
             padding: '2px 8px',
-            borderRadius: 4,
+            borderRadius: 2,
             cursor: 'pointer',
             outline: 'none',
           }}
@@ -83,7 +83,7 @@ export function NavBar({ currentPreset, presets, onPresetChange }: NavBarProps) 
           color: 'var(--text-primary)',
           fontSize: 12,
           padding: '3px 10px',
-          borderRadius: 4,
+          borderRadius: 2,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',

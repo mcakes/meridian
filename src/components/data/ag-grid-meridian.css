@@ -16,6 +16,11 @@
   --ag-border-radius: 0px;
 }
 
+.ag-theme-meridian .ag-header-cell-label {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .ag-theme-meridian.density-compact {
   --ag-row-height: 24px;
   --ag-font-size: 12px;

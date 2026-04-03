@@ -24,10 +24,8 @@ function SectionHeader({ index, label }: SectionHeaderProps) {
       <CatDot index={index} />
       <span
         style={{
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
           color: 'var(--text-secondary)',
         }}
       >

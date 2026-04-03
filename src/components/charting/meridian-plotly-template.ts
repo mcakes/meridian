@@ -19,6 +19,7 @@ export function getMeridianLayout(_theme: 'dark' | 'light'): Partial<Plotly.Layo
   const gridColor = getCSSVar('--border-subtle');
   const lineColor = getCSSVar('--border-default');
   const textMuted = getCSSVar('--text-muted');
+  const textPrimary = getCSSVar('--text-primary');
   const textSecondary = getCSSVar('--text-secondary');
   const bgBase = getCSSVar('--bg-base');
   const bgOverlay = getCSSVar('--bg-overlay');
@@ -37,9 +38,10 @@ export function getMeridianLayout(_theme: 'dark' | 'light'): Partial<Plotly.Layo
     ticklen: 3,
     showspikes: true,
     spikemode: 'across',
-    spikecolor: lineColor,
+    spikesnap: 'cursor',
+    spikecolor: textMuted,
     spikethickness: 1,
-    spikedash: 'dot' as Plotly.Dash,
+    spikedash: 'solid' as Plotly.Dash,
   };
 
   return {
@@ -71,10 +73,11 @@ export function getMeridianLayout(_theme: 'dark' | 'light'): Partial<Plotly.Layo
     hovermode: 'x',
     hoverlabel: {
       bgcolor: bgOverlay,
+      bordercolor: lineColor,
       font: {
         family: 'Inter, system-ui, sans-serif',
         size: 12,
-        color: textMuted,
+        color: textPrimary,
       },
     },
     legend: {
@@ -84,6 +87,11 @@ export function getMeridianLayout(_theme: 'dark' | 'light'): Partial<Plotly.Layo
       xanchor: 'left',
       x: 0,
       bgcolor: 'transparent',
+      borderwidth: 0,
+      font: {
+        size: 11,
+        color: textSecondary,
+      },
     },
     colorway,
     modebar: {

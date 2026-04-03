@@ -21,7 +21,7 @@ export function PanelHeader({ title, actions }: PanelHeaderProps) {
     >
       <span
         style={{
-          fontSize: 14,
+          fontSize: 16,
           fontWeight: 600,
           color: 'var(--text-primary)',
           overflow: 'hidden',
