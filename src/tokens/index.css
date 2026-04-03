@@ -80,6 +80,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@keyframes pulse-border {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

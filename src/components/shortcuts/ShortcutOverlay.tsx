@@ -1,7 +1,10 @@
-import { useContext, useEffect } from 'react';
+// src/components/shortcuts/ShortcutOverlay.tsx
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { ShortcutContext } from './ShortcutProvider';
+import { getEffectiveKey } from './ShortcutProvider';
 import { KeyBadge } from './KeyBadge';
+import { keyboardEventToCombo } from './hotkeys';
 import type { Shortcut } from './types';
 
 interface ShortcutOverlayProps {
@@ -37,6 +40,15 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
   const isOpen = ctx?.isOpen ?? false;
   const open = ctx?.open ?? (() => {});
   const close = ctx?.close ?? (() => {});
+  const overrides = ctx?.overrides ?? new Map();
+  const rebind = ctx?.rebind;
+  const resetBinding = ctx?.resetBinding;
+  const resetAllBindings = ctx?.resetAllBindings;
+
+  const [recordingId, setRecordingId] = useState<string | null>(null);
+  const [conflictLabel, setConflictLabel] = useState<string | null>(null);
+  const recordingRef = useRef<string | null>(null);
+  recordingRef.current = recordingId;
 
   // Register the overlay's own trigger shortcut
   useEffect(() => {
@@ -48,9 +60,6 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
         label: 'Show Keyboard Shortcuts',
         category: 'Help',
         execute: () => {
-          // Toggle — we need to read current state at execution time
-          // Using ctx ref would be stale, so the provider toggles via the open/close it gives us
-          // Since this effect re-runs when ctx.isOpen changes, the closure is fresh
           if (ctx?.isOpen) {
             close();
           } else {
@@ -61,10 +70,54 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
     ]);
   }, [hotkey, register, open, close, ctx?.isOpen]);
 
+  // Reset recording state when overlay closes
+  useEffect(() => {
+    if (!isOpen) {
+      setRecordingId(null);
+      setConflictLabel(null);
+    }
+  }, [isOpen]);
+
+  // Recording keydown handler
+  useEffect(() => {
+    if (!recordingId || !rebind) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (e.key === 'Escape') {
+        setRecordingId(null);
+        setConflictLabel(null);
+        return;
+      }
+
+      const combo = keyboardEventToCombo(e);
+      if (!combo) return; // modifier-only, keep listening
+
+      const result = rebind!(recordingRef.current!, combo);
+      if (result.ok) {
+        setRecordingId(null);
+        setConflictLabel(null);
+      } else {
+        const conflicting = shortcuts.find((s) => s.id === result.conflictsWith);
+        setConflictLabel(conflicting?.label ?? result.conflictsWith);
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [recordingId, rebind, shortcuts]);
+
   if (!ctx) return null;
 
   const groups = groupByCategory(shortcuts);
   const sorted = sortedCategories(groups);
+
+  const startRecording = useCallback((id: string) => {
+    setRecordingId(id);
+    setConflictLabel(null);
+  }, []);
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={(o) => { if (!o) close(); }}>
@@ -126,21 +179,68 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
               </div>
               {items.map((shortcut) => {
                 const disabled = shortcut.enabled === false;
+                const isRecording = recordingId === shortcut.id;
+                const effectiveKey = getEffectiveKey(shortcut, overrides);
+                const isOverridden = overrides.has(shortcut.id);
+                const dimmed = recordingId !== null && !isRecording;
+
                 return (
-                  <div
-                    key={shortcut.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '4px 20px',
-                      fontSize: 13,
-                    }}
-                  >
-                    <span style={{ color: disabled ? 'var(--text-muted)' : 'var(--text-secondary)' }}>
-                      {shortcut.label}
-                    </span>
-                    <KeyBadge hotkey={shortcut.key} muted={disabled} />
+                  <div key={shortcut.id}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '4px 20px',
+                        fontSize: 13,
+                        opacity: dimmed ? 0.3 : 1,
+                        transition: 'opacity 150ms ease',
+                      }}
+                    >
+                      <span style={{ color: disabled ? 'var(--text-muted)' : 'var(--text-secondary)' }}>
+                        {shortcut.label}
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                        <KeyBadge
+                          hotkey={effectiveKey}
+                          muted={disabled}
+                          recording={isRecording}
+                          onClick={disabled || dimmed ? undefined : () => startRecording(shortcut.id)}
+                        />
+                        {isOverridden && !isRecording && resetBinding && (
+                          <span
+                            onClick={() => resetBinding(shortcut.id)}
+                            style={{
+                              cursor: 'pointer',
+                              fontSize: 13,
+                              color: 'var(--text-muted)',
+                              lineHeight: 1,
+                              padding: '0 2px',
+                              transition: 'color 150ms ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
+                            }}
+                          >
+                            ×
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    {isRecording && conflictLabel && (
+                      <div
+                        style={{
+                          padding: '2px 20px 4px 20px',
+                          fontSize: 11,
+                          color: 'var(--color-negative)',
+                        }}
+                      >
+                        Already used by {conflictLabel}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -150,6 +250,29 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
           {sorted.length === 0 && (
             <div style={{ padding: '12px 20px', color: 'var(--text-muted)', fontSize: 13 }}>
               No shortcuts registered
+            </div>
+          )}
+
+          {/* Reset all button */}
+          {overrides.size > 0 && resetAllBindings && (
+            <div style={{ padding: '8px 20px 4px', borderTop: '1px solid var(--border-subtle)' }}>
+              <span
+                onClick={resetAllBindings}
+                style={{
+                  cursor: 'pointer',
+                  fontSize: 11,
+                  color: 'var(--text-muted)',
+                  transition: 'color 150ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
+                }}
+              >
+                Reset all to defaults
+              </span>
             </div>
           )}
         </Dialog.Content>

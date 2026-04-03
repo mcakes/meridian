@@ -12,10 +12,18 @@ export interface Shortcut {
   enabled?: boolean;
 }
 
+export type RebindResult =
+  | { ok: true }
+  | { ok: false; conflictsWith: string };
+
 export interface ShortcutContextValue {
   shortcuts: Shortcut[];
   register: (shortcuts: Shortcut[]) => () => void;
   open: () => void;
   close: () => void;
   isOpen: boolean;
+  overrides: Map<string, string>;
+  rebind: (shortcutId: string, newKey: string) => RebindResult;
+  resetBinding: (shortcutId: string) => void;
+  resetAllBindings: () => void;
 }

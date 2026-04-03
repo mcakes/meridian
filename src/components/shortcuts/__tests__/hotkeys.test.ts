@@ -5,6 +5,7 @@ import {
   matchesHotkey,
   normaliseKey,
   formatKeyForDisplay,
+  keyboardEventToCombo,
 } from '../hotkeys';
 
 describe('parseHotkey', () => {
@@ -125,5 +126,52 @@ describe('formatKeyForDisplay', () => {
   it('formats escape', () => {
     const parts = formatKeyForDisplay('escape', true);
     expect(parts).toEqual(['Esc']);
+  });
+});
+
+describe('keyboardEventToCombo', () => {
+  it('builds mod+k from metaKey + k', () => {
+    const e = new KeyboardEvent('keydown', { key: 'k', metaKey: true });
+    expect(keyboardEventToCombo(e)).toBe('mod+k');
+  });
+
+  it('builds mod+shift+t from metaKey + shiftKey + t', () => {
+    const e = new KeyboardEvent('keydown', { key: 't', metaKey: true, shiftKey: true });
+    expect(keyboardEventToCombo(e)).toBe('mod+shift+t');
+  });
+
+  it('builds alt+d from altKey + d', () => {
+    const e = new KeyboardEvent('keydown', { key: 'd', altKey: true });
+    expect(keyboardEventToCombo(e)).toBe('alt+d');
+  });
+
+  it('builds plain key for no modifiers', () => {
+    const e = new KeyboardEvent('keydown', { key: 'a' });
+    expect(keyboardEventToCombo(e)).toBe('a');
+  });
+
+  it('returns null for modifier-only keypress (Meta)', () => {
+    const e = new KeyboardEvent('keydown', { key: 'Meta', metaKey: true });
+    expect(keyboardEventToCombo(e)).toBeNull();
+  });
+
+  it('returns null for modifier-only keypress (Shift)', () => {
+    const e = new KeyboardEvent('keydown', { key: 'Shift', shiftKey: true });
+    expect(keyboardEventToCombo(e)).toBeNull();
+  });
+
+  it('returns null for modifier-only keypress (Control)', () => {
+    const e = new KeyboardEvent('keydown', { key: 'Control', ctrlKey: true });
+    expect(keyboardEventToCombo(e)).toBeNull();
+  });
+
+  it('lowercases the key', () => {
+    const e = new KeyboardEvent('keydown', { key: 'K', metaKey: true });
+    expect(keyboardEventToCombo(e)).toBe('mod+k');
+  });
+
+  it('handles special characters like ?', () => {
+    const e = new KeyboardEvent('keydown', { key: '?', shiftKey: true });
+    expect(keyboardEventToCombo(e)).toBe('?');
   });
 });
