@@ -4,6 +4,7 @@ export const THREE_PANEL: IJsonModel = {
   global: {
     tabEnableClose: true,
     tabSetEnableMaximize: false,
+    splitterSize: 1,
   },
   layout: {
     type: 'row',
@@ -44,6 +45,7 @@ export const STACKED: IJsonModel = {
   global: {
     tabEnableClose: true,
     tabSetEnableMaximize: false,
+    splitterSize: 1,
     rootOrientationVertical: true,
   },
   layout: {

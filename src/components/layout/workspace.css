@@ -41,12 +41,16 @@
   overflow: hidden;
 }
 
-/* Splitters */
+/* Splitters — thin 1px dividers */
 .flexlayout__splitter {
   background: var(--border-subtle);
 }
 
 .flexlayout__splitter:hover {
+  background: var(--border-active);
+}
+
+.flexlayout__splitter_drag {
   background: var(--border-active);
 }
 
@@ -67,8 +71,16 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
-/* Remove default border-radius */
+/* Remove all default border-radius for clean edges */
 .flexlayout__tabset,
-.flexlayout__tab {
+.flexlayout__tab,
+.flexlayout__tabset_tabbar_outer,
+.flexlayout__tab_button,
+.flexlayout__tab_button--selected,
+.flexlayout__outline_rect,
+.flexlayout__outline_rect_edge,
+.flexlayout__drag_rect,
+.flexlayout__popup_menu_item,
+.flexlayout__border_button {
   border-radius: 0;
 }
