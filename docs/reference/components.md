@@ -108,6 +108,91 @@ A compact pill badge for categorical status display. Three fixed variants cover 
 
 ---
 
+### ThresholdValue
+
+Displays a numeric value with semantic colour based on configurable thresholds. When a value crosses a threshold, both colour and a shape indicator change, providing redundant encoding. Use for metrics with known operational bounds — latency, error rates, utilisation — where anomalies should surface pre-attentively.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | — | Current numeric value. |
+| `warnAt` | `number` | — | Threshold above which the value is warning. |
+| `errorAt` | `number` | — | Threshold above which the value is error. |
+| `format` | `(n: number) => string` | `String` | Formatter applied to `value` before rendering. |
+| `invert` | `boolean` | `false` | When true, thresholds trigger below instead of above (for values where lower is worse). |
+
+**Severity levels:**
+
+| Severity | Indicator | Colour |
+|----------|-----------|--------|
+| Normal | `●` | `--color-positive` |
+| Warning | `▲` | `--color-warning` |
+| Error | `⬥` | `--color-negative` |
+
+**Usage:**
+```tsx
+<ThresholdValue value={42} warnAt={100} errorAt={500} format={v => `${v}ms`} />
+<ThresholdValue value={0.12} warnAt={0.5} errorAt={0.8} format={v => `${(v * 100).toFixed(1)}%`} />
+<ThresholdValue value={95} warnAt={80} errorAt={50} invert format={v => `${v}%`} />
+```
+
+**Tokens:** `--color-positive`, `--color-warning`, `--color-negative`
+
+---
+
+### HealthBar
+
+A compact horizontal bar where width represents a normalised value (0–1) and fill colour represents status. Suitable for table cells, metric cards, and any context where a proportional value and its health status need to be conveyed in minimal vertical space.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | — | Normalised value between 0 and 1. Clamped to bounds. |
+| `status` | `'ok' \| 'warn' \| 'error'` | `'ok'` | Determines the fill colour. |
+| `height` | `number` | `4` | Bar height in pixels. |
+| `label` | `string` | — | Accessible label for screen readers (rendered as `aria-label`). |
+
+**Usage:**
+```tsx
+<HealthBar value={0.73} status="ok" label="CPU utilisation" />
+<HealthBar value={0.91} status="warn" height={6} label="Memory" />
+<HealthBar value={1.0} status="error" label="Disk full" />
+```
+
+**Tokens:** `--color-positive` (ok), `--color-warning` (warn), `--color-negative` (error), `--bg-muted` (track)
+
+---
+
+### HeatmapCell
+
+Maps a normalised 0–1 value to a colour-intensity background using `color-mix()`. Diverging scale (default) runs from negative through neutral to positive; sequential runs from surface to info. Pass `children` to render text on top with automatic contrast switching.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | — | Normalised intensity, clamped to 0–1. |
+| `scale` | `'diverging' \| 'sequential'` | `'diverging'` | Colour mapping mode. |
+| `children` | `ReactNode` | — | Optional content rendered on top of the background. |
+| `style` | `CSSProperties` | — | Merged with computed styles. |
+| `className` | `string` | — | Additional class names. |
+
+**Colour scales:**
+
+| Scale | 0 | 0.5 | 1 |
+|-------|---|-----|---|
+| Diverging | `--color-negative` | `--bg-surface` | `--color-positive` |
+| Sequential | `--bg-surface` | 50% `--color-info` | `--color-info` |
+
+Text colour switches to `--text-inverse` when background intensity exceeds 60%.
+
+**Usage:**
+```tsx
+<HeatmapCell value={0.85}>+2.4%</HeatmapCell>
+<HeatmapCell value={0.2} scale="sequential" style={{ height: 40 }}>Low</HeatmapCell>
+<HeatmapCell value={(correlation + 1) / 2}>{correlation.toFixed(2)}</HeatmapCell>
+```
+
+**Tokens:** `--color-negative`, `--color-positive`, `--color-info`, `--bg-surface`, `--text-primary`, `--text-inverse`
+
+---
+
 ## Inputs
 
 Form controls. All inputs follow the same focus treatment: `box-shadow: 0 0 0 2px var(--color-info)` on focus. All accept an optional `label` prop that renders a small label above the control.
@@ -249,7 +334,7 @@ Components for displaying tabular and time-series data.
 
 ### DataTable
 
-An AG Grid Community table with Meridian theming applied via `ag-grid-meridian.css`. Supports three density modes and optional row click handling. Five built-in cell renderer types are registered automatically: `NumericCell`, `ChangeCell`, `BadgeCell`, `SparklineCell`, and `ActionCell`. Reference these by name in column `cellRenderer` definitions.
+An AG Grid Community table with Meridian theming applied via `ag-grid-meridian.css`. Supports three density modes and optional row click handling. Six built-in cell renderer types are registered automatically: `NumericCell`, `ChangeCell`, `BadgeCell`, `SparklineCell`, `ActionCell`, and `HeatmapCellRenderer`. Reference these by name in column `cellRenderer` definitions.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -508,6 +593,147 @@ A scrollable list of notification items. Each entry shows a timestamp, message t
 ```
 
 **Tokens:** `--text-muted`, `--text-primary`, `--color-info`, `--border-subtle`
+
+---
+
+## Command Palette
+
+A pluggable, keyboard-driven command palette. The palette is a generic shell — consuming apps inject all commands via a registration API. Supports simple fire-and-forget actions, commands with async context-aware argument steps, custom item renderers, and frequency-based ranking.
+
+Three components work together: `CommandPaletteProvider` (context), `CommandPalette` (UI overlay), and `useCommandPalette` (hook for registration and control).
+
+---
+
+### CommandPaletteProvider
+
+Wraps the app tree. Owns the command registry, open/close state, global hotkey listener, and frequency tracking. All other command palette components must be descendants of this provider.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | App content. |
+| `hotkey` | `string` | `'mod+k'` | Keyboard shortcut to toggle the palette. `mod` maps to Cmd on Mac, Ctrl elsewhere. Accepts `mod+<key>` syntax. |
+| `initialFrequency` | `FrequencyMap` | — | Optional pre-hydrated frequency data for cross-session persistence. |
+
+**Usage:**
+```tsx
+<CommandPaletteProvider hotkey="mod+k">
+  <App />
+</CommandPaletteProvider>
+```
+
+---
+
+### CommandPalette
+
+The UI overlay component. Renders a centred dialog at ~20% from the top of the viewport via Radix Dialog. Reads commands from the provider context and handles search input, fuzzy filtering, result rendering, arg stepping, and keyboard navigation.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `maxResults` | `number` | `12` | Maximum number of results displayed in the search list. Recents (empty query) are capped at 10 regardless. |
+
+Place this component anywhere inside `CommandPaletteProvider` — it renders via a portal.
+
+**Usage:**
+```tsx
+<CommandPaletteProvider>
+  <CommandPalette maxResults={12} />
+  <App />
+</CommandPaletteProvider>
+```
+
+**Keyboard:**
+
+| Key | Action |
+|-----|--------|
+| Configurable hotkey | Toggle palette open/close |
+| `Escape` | Close palette (from any state) |
+| `Arrow Down` / `Arrow Up` | Navigate results |
+| `Enter` | Select active result (execute or advance to args) |
+| `Backspace` (empty input) | Go back one arg step, or return to search from first arg |
+
+**Tokens:** `--bg-surface`, `--border-default`, `--border-subtle`, `--bg-highlight`, `--text-primary`, `--text-secondary`, `--text-muted`, `--color-info`, `--color-negative`
+
+---
+
+### useCommandPalette
+
+Hook for consuming code to interact with the palette. Must be called within a `CommandPaletteProvider`.
+
+**Returns:** `CommandPaletteContextValue`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `open` | `() => void` | Open the palette programmatically. |
+| `close` | `() => void` | Close the palette. |
+| `registerCommands` | `(commands: Command[]) => () => void` | Register commands; returns an unregister cleanup function. |
+| `frequency` | `FrequencyMap` | Current frequency data. Consuming apps can persist this externally. |
+| `isOpen` | `boolean` | Whether the palette is currently open. |
+| `recordExecution` | `(commandId: string) => void` | Manually record a command execution for frequency tracking. |
+
+**Usage:**
+```tsx
+function MyPanel() {
+  const { registerCommands } = useCommandPalette();
+
+  useEffect(() => {
+    return registerCommands([
+      {
+        id: 'my-panel:do-thing',
+        label: 'Do Thing',
+        category: 'My Panel',
+        execute: () => doThing(),
+      },
+    ]);
+  }, []);
+}
+```
+
+---
+
+### Command
+
+The shape of a command registered via `useCommandPalette().registerCommands()`.
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | `string` | Yes | Unique identifier. Convention: `namespace:action` (e.g. `watchlist:add-instrument`). |
+| `label` | `string` | Yes | Display name shown in the results list. |
+| `description` | `string` | No | Secondary text shown below the label. Also included in fuzzy search. |
+| `category` | `string` | No | Category badge shown at the right of the result row. |
+| `icon` | `ReactNode` | No | Icon rendered at the left of the result row (20px wide). |
+| `shortcut` | `string` | No | Display-only shortcut hint (e.g. `⌘T`). Does not register a listener. |
+| `keywords` | `string[]` | No | Additional terms included in fuzzy search beyond label/description. |
+| `args` | `ArgDefinition[]` | No | If present, the palette enters arg-stepping mode when this command is selected. |
+| `execute` | `(args?: Record<string, string>) => void` | Yes | Called when the command is executed. Receives collected args if the command has arg definitions. |
+| `renderItem` | `(props: ItemRenderProps) => ReactNode` | No | Custom renderer replacing the standard result row layout. |
+
+---
+
+### ArgDefinition
+
+Defines a single argument step in a multi-step command.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `name` | `string` | Key used in the collected args record passed to `execute` and subsequent resolvers. |
+| `label` | `string` | Display label shown as a placeholder in the input during this step. |
+| `resolve` | `(context: Record<string, string>) => Promise<ArgOption[]>` | Async function returning available options. Receives args collected so far. |
+
+**Usage:**
+```tsx
+{
+  id: 'load-vol',
+  label: 'Load Vol Surface',
+  args: [
+    { name: 'underlying', label: 'Underlying', resolve: async () => fetchUnderlyings() },
+    { name: 'source', label: 'Source', resolve: async (ctx) => fetchSources(ctx.underlying) },
+    { name: 'date', label: 'Date', resolve: async (ctx) => fetchDates(ctx.underlying, ctx.source) },
+  ],
+  execute: (args) => loadVolSurface(args!.underlying, args!.source, args!.date),
+}
+```
+
+During arg stepping, a breadcrumb trail shows selections made so far. Each step resolves asynchronously — a loading skeleton appears while options are fetched. If resolution fails, the user can retry with Enter or go back with Backspace.
 
 ---
 

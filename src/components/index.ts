@@ -4,6 +4,9 @@ export { PriceChange } from './primitives/PriceChange';
 export { FlashCell } from './primitives/FlashCell';
 export { MetricCard } from './primitives/MetricCard';
 export { Tag } from './primitives/Tag';
+export { ThresholdValue } from './primitives/ThresholdValue';
+export { HealthBar } from './primitives/HealthBar';
+export { HeatmapCell } from './primitives/HeatmapCell';
 
 // Inputs
 export { Toggle } from './inputs/Toggle';

@@ -4,6 +4,7 @@ import { fmt } from '@/lib/format';
 import { PriceChange } from '@/components/primitives/PriceChange';
 import { Tag } from '@/components/primitives/Tag';
 import { Sparkline } from '@/components/data/Sparkline';
+import { HeatmapCell } from '@/components/primitives/HeatmapCell';
 
 export function NumericCell(params: ICellRendererParams) {
   const decimals: number = (params.colDef?.cellRendererParams as { decimals?: number } | undefined)?.decimals ?? 2;
@@ -73,9 +74,27 @@ export function ActionCell(_params: ICellRendererParams) {
         fontSize: 16,
         padding: '0 4px',
         lineHeight: 1,
+        borderRadius: 2,
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLButtonElement;
+        el.style.color = 'var(--text-primary)';
+        el.style.backgroundColor = 'var(--bg-highlight)';
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLButtonElement;
+        el.style.color = 'var(--text-muted)';
+        el.style.backgroundColor = 'transparent';
       }}
     >
       ...
     </button>
   );
+}
+
+export function HeatmapCellRenderer(params: ICellRendererParams) {
+  const scale = (params.colDef?.cellRendererParams as { scale?: 'diverging' | 'sequential' } | undefined)?.scale;
+  const value = params.value as number | null | undefined;
+  if (value == null) return null;
+  return <HeatmapCell value={value} scale={scale}>{value.toFixed(2)}</HeatmapCell>;
 }

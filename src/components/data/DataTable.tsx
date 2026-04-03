@@ -18,6 +18,7 @@ import {
   BadgeCell,
   SparklineCell,
   ActionCell,
+  HeatmapCellRenderer,
 } from './cell-renderers';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -90,6 +91,7 @@ export function DataTable({
       BadgeCell,
       SparklineCell,
       ActionCell,
+      HeatmapCellRenderer,
     }),
     [],
   );

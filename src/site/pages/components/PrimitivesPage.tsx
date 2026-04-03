@@ -7,6 +7,9 @@ import { FlashCell } from '@/components/primitives/FlashCell';
 import { MetricCard } from '@/components/primitives/MetricCard';
 import { Tag } from '@/components/primitives/Tag';
 import { Sparkline } from '@/components/data/Sparkline';
+import { ThresholdValue } from '@/components/primitives/ThresholdValue';
+import { HealthBar } from '@/components/primitives/HealthBar';
+import { HeatmapCell } from '@/components/primitives/HeatmapCell';
 
 function FlashDemo() {
   const [flashValue, setFlashValue] = useState(187.42);
@@ -90,6 +93,121 @@ export default function PrimitivesPage() {
             <Tag variant="pass">Pass</Tag>
             <Tag variant="warn">Warning</Tag>
             <Tag variant="fail">Fail</Tag>
+          </div>
+        </ComponentDemo>
+      </Section>
+
+      <Section title="ThresholdValue">
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '0 0 12px 0' }}>
+          Numeric display with semantic color and shape indicator based on configurable thresholds.
+          Redundant encoding ensures color is never the sole channel.
+        </p>
+        <ComponentDemo label="Severity Levels">
+          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Normal</div>
+              <ThresholdValue value={42} warnAt={100} errorAt={500} format={v => `${v}ms`} />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Warning</div>
+              <ThresholdValue value={180} warnAt={100} errorAt={500} format={v => `${v}ms`} />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Error</div>
+              <ThresholdValue value={720} warnAt={100} errorAt={500} format={v => `${v}ms`} />
+            </div>
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Inverted (lower is worse)">
+          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Healthy</div>
+              <ThresholdValue value={99.8} warnAt={95} errorAt={90} invert format={v => `${v.toFixed(1)}%`} />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Degraded</div>
+              <ThresholdValue value={93} warnAt={95} errorAt={90} invert format={v => `${v.toFixed(1)}%`} />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Critical</div>
+              <ThresholdValue value={85} warnAt={95} errorAt={90} invert format={v => `${v.toFixed(1)}%`} />
+            </div>
+          </div>
+        </ComponentDemo>
+      </Section>
+
+      <Section title="HealthBar">
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '0 0 12px 0' }}>
+          Compact horizontal bar where width represents a normalised value and fill color represents status.
+          Suitable for table cells, metric cards, and monitoring dashboards.
+        </p>
+        <ComponentDemo label="Status Variants">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 240 }}>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>CPU — 45%</div>
+              <HealthBar value={0.45} status="ok" label="CPU utilisation" />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Memory — 78%</div>
+              <HealthBar value={0.78} status="warn" label="Memory usage" />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Disk — 96%</div>
+              <HealthBar value={0.96} status="error" label="Disk usage" />
+            </div>
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Height Variants">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 240 }}>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>4px (default)</div>
+              <HealthBar value={0.6} status="ok" label="Default height" />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>6px</div>
+              <HealthBar value={0.6} status="ok" height={6} label="Medium height" />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>8px</div>
+              <HealthBar value={0.6} status="ok" height={8} label="Large height" />
+            </div>
+          </div>
+        </ComponentDemo>
+      </Section>
+
+      <Section title="HeatmapCell">
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '0 0 12px 0' }}>
+          Maps a normalised 0–1 value to a colour-intensity background. Diverging scale
+          uses negative/positive colours; sequential uses a single-colour ramp.
+        </p>
+        <ComponentDemo label="Diverging Scale">
+          <div style={{ display: 'inline-grid', gridTemplateColumns: 'repeat(5, 56px)', gap: 2 }}>
+            {[0, 0.15, 0.35, 0.5, 0.65, 0.85, 1].map(v => (
+              <HeatmapCell key={v} value={v} style={{ height: 40, fontSize: 12 }}>
+                {v.toFixed(2)}
+              </HeatmapCell>
+            ))}
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Sequential Scale">
+          <div style={{ display: 'inline-grid', gridTemplateColumns: 'repeat(5, 56px)', gap: 2 }}>
+            {[0, 0.2, 0.4, 0.6, 0.8, 1].map(v => (
+              <HeatmapCell key={v} value={v} scale="sequential" style={{ height: 40, fontSize: 12 }}>
+                {v.toFixed(2)}
+              </HeatmapCell>
+            ))}
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Correlation Matrix">
+          <div style={{ display: 'inline-grid', gridTemplateColumns: 'repeat(4, 56px)', gap: 2 }}>
+            {[1.0, 0.72, -0.15, 0.08,
+              0.72, 1.0, 0.31, -0.04,
+              -0.15, 0.31, 1.0, -0.53,
+              0.08, -0.04, -0.53, 1.0].map((corr, i) => (
+              <HeatmapCell key={i} value={(corr + 1) / 2} style={{ height: 40, fontSize: 11 }}>
+                {corr.toFixed(2)}
+              </HeatmapCell>
+            ))}
           </div>
         </ComponentDemo>
       </Section>
