@@ -65,7 +65,7 @@ export function rankCommands(
         const bLast = frequency.get(b.command.id)?.lastUsed ?? 0;
         return bLast - aLast;
       })
-      .slice(0, maxResults);
+      .slice(0, Math.min(maxResults, 10));
   }
 
   const scored: ScoredCommand[] = [];

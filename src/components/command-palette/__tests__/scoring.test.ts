@@ -106,4 +106,15 @@ describe('rankCommands', () => {
     expect(ranked[0]!.command.id).toBe('b');
     expect(ranked[1]!.command.id).toBe('a');
   });
+
+  it('caps recents at 10 even when maxResults is higher', () => {
+    const cmds = Array.from({ length: 15 }, (_, i) =>
+      makeCommand({ id: `cmd-${i}`, label: `Command ${i}` }),
+    );
+    const freq: FrequencyMap = new Map(
+      cmds.map((cmd, i) => [cmd.id, { count: 1, lastUsed: i }]),
+    );
+    const ranked = rankCommands(cmds, '', freq, 15);
+    expect(ranked.length).toBe(10);
+  });
 });
