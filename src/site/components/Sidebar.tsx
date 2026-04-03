@@ -49,6 +49,8 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Primitives', path: '/components/primitives' },
       { label: 'Inputs', path: '/components/inputs' },
       { label: 'Feedback', path: '/components/feedback' },
+      { label: 'Command Palette', path: '/components/command-palette' },
+      { label: 'Shortcuts', path: '/components/shortcuts' },
     ],
   },
   {

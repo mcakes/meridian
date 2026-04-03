@@ -508,3 +508,122 @@ A scrollable list of notification items. Each entry shows a timestamp, message t
 ```
 
 **Tokens:** `--text-muted`, `--text-primary`, `--color-info`, `--border-subtle`
+
+---
+
+## Shortcuts
+
+A global keyboard shortcut system. Independent of the command palette but designed to wire together easily. Components register shortcuts via a provider + hook pattern. A built-in overlay displays all registered shortcuts grouped by category.
+
+---
+
+### ShortcutProvider
+
+Wraps the app tree. Owns the shortcut registry, a single global `keydown` listener, collision detection, and overlay open/close state.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | App content. |
+
+**Usage:**
+```tsx
+<ShortcutProvider>
+  <ShortcutOverlay />
+  <App />
+</ShortcutProvider>
+```
+
+---
+
+### ShortcutOverlay
+
+A Radix Dialog overlay showing all registered shortcuts grouped by category. Self-registers its own trigger shortcut.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `hotkey` | `string` | `'?'` | Key combo to toggle the overlay open/close. |
+
+Place anywhere inside `ShortcutProvider` — renders via portal.
+
+**Keyboard:**
+
+| Key | Action |
+|-----|--------|
+| `?` (configurable) | Toggle overlay |
+| `Escape` | Close overlay |
+
+**Tokens:** `--bg-surface`, `--border-default`, `--text-primary`, `--text-secondary`, `--text-muted`, `--bg-muted`, `--border-subtle`
+
+---
+
+### useShortcuts
+
+Hook for consuming code to register shortcuts and control the overlay. Must be called within a `ShortcutProvider`.
+
+**Returns:** `ShortcutContextValue`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `register` | `(shortcuts: Shortcut[]) => () => void` | Register shortcuts; returns an unregister cleanup function. |
+| `shortcuts` | `Shortcut[]` | The full registry (read-only). |
+| `open` | `() => void` | Open the overlay programmatically. |
+| `close` | `() => void` | Close the overlay. |
+| `isOpen` | `boolean` | Whether the overlay is currently open. |
+
+**Usage:**
+```tsx
+function MyPanel() {
+  const { register } = useShortcuts();
+
+  useEffect(() => {
+    return register([
+      {
+        id: 'my-panel:refresh',
+        key: 'mod+r',
+        label: 'Refresh',
+        category: 'My Panel',
+        execute: () => refresh(),
+      },
+    ]);
+  }, []);
+}
+```
+
+---
+
+### Shortcut
+
+The shape of a shortcut registered via `useShortcuts().register()`.
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | `string` | Yes | Unique identifier. Convention: `namespace:action`. |
+| `key` | `string` | Yes | Key combo string, e.g. `mod+d`, `mod+shift+t`, `escape`, `?`. |
+| `label` | `string` | Yes | Human-readable name shown in the overlay. |
+| `category` | `string` | No | Grouping in the overlay. Shortcuts without a category go under "Other". |
+| `description` | `string` | No | Optional longer description. |
+| `execute` | `() => void` | Yes | Called when the shortcut is triggered. |
+| `enabled` | `boolean` | No | Default `true`. When `false`, the listener skips this shortcut but it still appears (muted) in the overlay. |
+
+**Hotkey syntax:** `modifier+modifier+key`. Supported modifiers: `mod` (Cmd/Ctrl), `shift`, `alt` (Option/Alt), `ctrl`. Matching uses `e.key` (produced character). Plain-key shortcuts are suppressed in input fields; modifier shortcuts work everywhere.
+
+**Collision handling:** If two shortcuts register the same key combo, a `console.warn` is emitted in development and the last registered wins.
+
+---
+
+### KeyBadge
+
+Renders a key combo string as styled `<kbd>` elements with platform-aware symbols (⌘/⇧/⌥ on Mac, Ctrl/Shift/Alt elsewhere).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `hotkey` | `string` | — | Key combo string to render, e.g. `mod+shift+t`. |
+| `muted` | `boolean` | `false` | When true, uses `--text-muted` for badge text colour. |
+
+**Usage:**
+```tsx
+<KeyBadge hotkey="mod+shift+t" />
+<KeyBadge hotkey="escape" muted />
+```
+
+**Tokens:** `--bg-muted`, `--text-primary`, `--text-muted`, `--border-subtle`
