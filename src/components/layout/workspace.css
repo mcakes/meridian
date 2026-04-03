@@ -81,6 +81,16 @@
 .flexlayout__outline_rect_edge,
 .flexlayout__drag_rect,
 .flexlayout__popup_menu_item,
-.flexlayout__border_button {
+.flexlayout__border_button,
+.flexlayout__splitter,
+.flexlayout__splitter_drag,
+.flexlayout__splitter_handle {
   border-radius: 0;
+}
+
+/* Override the hover border-radius inside @media (hover: hover) */
+@media (hover: hover) {
+  .flexlayout__splitter:hover {
+    border-radius: 0;
+  }
 }
