@@ -63,23 +63,23 @@ const { getHistory } = useMarketData(selectedSymbol);
 }
 ```
 
-**Preset system:** `useWorkspace` accepts a `builtInPresets` record mapping preset names to `IJsonModel` objects. `loadPreset(name)` creates a new `Model` from the preset JSON and persists it. Custom preset saving is currently a stub (`savePreset` is a no-op).
+**Preset system:** `useWorkspace` accepts a `builtInPresets` record mapping preset names to `IJsonModel` objects. `loadPreset(name)` creates a new `Model` from the preset JSON and persists it.
 
 **Hook API:**
 
 | Return value | Type | Description |
 |--------------|------|-------------|
 | `model` | `Model` | Current FlexLayout React model. Pass to `<Workspace model={model}>`. |
-| `setModel` | `(model: Model) => void` | Called when the model changes. Persists the serialised JSON. |
+| `handleModelChange` | `(model: Model) => void` | Called when the model changes. Persists the serialised JSON. |
 | `presets` | `Record<string, IJsonModel>` | The built-in preset map passed to the hook. |
 | `activePreset` | `string \| null` | Name of the last loaded preset, or `null` if layout was modified manually. |
 | `loadPreset` | `(name: string) => void` | Activate a named preset and persist it. |
-| `savePreset` | `(name: string) => void` | Stub — no-op in current implementation. |
 | `resetLayout` | `() => void` | Restore the `defaultLayout` and persist it. |
+| `addPanel` | `(id: string, tab: TabNode) => void` | Add a new panel to the workspace. |
 
 **Usage:**
 ```tsx
-const { model, setModel, loadPreset, activePreset } = useWorkspace(
+const { model, handleModelChange, loadPreset, activePreset } = useWorkspace(
   defaultLayout,
   { 'Equity Trading': equityPreset, 'FX Desk': fxPreset }
 );

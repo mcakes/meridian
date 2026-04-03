@@ -470,7 +470,7 @@ The "passive" tier (background status, ongoing processes) is handled by dedicate
 - Persists preference to `localStorage`
 
 **useWorkspace**
-- Returns: `{ model, setModel, presets, savePreset, loadPreset, resetLayout }`
+- Returns: `{ model, handleModelChange, presets, activePreset, loadPreset, resetLayout, addPanel }`
 - Serializes/deserializes FlexLayout React `IJsonModel` state
 - Persists to `localStorage`
 - Ships with 2-3 default presets

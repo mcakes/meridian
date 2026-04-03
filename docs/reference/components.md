@@ -377,14 +377,16 @@ A thin wrapper around `flexlayout-react` `<Layout>`. Manages a serialisable JSON
 |------|------|---------|-------------|
 | `model` | `Model` | — | The FlexLayout React model instance. Created from an `IJsonModel` via `Model.fromJson`. |
 | `factory` | `(node: TabNode) => ReactNode` | — | Factory function that maps a tab node to its content node. |
+| `onModelChange` | `(model: Model) => void` | — | Callback fired when the model changes (layout resized, panels moved, etc.). |
 
 **Usage:**
 ```tsx
-const { model, setModel } = useWorkspace(defaultLayout, presets);
+const { model, handleModelChange } = useWorkspace(defaultLayout, presets);
 
 <Workspace
   model={model}
   factory={(node) => <PanelRegistry id={node.getId()} />}
+  onModelChange={handleModelChange}
 />
 ```
 
