@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { TopBar } from './components/TopBar';
 import { Sidebar } from './components/Sidebar';
+import { ToastContainer } from '@/components/feedback/Toast';
 
 export function App() {
   const location = useLocation();
@@ -42,6 +43,7 @@ export function App() {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
