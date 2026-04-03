@@ -178,14 +178,18 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
   const ctx = useContext(CommandPaletteContext);
-  if (!ctx) return null;
-
-  const { commands, isOpen, close, frequency, recordExecution } = ctx;
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const [argStep, dispatchArgStep] = useReducer(argStepReducer, initialArgStepState);
   const [argQuery, setArgQuery] = useState('');
+  const [retryCounter, setRetryCounter] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const commands = ctx?.commands ?? [];
+  const isOpen = ctx?.isOpen ?? false;
+  const close = ctx?.close ?? (() => {});
+  const frequency = ctx?.frequency ?? new Map();
+  const recordExecution = ctx?.recordExecution ?? (() => {});
 
   // Reset state when palette opens/closes
   useEffect(() => {
@@ -197,7 +201,7 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
     }
   }, [isOpen]);
 
-  // Resolve args when entering a new step
+  // Resolve args when entering a new step (also triggers on retry)
   useEffect(() => {
     if (argStep.phase !== 'stepping' || !argStep.selectedCommand?.args) return;
     const argDef = argStep.selectedCommand.args[argStep.argIndex];
@@ -225,7 +229,7 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
       });
 
     return () => { cancelled = true; };
-  }, [argStep.phase, argStep.argIndex, argStep.collectedArgs, argStep.selectedCommand]);
+  }, [argStep.phase, argStep.argIndex, argStep.collectedArgs, argStep.selectedCommand, retryCounter]);
 
   // Compute visible results
   const searchResults = argStep.phase === 'search'
@@ -249,6 +253,8 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
   useEffect(() => {
     setActiveIndex((i) => Math.min(Math.max(i, 0), Math.max(visibleCount - 1, 0)));
   }, [visibleCount]);
+
+  if (!ctx) return null;
 
   function handleSelect(command: Command) {
     if (command.args && command.args.length > 0) {
@@ -293,20 +299,8 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
         if (item) handleSelect(item.command);
       } else if (argStep.phase === 'stepping') {
         if (argStep.resolveError) {
-          // Retry resolve
-          const argDef = argStep.selectedCommand?.args?.[argStep.argIndex];
-          if (argDef) {
-            dispatchArgStep({ type: 'resolve-start' });
-            argDef
-              .resolve(argStep.collectedArgs)
-              .then((options) => dispatchArgStep({ type: 'resolve-success', options }))
-              .catch((err) =>
-                dispatchArgStep({
-                  type: 'resolve-error',
-                  error: err instanceof Error ? err.message : 'Failed to load options',
-                }),
-              );
-          }
+          // Retry by bumping counter — effect handles the actual resolve
+          setRetryCounter((c) => c + 1);
         } else {
           const option = filteredArgOptions[activeIndex];
           if (option) handleArgSelect(option);
@@ -326,6 +320,7 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
   const currentArgDef = isStepping
     ? argStep.selectedCommand?.args?.[argStep.argIndex]
     : null;
+  const resultsId = 'command-palette-results';
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => { if (!open) close(); }}>
@@ -381,6 +376,10 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
               <input
                 ref={inputRef}
                 type="text"
+                role="combobox"
+                aria-expanded={visibleCount > 0}
+                aria-controls={resultsId}
+                aria-activedescendant={visibleCount > 0 ? `${resultsId}-${activeIndex}` : undefined}
                 value={isStepping ? argQuery : query}
                 onChange={(e) => {
                   if (isStepping) {
@@ -410,7 +409,7 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
           </div>
 
           {/* Results area */}
-          <div style={{ maxHeight: 320, overflowY: 'auto', padding: '4px 0' }}>
+          <div id={resultsId} role="listbox" style={{ maxHeight: 320, overflowY: 'auto', padding: '4px 0' }}>
             {argStep.phase === 'search' ? (
               searchResults.length === 0 ? (
                 <div
@@ -456,6 +455,8 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
                   filteredArgOptions.map((option, i) => (
                     <div
                       key={option.value}
+                      role="option"
+                      aria-selected={i === activeIndex}
                       onMouseDown={(e) => { e.preventDefault(); handleArgSelect(option); }}
                       onMouseEnter={() => setActiveIndex(i)}
                       style={{

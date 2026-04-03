@@ -327,9 +327,9 @@ export function OrdersPanel() {
       <Section title="Scoring and Ranking">
         <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
           Results are ranked by a composite score: fuzzy match quality against label, description, and
-          keywords; a frequency bonus for commands the user has executed recently; and a recency decay
-          that favours commands used in the last few minutes over those used hours ago. When the query
-          is empty the palette shows the most-used commands first.
+          keywords; plus a log-dampened frequency bonus based on execution count. When scores tie,
+          the most recently used command wins. When the query is empty the palette shows
+          recently used commands, ordered by last use.
         </p>
       </Section>
     </div>

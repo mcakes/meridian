@@ -57,6 +57,8 @@ export function CommandPaletteItem({
     const renderProps: ItemRenderProps = { command, active, matchRanges };
     return (
       <div
+        role="option"
+        aria-selected={active}
         onMouseDown={(e) => { e.preventDefault(); onSelect(); }}
         onMouseEnter={onHover}
         style={{
@@ -72,6 +74,8 @@ export function CommandPaletteItem({
   // Standard layout
   return (
     <div
+      role="option"
+      aria-selected={active}
       onMouseDown={(e) => { e.preventDefault(); onSelect(); }}
       onMouseEnter={onHover}
       style={{
