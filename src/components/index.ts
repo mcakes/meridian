@@ -41,3 +41,10 @@ export type {
   ItemRenderProps,
   FrequencyMap,
 } from './command-palette/types';
+
+// Shortcuts
+export { ShortcutProvider } from './shortcuts/ShortcutProvider';
+export { ShortcutOverlay } from './shortcuts/ShortcutOverlay';
+export { useShortcuts } from './shortcuts/useShortcuts';
+export { KeyBadge } from './shortcuts/KeyBadge';
+export type { Shortcut } from './shortcuts/types';
