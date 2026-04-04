@@ -52,6 +52,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Feedback', path: '/components/feedback' },
       { label: 'Command Palette', path: '/components/command-palette' },
       { label: 'Shortcuts', path: '/components/shortcuts' },
+      { label: 'Menus', path: '/components/menus' },
     ],
   },
   {
