@@ -46,6 +46,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Chart', path: '/components/chart' },
       { label: 'Workspace', path: '/components/workspace' },
       { label: 'Panel', path: '/components/panel' },
+      { label: 'Sidebar & Palette', path: '/components/sidebar' },
       { label: 'Primitives', path: '/components/primitives' },
       { label: 'Inputs', path: '/components/inputs' },
       { label: 'Feedback', path: '/components/feedback' },

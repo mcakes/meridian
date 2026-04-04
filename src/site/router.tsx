@@ -41,6 +41,7 @@ export const router = createBrowserRouter([
       { path: 'components/chart', element: lazyPage(() => import('./pages/components/ChartPage')) },
       { path: 'components/workspace', element: lazyPage(() => import('./pages/components/WorkspacePage')) },
       { path: 'components/panel', element: lazyPage(() => import('./pages/components/PanelPage')) },
+      { path: 'components/sidebar', element: lazyPage(() => import('./pages/components/SidebarPage')) },
       { path: 'components/primitives', element: lazyPage(() => import('./pages/components/PrimitivesPage')) },
       { path: 'components/inputs', element: lazyPage(() => import('./pages/components/InputsPage')) },
       { path: 'components/feedback', element: lazyPage(() => import('./pages/components/FeedbackPage')) },
