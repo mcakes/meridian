@@ -28,30 +28,42 @@ export function Sidebar({
   const handleResizeStart = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
-      resizeRef.current = { startX: e.clientX, startWidth: sideState.width };
+      const startX = e.clientX;
+      const startWidth = sideState.width;
+      const el = sidebarRef.current;
+
+      // Disable CSS transition during drag for immediate feedback
+      if (el) el.style.transition = 'none';
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
-        if (!resizeRef.current) return;
         const delta = side === 'left'
-          ? moveEvent.clientX - resizeRef.current.startX
-          : resizeRef.current.startX - moveEvent.clientX;
-        const newWidth = resizeRef.current.startWidth + delta;
+          ? moveEvent.clientX - startX
+          : startX - moveEvent.clientX;
+        const newWidth = Math.min(Math.max(startWidth + delta, minWidth), maxWidth);
 
-        if (newWidth < minWidth) {
-          dispatch({ type: 'collapse-sidebar', side });
-          resizeRef.current = null;
-          document.removeEventListener('mousemove', handleMouseMove);
-          document.removeEventListener('mouseup', handleMouseUp);
-          return;
-        }
-
-        dispatch({ type: 'set-width', side, width: Math.min(newWidth, maxWidth) });
+        // Update DOM directly — skip React re-render during drag
+        if (el) el.style.width = `${newWidth}px`;
       };
 
-      const handleMouseUp = () => {
-        resizeRef.current = null;
+      const handleMouseUp = (upEvent: MouseEvent) => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+
+        // Re-enable transition
+        if (el) el.style.transition = '';
+
+        const delta = side === 'left'
+          ? upEvent.clientX - startX
+          : startX - upEvent.clientX;
+        const finalWidth = startWidth + delta;
+
+        if (finalWidth < minWidth) {
+          // Reset DOM width so React owns it again
+          if (el) el.style.width = '';
+          dispatch({ type: 'collapse-sidebar', side });
+        } else {
+          dispatch({ type: 'set-width', side, width: Math.min(Math.max(finalWidth, minWidth), maxWidth) });
+        }
       };
 
       document.addEventListener('mousemove', handleMouseMove);
