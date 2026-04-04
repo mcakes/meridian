@@ -37,6 +37,9 @@ export { ToastContainer, showToast } from './feedback/Toast';
 export { Modal } from './feedback/Modal';
 export { NotificationFeed } from './feedback/NotificationFeed';
 
+// Menus
+export { DropdownMenu } from './menus/DropdownMenu';
+
 // Command Palette
 export { CommandPaletteProvider } from './command-palette/CommandPaletteProvider';
 export { CommandPalette } from './command-palette/CommandPalette';
