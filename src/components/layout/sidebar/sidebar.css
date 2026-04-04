@@ -1,0 +1,245 @@
+/* src/components/layout/sidebar/sidebar.css */
+
+/* Sidebar tokens */
+:root {
+  --sidebar-width-collapsed: 40px;
+  --sidebar-width-default: 260px;
+  --sidebar-bg: var(--bg-surface);
+  --sidebar-border: var(--border-subtle);
+  --palette-header-bg: var(--bg-muted);
+}
+
+/* Provider layout */
+.meridian-sidebar-layout {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.meridian-sidebar-layout__content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Sidebar — expanded */
+.meridian-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--sidebar-bg);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.meridian-sidebar--left {
+  border-right: 1px solid var(--sidebar-border);
+}
+
+.meridian-sidebar--right {
+  border-left: 1px solid var(--sidebar-border);
+}
+
+.meridian-sidebar--expanded {
+  transition: width 150ms ease;
+}
+
+/* Sidebar — collapsed (icon rail) */
+.meridian-sidebar--collapsed {
+  width: var(--sidebar-width-collapsed);
+  transition: width 150ms ease;
+}
+
+/* Sidebar header (toggle row) */
+.meridian-sidebar__header {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--sidebar-border);
+  flex-shrink: 0;
+}
+
+.meridian-sidebar__toggle {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.meridian-sidebar__toggle:hover {
+  color: var(--text-primary);
+}
+
+/* Collapsed icon strip */
+.meridian-sidebar__icon-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  overflow-y: auto;
+}
+
+.meridian-sidebar__icon-button {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--bg-muted);
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding: 0;
+  position: relative;
+}
+
+.meridian-sidebar__icon-button:hover {
+  background: var(--bg-highlight);
+  color: var(--text-primary);
+}
+
+/* Tooltip for icon buttons */
+.meridian-sidebar__icon-button[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  white-space: nowrap;
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.meridian-sidebar--left .meridian-sidebar__icon-button[title]:hover::after {
+  left: calc(100% + 6px);
+}
+
+.meridian-sidebar--right .meridian-sidebar__icon-button[title]:hover::after {
+  right: calc(100% + 6px);
+}
+
+/* Expanded palette list area */
+.meridian-sidebar__palettes {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Resize handle */
+.meridian-sidebar__resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 5;
+}
+
+.meridian-sidebar--left .meridian-sidebar__resize-handle {
+  right: -3px;
+}
+
+.meridian-sidebar--right .meridian-sidebar__resize-handle {
+  left: -3px;
+}
+
+.meridian-sidebar__resize-handle:hover {
+  background: var(--border-active);
+  opacity: 0.5;
+}
+
+/* Palette */
+.meridian-palette {
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.meridian-palette__header {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  background: var(--palette-header-bg);
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.meridian-palette__header:active {
+  cursor: grabbing;
+}
+
+.meridian-palette__chevron {
+  color: var(--text-muted);
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: transform 150ms ease;
+  line-height: 1;
+}
+
+.meridian-palette__chevron--expanded {
+  transform: rotate(90deg);
+}
+
+.meridian-palette__title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+/* Palette body — animated expand/collapse via grid trick */
+.meridian-palette__body-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 150ms ease;
+}
+
+.meridian-palette__body-wrapper--expanded {
+  grid-template-rows: 1fr;
+}
+
+.meridian-palette__body {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.meridian-palette__body-inner {
+  padding: 8px;
+}
+
+/* Drag overlay styles */
+.meridian-palette--drag-overlay {
+  opacity: 0.85;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  background: var(--sidebar-bg);
+}
+
+.meridian-palette--drag-placeholder {
+  opacity: 0.3;
+}
+
+/* Sidebar drop highlight during cross-sidebar drag */
+.meridian-sidebar--drop-target {
+  outline: 2px solid var(--border-active);
+  outline-offset: -2px;
+}
