@@ -20,7 +20,7 @@ import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { SidebarState, SidebarSide, PaletteDefinition, PaletteProps, SidebarProps } from './types';
 import { sidebarReducer, buildInitialState } from './sidebarReducer';
-import type { SidebarAction } from './sidebarReducer';
+
 import { SidebarContext } from './SidebarContext';
 import { Sidebar } from './Sidebar';
 import { Palette } from './Palette';
@@ -96,12 +96,7 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
 
   const state = controlledState ?? internalState;
 
-  const dispatch = useCallback(
-    (action: SidebarAction) => {
-      rawDispatch(action);
-    },
-    [],
-  );
+  const dispatch = rawDispatch;
 
   // Fire onStateChange after internal state changes
   const prevStateRef = useRef(state);
@@ -245,7 +240,9 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
           {activeDragId ? (
             <div className="meridian-palette meridian-palette--drag-overlay">
               <div className="meridian-palette__header">
-                <span className="meridian-palette__title">{activeDragId}</span>
+                <span className="meridian-palette__title">
+                  {paletteRegistry.get(activeDragId)?.title ?? activeDragId}
+                </span>
               </div>
             </div>
           ) : null}
