@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import * as Radix from '@radix-ui/react-dropdown-menu';
 import type { ReactNode, CSSProperties } from 'react';
 
@@ -130,21 +131,30 @@ const shortcutStyle: CSSProperties = {
 };
 
 function Item({ children, onSelect, disabled = false, variant = 'default', shortcut }: ItemProps) {
+  const highlightBg = variant === 'destructive'
+    ? 'color-mix(in srgb, var(--color-negative) 12%, transparent)'
+    : 'var(--bg-highlight)';
+
+  const setHighlight = useCallback((el: HTMLDivElement, on: boolean) => {
+    el.style.backgroundColor = on ? highlightBg : 'transparent';
+  }, [highlightBg]);
+
   return (
     <Radix.Item
       disabled={disabled}
-      onSelect={onSelect}
+      onSelect={() => onSelect()}
       style={itemStyle(variant, disabled)}
       onMouseEnter={(e) => {
-        if (!disabled) {
-          (e.currentTarget as HTMLDivElement).style.backgroundColor =
-            variant === 'destructive'
-              ? 'color-mix(in srgb, var(--color-negative) 12%, transparent)'
-              : 'var(--bg-highlight)';
-        }
+        if (!disabled) setHighlight(e.currentTarget as HTMLDivElement, true);
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent';
+        setHighlight(e.currentTarget as HTMLDivElement, false);
+      }}
+      onFocus={(e) => {
+        if (!disabled) setHighlight(e.currentTarget as HTMLDivElement, true);
+      }}
+      onBlur={(e) => {
+        setHighlight(e.currentTarget as HTMLDivElement, false);
       }}
     >
       <span>{children}</span>
