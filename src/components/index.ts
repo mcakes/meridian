@@ -25,6 +25,10 @@ export { PanelHeader } from './layout/PanelHeader';
 export { Toolbar } from './layout/Toolbar';
 export { Workspace } from './layout/Workspace';
 
+// Sidebar
+export { SidebarProvider, Sidebar, Palette } from './layout/sidebar';
+export type { SidebarState, SidebarSide } from './layout/sidebar';
+
 // Charting
 export { Chart } from './charting/Chart';
 

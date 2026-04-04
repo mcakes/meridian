@@ -6,8 +6,8 @@ import { useSidebarContext } from './SidebarContext';
 
 export function Sidebar({
   side,
-  defaultExpanded = false,
-  defaultWidth = 260,
+  defaultExpanded: _defaultExpanded = false,
+  defaultWidth: _defaultWidth = 260,
   minWidth = 200,
   maxWidth = 480,
   children,
