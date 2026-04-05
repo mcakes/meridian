@@ -4,6 +4,7 @@ import { ComponentDemo } from '@/site/components/ComponentDemo';
 import { showToast } from '@/components/feedback/Toast';
 import { Modal } from '@/components/feedback/Modal';
 import { NotificationFeed } from '@/components/feedback/NotificationFeed';
+import { Tooltip, TooltipProvider } from '@/components/feedback/Tooltip';
 
 const buttonStyle: React.CSSProperties = {
   backgroundColor: 'var(--bg-muted)',
@@ -70,6 +71,27 @@ export default function FeedbackPage() {
             />
           </div>
         </ComponentDemo>
+      </Section>
+
+      <Section title="Tooltip">
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 12px 0' }}>
+          Text hint on hover or focus. Requires a TooltipProvider ancestor for shared delay timing (default 700ms).
+        </p>
+        <TooltipProvider delayDuration={300}>
+          <ComponentDemo label="Basic Tooltips">
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+              <Tooltip content="Save current layout">
+                <button style={buttonStyle}>Hover me</button>
+              </Tooltip>
+              <Tooltip content="Bottom tooltip" side="bottom">
+                <button style={buttonStyle}>Bottom</button>
+              </Tooltip>
+              <Tooltip content="Right tooltip" side="right">
+                <button style={buttonStyle}>Right</button>
+              </Tooltip>
+            </div>
+          </ComponentDemo>
+        </TooltipProvider>
       </Section>
     </div>
   );
