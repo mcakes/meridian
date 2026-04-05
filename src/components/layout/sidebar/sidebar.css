@@ -209,6 +209,12 @@
   flex-shrink: 0;
 }
 
+.meridian-palette__header:hover .meridian-palette__chevron,
+.meridian-palette__header:hover .meridian-palette__icon,
+.meridian-palette__header:hover .meridian-palette__title {
+  color: var(--text-primary);
+}
+
 .meridian-palette__header:active {
   cursor: grabbing;
 }
