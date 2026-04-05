@@ -5,7 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 vi.mock('react-plotly.js', () => ({ default: () => null }));
 vi.mock('plotly.js', () => ({ default: {} }));
 
-import { buildBidAskTraces } from '../TimeseriesChart';
+import { buildBidAskTraces, buildMeanStdevTraces } from '../TimeseriesChart';
 
 describe('buildBidAskTraces', () => {
   const series = {
@@ -54,6 +54,52 @@ describe('buildBidAskTraces', () => {
 
   it('defaults yaxis to y', () => {
     const traces = buildBidAskTraces(series, '#ff0000');
+    traces.forEach((t) => expect(t.yaxis).toBe('y'));
+  });
+});
+
+describe('buildMeanStdevTraces', () => {
+  const series = {
+    times: [1000, 2000, 3000],
+    mean: [50, 60, 70],
+    stdev: [5, 6, 7],
+  };
+
+  it('returns 3 traces: lower bound, upper bound fill, center line', () => {
+    const traces = buildMeanStdevTraces(series, '#00ff00');
+    expect(traces).toHaveLength(3);
+  });
+
+  it('lower bound uses mean - stdev', () => {
+    const [lower] = buildMeanStdevTraces(series, '#00ff00');
+    expect(lower.y).toEqual([45, 54, 63]);
+    expect(lower.line).toEqual({ color: 'transparent' });
+    expect(lower.showlegend).toBe(false);
+    expect(lower.hoverinfo).toBe('skip');
+  });
+
+  it('upper bound uses mean + stdev with fill', () => {
+    const [, upper] = buildMeanStdevTraces(series, '#00ff00');
+    expect(upper.y).toEqual([55, 66, 77]);
+    expect(upper.fill).toBe('tonexty');
+    expect(upper.showlegend).toBe(false);
+    expect(upper.hoverinfo).toBe('skip');
+  });
+
+  it('center line plots mean values', () => {
+    const [, , center] = buildMeanStdevTraces(series, '#00ff00');
+    expect(center.y).toEqual([50, 60, 70]);
+    expect(center.line).toEqual({ color: '#00ff00' });
+    expect(center.showlegend).toBe(true);
+  });
+
+  it('assigns yaxis when provided', () => {
+    const traces = buildMeanStdevTraces({ ...series, yaxis: 'y2' }, '#00ff00');
+    traces.forEach((t) => expect(t.yaxis).toBe('y2'));
+  });
+
+  it('defaults yaxis to y', () => {
+    const traces = buildMeanStdevTraces(series, '#00ff00');
     traces.forEach((t) => expect(t.yaxis).toBe('y'));
   });
 });

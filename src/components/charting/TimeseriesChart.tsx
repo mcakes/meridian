@@ -77,6 +77,51 @@ export function buildBidAskTraces(
   return [lower, upper, center];
 }
 
+export function buildMeanStdevTraces(
+  series: MeanStdevSeries,
+  color: string,
+): Plotly.ScatterData[] {
+  const x = toDateArray(series.times);
+  const yaxis = series.yaxis ?? 'y';
+
+  const lower: Plotly.ScatterData = {
+    type: 'scatter',
+    x,
+    y: series.mean.map((m, i) => m - series.stdev[i]),
+    mode: 'lines',
+    line: { color: 'transparent' },
+    showlegend: false,
+    hoverinfo: 'skip',
+    yaxis,
+  };
+
+  const upper: Plotly.ScatterData = {
+    type: 'scatter',
+    x,
+    y: series.mean.map((m, i) => m + series.stdev[i]),
+    mode: 'lines',
+    line: { color: 'transparent' },
+    fill: 'tonexty',
+    fillcolor: color.replace(')', ', 0.15)').replace('rgb(', 'rgba('),
+    showlegend: false,
+    hoverinfo: 'skip',
+    yaxis,
+  };
+
+  const center: Plotly.ScatterData = {
+    type: 'scatter',
+    x,
+    y: series.mean,
+    mode: 'lines',
+    line: { color },
+    name: 'Mean',
+    showlegend: true,
+    yaxis,
+  };
+
+  return [lower, upper, center];
+}
+
 export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: TimeseriesChartProps) {
   const { theme: _ } = useTheme();
 
@@ -85,6 +130,11 @@ export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: Timeserie
   if (bidAsk) {
     const color = getCSSVar('--color-cat-0');
     traces.push(...buildBidAskTraces(bidAsk, color));
+  }
+
+  if (meanStdev) {
+    const color = getCSSVar('--color-cat-1');
+    traces.push(...buildMeanStdevTraces(meanStdev, color));
   }
 
   return <Chart data={traces} layout={layout} config={config} />;
