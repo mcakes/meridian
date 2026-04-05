@@ -14,6 +14,8 @@ export { NumberInput } from './inputs/NumberInput';
 export { Select } from './inputs/Select';
 export { DatePicker } from './inputs/DatePicker';
 export { Autocomplete } from './inputs/Autocomplete';
+export { Button } from './inputs/Button';
+export type { ButtonProps } from './inputs/Button';
 
 // Data
 export { Sparkline } from './data/Sparkline';
