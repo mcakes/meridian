@@ -34,6 +34,7 @@ export type { SidebarState, SidebarSide } from './layout/sidebar';
 
 // Charting
 export { Chart } from './charting/Chart';
+export { TimeseriesChart } from './charting/TimeseriesChart';
 
 // Feedback
 export { ToastContainer, showToast } from './feedback/Toast';

@@ -137,5 +137,22 @@ export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: Timeserie
     traces.push(...buildMeanStdevTraces(meanStdev, color));
   }
 
+  const usesY2 = traces.some((t) => t.yaxis === 'y2');
+  if (!usesY2) {
+    const firstY = traces.find((t) => t.y && (t.y as number[]).length > 0);
+    if (firstY) {
+      traces.push({
+        type: 'scatter',
+        x: [(firstY.x as Date[])[0]],
+        y: [(firstY.y as number[])[0]],
+        yaxis: 'y2',
+        mode: 'markers',
+        marker: { opacity: 0 },
+        hoverinfo: 'skip',
+        showlegend: false,
+      });
+    }
+  }
+
   return <Chart data={traces} layout={layout} config={config} />;
 }
