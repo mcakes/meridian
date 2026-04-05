@@ -123,9 +123,14 @@ export function buildMeanStdevTraces(
 }
 
 export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: TimeseriesChartProps) {
+  // Subscribe to theme changes so getCSSVar picks up updated CSS custom properties
+  // on re-render when the user switches themes. The value is intentionally unused.
   const { theme: _ } = useTheme();
 
-  const traces: Plotly.Data[] = [];
+  // Use ScatterData[] so the y2 injection block can safely access .yaxis, .x, .y
+  // without type assertions on every property access. Cast to Plotly.Data[] at the
+  // Chart call site, which is the only place the broader union type is required.
+  const traces: Plotly.ScatterData[] = [];
 
   if (bidAsk) {
     const color = getCSSVar('--color-cat-0');
@@ -143,16 +148,16 @@ export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: Timeserie
     if (firstY) {
       traces.push({
         type: 'scatter',
-        x: [(firstY.x as Date[])[0]],
-        y: [(firstY.y as number[])[0]],
+        x: [(firstY.x as Date[])[0]!],
+        y: [(firstY.y as number[])[0]!],
         yaxis: 'y2',
         mode: 'markers',
         marker: { opacity: 0 },
         hoverinfo: 'skip',
         showlegend: false,
-      });
+      } as Plotly.ScatterData);
     }
   }
 
-  return <Chart data={traces} layout={layout} config={config} />;
+  return <Chart data={traces as Plotly.Data[]} layout={layout} config={config} />;
 }
