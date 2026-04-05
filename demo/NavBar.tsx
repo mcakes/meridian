@@ -1,4 +1,6 @@
 import { useTheme } from '@/hooks/useTheme';
+import { DropdownMenu } from '@/components/menus/DropdownMenu';
+import { Button } from '@/components/inputs/Button';
 import type { PanelDefinition } from './panels/panel-registry';
 
 interface NavBarProps {
@@ -8,6 +10,12 @@ interface NavBarProps {
   panelTypes: PanelDefinition[];
   onAddPanel: (type: string, title: string) => void;
 }
+
+const caretStyle: React.CSSProperties = {
+  fontSize: 10,
+  color: 'var(--text-muted)',
+  marginLeft: 2,
+};
 
 export function NavBar({
   currentPreset,
@@ -59,78 +67,41 @@ export function NavBar({
 
       {/* Center: Workspace preset selector + Add Panel */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: 8 }}>
-        <select
-          value={currentPreset ?? ''}
-          onChange={(e) => onPresetChange(e.target.value)}
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            border: '1px solid var(--border-default)',
-            color: 'var(--text-primary)',
-            fontSize: 13,
-            padding: '2px 8px',
-            borderRadius: 2,
-            cursor: 'pointer',
-            outline: 'none',
-          }}
-        >
-          {currentPreset === null && (
-            <option value="" disabled>
-              Custom layout
-            </option>
-          )}
-          {presets.map((name) => (
-            <option key={name} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
+        <DropdownMenu>
+          <DropdownMenu.Trigger>
+            <Button size="sm">
+              {currentPreset ?? 'Custom layout'} <span style={caretStyle}>▼</span>
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content align="center">
+            {presets.map((name) => (
+              <DropdownMenu.Item key={name} onSelect={() => onPresetChange(name)}>
+                {name}
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Content>
+        </DropdownMenu>
 
-        <select
-          value=""
-          onChange={(e) => {
-            const def = panelTypes.find((p) => p.type === e.target.value);
-            if (def) onAddPanel(def.type, def.title);
-          }}
-          style={{
-            backgroundColor: 'var(--bg-muted)',
-            border: '1px solid var(--border-subtle)',
-            color: 'var(--text-primary)',
-            fontSize: 13,
-            padding: '2px 8px',
-            borderRadius: 4,
-            cursor: 'pointer',
-            outline: 'none',
-          }}
-        >
-          <option value="" disabled>
-            + Add Panel
-          </option>
-          {panelTypes.map((def) => (
-            <option key={def.type} value={def.type}>
-              {def.title}
-            </option>
-          ))}
-        </select>
+        <DropdownMenu>
+          <DropdownMenu.Trigger>
+            <Button size="sm">
+              + Add Panel <span style={caretStyle}>▼</span>
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content align="center">
+            {panelTypes.map((def) => (
+              <DropdownMenu.Item key={def.type} onSelect={() => onAddPanel(def.type, def.title)}>
+                {def.title}
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Content>
+        </DropdownMenu>
       </div>
 
       {/* Right: Theme toggle */}
-      <button
-        onClick={toggle}
-        style={{
-          backgroundColor: 'var(--bg-muted)',
-          border: '1px solid var(--border-subtle)',
-          color: 'var(--text-primary)',
-          fontSize: 12,
-          padding: '3px 10px',
-          borderRadius: 2,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-        }}
-      >
+      <Button size="sm" onClick={toggle}>
         {theme === 'dark' ? '☀ Light' : '☾ Dark'}
-      </button>
+      </Button>
     </div>
   );
 }
