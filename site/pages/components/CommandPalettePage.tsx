@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Section } from '../../components/Section';
 import { ComponentDemo } from '../../components/ComponentDemo';
+import { Button } from '@/components/inputs/Button';
 import { CommandPaletteProvider, CommandPalette, useCommandPalette } from '@/components';
 import type { Command } from '@/components';
 
@@ -77,22 +78,9 @@ function LaunchButton() {
   }, [registerCommands]);
 
   return (
-    <button
-      onClick={open}
-      style={{
-        padding: '7px 16px',
-        fontSize: 13,
-        fontFamily: 'inherit',
-        background: 'var(--color-info)',
-        color: '#fff',
-        border: 'none',
-        borderRadius: 4,
-        cursor: 'pointer',
-        letterSpacing: '0.01em',
-      }}
-    >
+    <Button size="sm" onClick={open}>
       Open Command Palette
-    </button>
+    </Button>
   );
 }
 

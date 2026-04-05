@@ -1,20 +1,11 @@
 import { useState } from 'react';
 import { Section } from '../../components/Section';
 import { ComponentDemo } from '../../components/ComponentDemo';
+import { Button } from '@/components/inputs/Button';
 import { showToast } from '@/components/feedback/Toast';
 import { Modal } from '@/components/feedback/Modal';
 import { NotificationFeed } from '@/components/feedback/NotificationFeed';
 import { Tooltip, TooltipProvider } from '@/components/feedback/Tooltip';
-
-const buttonStyle: React.CSSProperties = {
-  backgroundColor: 'var(--bg-muted)',
-  border: '1px solid var(--border-default)',
-  color: 'var(--text-primary)',
-  fontSize: 12,
-  padding: '6px 12px',
-  borderRadius: 2,
-  cursor: 'pointer',
-};
 
 export default function FeedbackPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -40,23 +31,23 @@ export default function FeedbackPage() {
         </p>
         <ComponentDemo label="Trigger Toasts">
           <div style={{ display: 'flex', gap: 12 }}>
-            <button onClick={() => showToast('Order filled: AAPL 100 @ 187.42', 'info')} style={buttonStyle}>Info Toast</button>
-            <button onClick={() => showToast('Margin approaching limit', 'warning')} style={buttonStyle}>Warning Toast</button>
-            <button onClick={() => showToast('Connection lost to exchange', 'error')} style={buttonStyle}>Error Toast</button>
+            <Button size="sm" onClick={() => showToast('Order filled: AAPL 100 @ 187.42', 'info')}>Info Toast</Button>
+            <Button size="sm" onClick={() => showToast('Margin approaching limit', 'warning')}>Warning Toast</Button>
+            <Button size="sm" onClick={() => showToast('Connection lost to exchange', 'error')}>Error Toast</Button>
           </div>
         </ComponentDemo>
       </Section>
 
       <Section title="Modal">
         <ComponentDemo label="Modal Dialog">
-          <button onClick={() => setModalOpen(true)} style={buttonStyle}>Open Modal</button>
+          <Button size="sm" onClick={() => setModalOpen(true)}>Open Modal</Button>
           <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Confirm Order">
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '0 0 16px 0' }}>
               Buy 100 shares of AAPL at market price?
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <button onClick={() => setModalOpen(false)} style={buttonStyle}>Cancel</button>
-              <button onClick={() => setModalOpen(false)} style={{ ...buttonStyle, backgroundColor: 'var(--color-info)', color: '#fff', border: 'none' }}>Confirm</button>
+              <Button size="sm" variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
+              <Button size="sm" onClick={() => setModalOpen(false)}>Confirm</Button>
             </div>
           </Modal>
         </ComponentDemo>
@@ -81,13 +72,13 @@ export default function FeedbackPage() {
           <ComponentDemo label="Basic Tooltips">
             <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
               <Tooltip content="Save current layout">
-                <button style={buttonStyle}>Hover me</button>
+                <Button size="sm">Hover me</Button>
               </Tooltip>
               <Tooltip content="Bottom tooltip" side="bottom">
-                <button style={buttonStyle}>Bottom</button>
+                <Button size="sm">Bottom</Button>
               </Tooltip>
               <Tooltip content="Right tooltip" side="right">
-                <button style={buttonStyle}>Right</button>
+                <Button size="sm">Right</Button>
               </Tooltip>
             </div>
           </ComponentDemo>

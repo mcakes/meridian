@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { Model, type IJsonModel, type Action, type TabNode } from 'flexlayout-react';
 import { Workspace } from '@/components/layout/Workspace';
 import { Panel } from '@/components/layout/Panel';
+import { Button } from '@/components/inputs/Button';
 import { Section } from '../../components/Section';
 import { Figure } from '../../components/Figure';
 import { TokenTable } from '../../components/TokenTable';
@@ -101,22 +102,14 @@ function WorkspaceDemo() {
     <div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         {Object.keys(PRESETS).map((name) => (
-          <button
+          <Button
             key={name}
+            size="sm"
+            variant={name === activePreset ? 'default' : 'ghost'}
             onClick={() => loadPreset(name)}
-            style={{
-              backgroundColor: name === activePreset ? 'var(--bg-highlight)' : 'var(--bg-muted)',
-              border: '1px solid var(--border-default)',
-              color: name === activePreset ? 'var(--color-info)' : 'var(--text-secondary)',
-              fontSize: 12,
-              fontWeight: name === activePreset ? 600 : 400,
-              padding: '4px 12px',
-              borderRadius: 2,
-              cursor: 'pointer',
-            }}
           >
             {name}
-          </button>
+          </Button>
         ))}
       </div>
       <div style={{ height: 350, position: 'relative' }}>

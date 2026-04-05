@@ -3,6 +3,7 @@ import { Section } from '../../components/Section';
 import { ComponentDemo } from '../../components/ComponentDemo';
 import { TokenTable } from '../../components/TokenTable';
 import { Chart } from '@/components/charting/Chart';
+import { TimeseriesChart } from '@/components/charting/TimeseriesChart';
 import { useTheme } from '@/hooks/useTheme';
 
 function getCSSVar(name: string): string {
@@ -28,10 +29,43 @@ function generateCandles(count: number) {
   return candles;
 }
 
+function generateBidAsk(count: number) {
+  const times: number[] = [];
+  const bid: number[] = [];
+  const ask: number[] = [];
+  let mid = 1.08;
+  const now = Math.floor(Date.now() / 1000);
+  for (let i = 0; i < count; i++) {
+    times.push(now - (count - i) * 3600);
+    mid += (Math.random() - 0.49) * 0.003;
+    const spread = 0.0005 + Math.random() * 0.001;
+    bid.push(mid - spread / 2);
+    ask.push(mid + spread / 2);
+  }
+  return { times, bid, ask };
+}
+
+function generateMeanStdev(count: number) {
+  const times: number[] = [];
+  const mean: number[] = [];
+  const stdev: number[] = [];
+  let value = 50;
+  const now = Math.floor(Date.now() / 1000);
+  for (let i = 0; i < count; i++) {
+    times.push(now - (count - i) * 3600);
+    value += (Math.random() - 0.48) * 2;
+    mean.push(value);
+    stdev.push(1.5 + Math.random() * 2);
+  }
+  return { times, mean, stdev };
+}
+
 export default function ChartPage() {
   const { theme } = useTheme();
 
   const candles = useMemo(() => generateCandles(30), []);
+  const bidAskData = useMemo(() => generateBidAsk(120), []);
+  const meanStdevData = useMemo(() => generateMeanStdev(120), []);
 
   const semanticColors = useMemo(() => ({
     positive: getCSSVar('--color-positive') || '#9ece6a',
@@ -66,6 +100,33 @@ export default function ChartPage() {
         </ComponentDemo>
       </Section>
 
+      <Section title="Timeseries — Bid/Ask">
+        <ComponentDemo label="Bid/Ask spread with mid line">
+          <div style={{ height: 350 }}>
+            <TimeseriesChart bidAsk={bidAskData} />
+          </div>
+        </ComponentDemo>
+      </Section>
+
+      <Section title="Timeseries — Mean/Stdev">
+        <ComponentDemo label="Mean with standard deviation band">
+          <div style={{ height: 350 }}>
+            <TimeseriesChart meanStdev={meanStdevData} />
+          </div>
+        </ComponentDemo>
+      </Section>
+
+      <Section title="Timeseries — Combined">
+        <ComponentDemo label="Both series on the same chart">
+          <div style={{ height: 350 }}>
+            <TimeseriesChart
+              bidAsk={bidAskData}
+              meanStdev={{ ...meanStdevData, yaxis: 'y2' }}
+            />
+          </div>
+        </ComponentDemo>
+      </Section>
+
       <Section title="Template">
         <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, margin: '12px 0' }}>
           Key Meridian Plotly template settings applied to every chart instance.
@@ -75,8 +136,8 @@ export default function ChartPage() {
           rows={[
             ['paper_bgcolor', 'transparent'],
             ['plot_bgcolor', 'var(--bg-base)'],
-            ['Margins', 'l:48 r:12 t:28 b:32'],
-            ['Y-axis side', 'right (financial convention)'],
+            ['Margins', 'l:48 r:48 t:28 b:32'],
+            ['Y-axis side', 'right (mirrored left)'],
             ['Grid', 'Dotted, var(--border-subtle)'],
             ['Tick font', 'JetBrains Mono, 10px'],
             ['Hover mode', 'x (all traces at same X)'],

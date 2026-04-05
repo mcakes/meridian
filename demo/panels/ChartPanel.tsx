@@ -62,6 +62,17 @@ export function ChartPanel() {
                   color: semanticColors.negative,
                 },
               },
+              showlegend: false,
+            },
+            {
+              type: 'scatter' as const,
+              x: [candles[0] ? new Date(candles[0].time * 1000) : undefined],
+              y: [candles[0]?.close],
+              yaxis: 'y2',
+              mode: 'markers',
+              marker: { opacity: 0 },
+              hoverinfo: 'skip',
+              showlegend: false,
             },
           ]}
         />

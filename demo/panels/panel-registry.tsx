@@ -3,6 +3,7 @@ import { TabNode } from 'flexlayout-react';
 import { WatchlistPanel } from './WatchlistPanel';
 import { ChartPanel } from './ChartPanel';
 import { PricerPanel } from './PricerPanel';
+import { TimeseriesPanel } from './TimeseriesPanel';
 
 export interface PanelDefinition {
   type: string;
@@ -13,7 +14,8 @@ export interface PanelDefinition {
 export const PANEL_REGISTRY: PanelDefinition[] = [
   { type: 'watchlist', title: 'Watchlist', component: () => <WatchlistPanel /> },
   { type: 'chart',     title: 'Chart',     component: () => <ChartPanel /> },
-  { type: 'pricer',    title: 'Pricer',    component: () => <PricerPanel /> },
+  { type: 'pricer',      title: 'Pricer',      component: () => <PricerPanel /> },
+  { type: 'timeseries',  title: 'Timeseries',  component: () => <TimeseriesPanel /> },
 ];
 
 export function panelFactory(node: TabNode): ReactNode {

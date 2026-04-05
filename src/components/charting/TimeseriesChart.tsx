@@ -153,7 +153,10 @@ export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: Timeserie
   }
 
   const usesY2 = traces.some((t) => t.yaxis === 'y2');
+  let y2LayoutOverride: Partial<Plotly.Layout> | undefined;
+
   if (!usesY2) {
+    // No trace targets y2 — inject an invisible trace so the mirrored left axis renders
     const firstY = traces.find((t) => t.y && (t.y as number[]).length > 0);
     if (firstY) {
       traces.push({
@@ -167,7 +170,20 @@ export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: Timeserie
         showlegend: false,
       } as Plotly.ScatterData);
     }
+  } else {
+    // A trace explicitly uses y2 for real data — make it an independent axis
+    y2LayoutOverride = {
+      yaxis2: {
+        ...((layout?.yaxis2 ?? {}) as Partial<Plotly.LayoutAxis>),
+        side: 'left',
+        overlaying: 'y' as const,
+        matches: undefined,
+        showgrid: false,
+      },
+    };
   }
 
-  return <Chart data={traces as Plotly.Data[]} layout={layout} config={config} />;
+  const mergedLayout = { ...layout, ...y2LayoutOverride };
+
+  return <Chart data={traces as Plotly.Data[]} layout={mergedLayout} config={config} />;
 }

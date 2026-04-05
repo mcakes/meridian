@@ -60,15 +60,26 @@ export function getMeridianLayout(_theme: 'dark' | 'light'): Partial<Plotly.Layo
       xref: 'paper' as 'paper',
       x: 0,
     },
-    margin: { l: 48, r: 12, t: 28, b: 32 },
+    margin: { l: 48, r: 48, t: 28, b: 32 },
     xaxis: {
       ...axisDefaults,
       showline: true,
+      mirror: true,
     },
     yaxis: {
       ...axisDefaults,
-      showline: false,
+      showline: true,
+      mirror: true,
       side: 'right',
+    },
+    yaxis2: {
+      ...axisDefaults,
+      showline: false,
+      side: 'left',
+      overlaying: 'y' as const,
+      matches: 'y',
+      showgrid: false,
+      showspikes: false,
     },
     hovermode: 'x',
     hoverlabel: {

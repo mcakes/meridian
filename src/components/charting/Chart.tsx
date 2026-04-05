@@ -26,6 +26,10 @@ export function Chart({ data, layout, config }: ChartProps) {
       ...baseLayout.yaxis,
       ...(layout?.yaxis ?? {}),
     },
+    yaxis2: {
+      ...baseLayout.yaxis2,
+      ...(layout?.yaxis2 ?? {}),
+    },
   };
 
   const mergedConfig: Partial<Plotly.Config> = {
