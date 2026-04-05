@@ -257,6 +257,10 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
   const sidebarShells: { side: SidebarSide; element: ReactElement }[] = [];
   const content: ReactNode[] = [];
 
+  // Also build a registry of palette metadata from props so that collapsed
+  // sidebars can show icons even when Palette components aren't mounted.
+  const propsRegistry = new Map<string, PaletteDefinition>();
+
   Children.forEach(children, (child) => {
     if (isValidElement(child) && child.type === Sidebar) {
       const sidebarProps = child.props as SidebarProps;
@@ -264,6 +268,12 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
         if (isValidElement(paletteChild) && paletteChild.type === Palette) {
           const pp = paletteChild.props as PaletteProps;
           paletteElements.set(pp.id, paletteChild);
+          propsRegistry.set(pp.id, {
+            id: pp.id,
+            title: pp.title,
+            icon: pp.icon,
+            defaultExpanded: pp.defaultExpanded ?? false,
+          });
         }
       });
       sidebarShells.push({ side: sidebarProps.side, element: child });
@@ -271,6 +281,12 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
       content.push(child);
     }
   });
+
+  // Merge props-derived registry with the runtime registry (runtime wins if both exist)
+  const mergedRegistry = new Map(propsRegistry);
+  for (const [id, def] of paletteRegistry) {
+    mergedRegistry.set(id, def);
+  }
 
   // Rebuild each sidebar with palettes ordered by state
   const leftSidebar: ReactNode[] = [];
@@ -288,7 +304,7 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
 
   return (
     <SidebarContext.Provider
-      value={{ state, dispatch, registerPalette, unregisterPalette, paletteRegistry, activeSides, registerSide, unregisterSide }}
+      value={{ state, dispatch, registerPalette, unregisterPalette, paletteRegistry: mergedRegistry, activeSides, registerSide, unregisterSide }}
     >
       <DndContext
         sensors={sensors}

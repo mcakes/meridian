@@ -11,6 +11,7 @@ import { useDataContext } from './providers/DataProvider';
 import { CommandPaletteProvider, CommandPalette, useCommandPalette, ShortcutProvider, ShortcutOverlay, useShortcuts } from '@/components';
 import type { Command } from '@/components';
 import type { Tick } from './data/types';
+import { List, Star, BarChart3, Newspaper, CalendarDays, Briefcase, ClipboardList, ArrowLeftRight, Bell } from 'lucide-react';
 
 function DemoCommands() {
   const { registerCommands } = useCommandPalette();
@@ -414,19 +415,19 @@ export function App() {
         >
           <SidebarProvider>
             <Sidebar side="left" defaultExpanded defaultWidth={200}>
-              <Palette id="instruments" title="Instruments" icon={<span style={{ fontSize: 11 }}>&#9776;</span>} defaultExpanded>
+              <Palette id="instruments" title="Instruments" icon={<List size={14} />} defaultExpanded>
                 <InstrumentsPalette />
               </Palette>
-              <Palette id="watchlist" title="Watchlist" icon={<span style={{ fontSize: 11 }}>&#9733;</span>} defaultExpanded>
+              <Palette id="watchlist" title="Watchlist" icon={<Star size={14} />} defaultExpanded>
                 <WatchlistPalette />
               </Palette>
-              <Palette id="overview" title="Market Overview" icon={<span style={{ fontSize: 11 }}>&#9670;</span>} defaultExpanded>
+              <Palette id="overview" title="Market Overview" icon={<BarChart3 size={14} />} defaultExpanded>
                 <MarketOverviewPalette />
               </Palette>
-              <Palette id="news" title="News" icon={<span style={{ fontSize: 11 }}>&#9993;</span>}>
+              <Palette id="news" title="News" icon={<Newspaper size={14} />}>
                 <NewsPalette />
               </Palette>
-              <Palette id="calendar" title="Calendar" icon={<span style={{ fontSize: 11 }}>&#9744;</span>}>
+              <Palette id="calendar" title="Calendar" icon={<CalendarDays size={14} />}>
                 <CalendarPalette />
               </Palette>
             </Sidebar>
@@ -447,16 +448,16 @@ export function App() {
               </div>
             </div>
             <Sidebar side="right" defaultWidth={220}>
-              <Palette id="positions" title="Positions" icon={<span style={{ fontSize: 11 }}>&#9649;</span>} defaultExpanded>
+              <Palette id="positions" title="Positions" icon={<Briefcase size={14} />} defaultExpanded>
                 <PositionsPalette />
               </Palette>
-              <Palette id="orders" title="Orders" icon={<span style={{ fontSize: 11 }}>&#9881;</span>} defaultExpanded>
+              <Palette id="orders" title="Orders" icon={<ClipboardList size={14} />} defaultExpanded>
                 <OrdersPalette />
               </Palette>
-              <Palette id="trades" title="Trade Log" icon={<span style={{ fontSize: 11 }}>&#8644;</span>}>
+              <Palette id="trades" title="Trade Log" icon={<ArrowLeftRight size={14} />}>
                 <TradeLogPalette />
               </Palette>
-              <Palette id="alerts" title="Alerts" icon={<span style={{ fontSize: 11 }}>&#9888;</span>}>
+              <Palette id="alerts" title="Alerts" icon={<Bell size={14} />}>
                 <AlertsPalette />
               </Palette>
             </Sidebar>

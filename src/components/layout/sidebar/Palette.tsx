@@ -95,6 +95,7 @@ export function Palette({ id, title, icon, defaultExpanded = false, children }: 
         <span className={`meridian-palette__chevron${isExpanded ? ' meridian-palette__chevron--expanded' : ''}`}>
           &#9654;
         </span>
+        {icon && <span className="meridian-palette__icon">{icon}</span>}
         <span className="meridian-palette__title">{title}</span>
       </div>
       <div className={wrapperClass}>
