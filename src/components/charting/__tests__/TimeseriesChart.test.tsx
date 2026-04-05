@@ -37,6 +37,7 @@ describe('buildBidAskTraces', () => {
     const [, upper] = buildBidAskTraces(series, '#ff0000') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(upper.y).toEqual([103, 104, 105]);
     expect(upper.fill).toBe('tonexty');
+    expect(upper.fillcolor).toBe('rgba(255, 0, 0, 0.15)');
     expect(upper.showlegend).toBe(false);
     expect(upper.hoverinfo).toBe('skip');
   });
@@ -83,6 +84,7 @@ describe('buildMeanStdevTraces', () => {
     const [, upper] = buildMeanStdevTraces(series, '#00ff00') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(upper.y).toEqual([55, 66, 77]);
     expect(upper.fill).toBe('tonexty');
+    expect(upper.fillcolor).toBe('rgba(0, 255, 0, 0.15)');
     expect(upper.showlegend).toBe(false);
     expect(upper.hoverinfo).toBe('skip');
   });

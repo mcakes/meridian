@@ -27,6 +27,16 @@ function getCSSVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
+function withAlpha(color: string, alpha: number): string {
+  if (color.startsWith('#')) {
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return color.replace(')', `, ${alpha})`).replace('rgb(', 'rgba(');
+}
+
 function toDateArray(epochSeconds: number[]): Date[] {
   return epochSeconds.map((t) => new Date(t * 1000));
 }
@@ -56,7 +66,7 @@ export function buildBidAskTraces(
     mode: 'lines',
     line: { color: 'transparent' },
     fill: 'tonexty',
-    fillcolor: color.replace(')', ', 0.15)').replace('rgb(', 'rgba('),
+    fillcolor: withAlpha(color, 0.15),
     showlegend: false,
     hoverinfo: 'skip',
     yaxis,
@@ -102,7 +112,7 @@ export function buildMeanStdevTraces(
     mode: 'lines',
     line: { color: 'transparent' },
     fill: 'tonexty',
-    fillcolor: color.replace(')', ', 0.15)').replace('rgb(', 'rgba('),
+    fillcolor: withAlpha(color, 0.15),
     showlegend: false,
     hoverinfo: 'skip',
     yaxis,
