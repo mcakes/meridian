@@ -63,7 +63,7 @@ describe('Button', () => {
       fireEvent.mouseEnter(btn);
       expect(btn.style.borderColor).toBe('var(--border-active)');
       fireEvent.mouseLeave(btn);
-      expect(btn.style.borderColor).toBe('var(--border-default)');
+      expect(btn.style.borderColor).toBe('');
     });
   });
 

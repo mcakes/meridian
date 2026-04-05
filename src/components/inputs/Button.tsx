@@ -83,10 +83,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       const el = e.currentTarget;
       const v = variantConfig[variant];
       el.style.backgroundColor = v.backgroundColor;
-      if (variant === 'default') {
-        el.style.borderColor = 'var(--border-default)';
-      } else if (variant === 'destructive') {
-        el.style.borderColor = 'var(--border-default)';
+      if (variant === 'default' || variant === 'destructive') {
+        el.style.borderColor = '';
       }
     },
     [variant],
