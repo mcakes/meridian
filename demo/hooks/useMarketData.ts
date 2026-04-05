@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDataContext } from '../providers/DataProvider';
-import type { Tick, Candle, TimeRange } from '../demo/data/types';
+import type { Tick, Candle, TimeRange } from '../data/types';
 
 export function useMarketData(symbol: string | null) {
   const { provider } = useDataContext();

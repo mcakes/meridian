@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from 'flexlayout-react';
-import { THREE_PANEL, STACKED } from '@/demo/panels/workspace-presets';
+import { THREE_PANEL, STACKED } from '../../demo/panels/workspace-presets';
 
 // Test that presets produce valid models
 describe('useWorkspace presets', () => {

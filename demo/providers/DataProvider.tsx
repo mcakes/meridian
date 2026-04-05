@@ -1,6 +1,6 @@
 import { createContext, useContext, useRef, useState, type ReactNode } from 'react';
-import type { MarketDataProvider } from '../demo/data/types';
-import { SimulatedMarketData } from '../demo/data/SimulatedMarketData';
+import type { MarketDataProvider } from '../data/types';
+import { SimulatedMarketData } from '../data/SimulatedMarketData';
 
 interface DataContextValue {
   provider: MarketDataProvider;

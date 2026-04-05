@@ -1,5 +1,5 @@
-import { DataProvider } from '@/providers/DataProvider';
-import { App as DemoApp } from '@/demo/App';
+import { DataProvider } from '../../../../demo/providers/DataProvider';
+import { App as DemoApp } from '../../../../demo/App';
 
 export default function TradingApp() {
   return (

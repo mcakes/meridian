@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ColDef } from 'ag-grid-community';
 import { Panel } from '@/components/layout/Panel';
 import { DataTable } from '@/components/data/DataTable';
-import { useDataContext } from '@/providers/DataProvider';
+import { useDataContext } from '../providers/DataProvider';
 import { fmtK } from '@/lib/format';
 import type { Tick } from '../data/types';
 

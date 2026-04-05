@@ -1,8 +1,8 @@
 import { Panel } from '@/components/layout/Panel';
 import { MetricCard } from '@/components/primitives/MetricCard';
 import { CatDot } from '@/components/primitives/CatDot';
-import { useDataContext } from '@/providers/DataProvider';
-import { useMarketData } from '@/hooks/useMarketData';
+import { useDataContext } from '../providers/DataProvider';
+import { useMarketData } from '../hooks/useMarketData';
 import { fmt, fmtK } from '@/lib/format';
 
 interface SectionHeaderProps {

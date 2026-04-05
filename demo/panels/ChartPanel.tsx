@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Panel } from '@/components/layout/Panel';
 import { Chart } from '@/components/charting/Chart';
-import { useDataContext } from '@/providers/DataProvider';
+import { useDataContext } from '../providers/DataProvider';
 import { useTheme } from '@/hooks/useTheme';
 import type { Candle } from '../data/types';
 
