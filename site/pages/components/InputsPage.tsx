@@ -6,6 +6,7 @@ import { NumberInput } from '@/components/inputs/NumberInput';
 import { Select } from '@/components/inputs/Select';
 import { DatePicker } from '@/components/inputs/DatePicker';
 import { Autocomplete } from '@/components/inputs/Autocomplete';
+import { Button } from '@/components/inputs/Button';
 
 export default function InputsPage() {
   const [toggle1, setToggle1] = useState(true);
@@ -22,6 +23,40 @@ export default function InputsPage() {
       <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
         Form controls styled with Meridian tokens. All inputs support focus ring, keyboard navigation, and theme switching.
       </p>
+
+      <Section title="Button">
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 12px 0' }}>
+          Reusable button with built-in hover and focus states. Three variants (default, ghost, destructive),
+          two sizes (sm, md), and an icon-only mode. Works with Radix triggers via forwardRef.
+        </p>
+        <ComponentDemo label="Variants">
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <Button>Default</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="destructive">Destructive</Button>
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Sizes">
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <Button size="sm">Small</Button>
+            <Button size="md">Medium</Button>
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Icon mode">
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <Button icon size="sm" aria-label="Add">+</Button>
+            <Button icon aria-label="Add">+</Button>
+            <Button icon variant="ghost" aria-label="Close">✕</Button>
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Disabled">
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <Button disabled>Default</Button>
+            <Button variant="ghost" disabled>Ghost</Button>
+            <Button variant="destructive" disabled>Destructive</Button>
+          </div>
+        </ComponentDemo>
+      </Section>
 
       <Section title="Toggle">
         <ComponentDemo label="Toggle">
