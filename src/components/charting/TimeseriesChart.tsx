@@ -34,11 +34,11 @@ function toDateArray(epochSeconds: number[]): Date[] {
 export function buildBidAskTraces(
   series: BidAskSeries,
   color: string,
-): Plotly.Data[] {
+): Plotly.ScatterData[] {
   const x = toDateArray(series.times);
   const yaxis = series.yaxis ?? 'y';
 
-  const lower: Plotly.Data = {
+  const lower: Plotly.ScatterData = {
     type: 'scatter',
     x,
     y: series.bid,
@@ -49,7 +49,7 @@ export function buildBidAskTraces(
     yaxis,
   };
 
-  const upper: Plotly.Data = {
+  const upper: Plotly.ScatterData = {
     type: 'scatter',
     x,
     y: series.ask,
@@ -63,7 +63,7 @@ export function buildBidAskTraces(
   };
 
   const mid = series.bid.map((b, i) => 0.5 * (b + series.ask[i]));
-  const center: Plotly.Data = {
+  const center: Plotly.ScatterData = {
     type: 'scatter',
     x,
     y: mid,

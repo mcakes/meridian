@@ -20,8 +20,7 @@ describe('buildBidAskTraces', () => {
   });
 
   it('lower bound uses bid values with transparent line', () => {
-    const traces = buildBidAskTraces(series, '#ff0000');
-    const lower = traces[0];
+    const [lower] = buildBidAskTraces(series, '#ff0000');
     expect(lower.x).toEqual([
       new Date(1000000),
       new Date(2000000),
@@ -34,8 +33,7 @@ describe('buildBidAskTraces', () => {
   });
 
   it('upper bound uses ask values with fill to lower bound', () => {
-    const traces = buildBidAskTraces(series, '#ff0000');
-    const upper = traces[1];
+    const [, upper] = buildBidAskTraces(series, '#ff0000');
     expect(upper.y).toEqual([103, 104, 105]);
     expect(upper.fill).toBe('tonexty');
     expect(upper.showlegend).toBe(false);
@@ -43,8 +41,7 @@ describe('buildBidAskTraces', () => {
   });
 
   it('center line plots mid = 0.5*(bid+ask)', () => {
-    const traces = buildBidAskTraces(series, '#ff0000');
-    const center = traces[2];
+    const [, , center] = buildBidAskTraces(series, '#ff0000');
     expect(center.y).toEqual([101.5, 102.5, 103.5]);
     expect(center.line).toEqual({ color: '#ff0000' });
     expect(center.showlegend).toBe(true);
