@@ -1,0 +1,62 @@
+// @vitest-environment jsdom
+import { describe, it, expect, vi } from 'vitest';
+
+// Prevent plotly's browser-only internals from crashing jsdom during module load
+vi.mock('react-plotly.js', () => ({ default: () => null }));
+vi.mock('plotly.js', () => ({ default: {} }));
+
+import { buildBidAskTraces } from '../TimeseriesChart';
+
+describe('buildBidAskTraces', () => {
+  const series = {
+    times: [1000, 2000, 3000],
+    bid: [100, 101, 102],
+    ask: [103, 104, 105],
+  };
+
+  it('returns 3 traces: lower bound, upper bound fill, center line', () => {
+    const traces = buildBidAskTraces(series, '#ff0000');
+    expect(traces).toHaveLength(3);
+  });
+
+  it('lower bound uses bid values with transparent line', () => {
+    const traces = buildBidAskTraces(series, '#ff0000');
+    const lower = traces[0];
+    expect(lower.x).toEqual([
+      new Date(1000000),
+      new Date(2000000),
+      new Date(3000000),
+    ]);
+    expect(lower.y).toEqual([100, 101, 102]);
+    expect(lower.line).toEqual({ color: 'transparent' });
+    expect(lower.showlegend).toBe(false);
+    expect(lower.hoverinfo).toBe('skip');
+  });
+
+  it('upper bound uses ask values with fill to lower bound', () => {
+    const traces = buildBidAskTraces(series, '#ff0000');
+    const upper = traces[1];
+    expect(upper.y).toEqual([103, 104, 105]);
+    expect(upper.fill).toBe('tonexty');
+    expect(upper.showlegend).toBe(false);
+    expect(upper.hoverinfo).toBe('skip');
+  });
+
+  it('center line plots mid = 0.5*(bid+ask)', () => {
+    const traces = buildBidAskTraces(series, '#ff0000');
+    const center = traces[2];
+    expect(center.y).toEqual([101.5, 102.5, 103.5]);
+    expect(center.line).toEqual({ color: '#ff0000' });
+    expect(center.showlegend).toBe(true);
+  });
+
+  it('assigns yaxis when provided', () => {
+    const traces = buildBidAskTraces({ ...series, yaxis: 'y2' }, '#ff0000');
+    traces.forEach((t) => expect(t.yaxis).toBe('y2'));
+  });
+
+  it('defaults yaxis to y', () => {
+    const traces = buildBidAskTraces(series, '#ff0000');
+    traces.forEach((t) => expect(t.yaxis).toBe('y'));
+  });
+});
