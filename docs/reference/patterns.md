@@ -158,6 +158,27 @@ Row heights are set in `src/components/data/ag-grid-meridian.css` using AG Grid'
 
 ---
 
+## Interactive Feedback
+
+**The rule:** every clickable element must provide a hover state. If it looks clickable but doesn't respond to hover, users lose confidence in what is interactive. This is easy to forget on list items, palette rows, and sidebar entries that are styled as plain text but have `onClick` handlers.
+
+**Minimum hover treatment:**
+- Background change to `var(--bg-muted)` or `var(--bg-highlight)`
+- Applied via CSS `:hover` or inline `onMouseEnter`/`onMouseLeave`
+
+**Why inline hover handlers?** AG Grid cell renderers and dynamically styled elements can't use CSS classes easily. For these, use `onMouseEnter`/`onMouseLeave` to toggle a background. For regular components, prefer CSS `:hover`.
+
+**Checklist — apply to:**
+- Sidebar palette list items (instruments, watchlist, positions)
+- Table rows with `onRowClick`
+- Icon buttons and toolbar actions
+- Palette headers (already have `cursor: grab`, but add hover background too)
+- Any `<div onClick={...}>` — if it has `onClick`, it needs `:hover`
+
+**Anti-pattern:** `cursor: pointer` alone is not sufficient feedback. The cursor change is too subtle for fast scanning. A background shift confirms "this element will respond to your click."
+
+---
+
 ## Keyboard Navigation
 
 **Tab order:** the standard browser tab order is used throughout. No `tabIndex` values above 0 are assigned. Stepper buttons in `NumberInput` use `tabIndex={-1}` to keep them out of the tab sequence — keyboard users control the value via Arrow keys on the input element itself.
@@ -247,3 +268,60 @@ const { theme, toggle } = useTheme();
 - `src/hooks/useTheme.ts`
 - `src/tokens/colors.css`
 - `src/components/charting/meridian-plotly-template.ts`
+
+---
+
+## Threshold Highlighting
+
+**The problem:** numeric values with known operational bounds (latency, error rates, utilisation) require the user to visually scan and mentally compare against thresholds. This is slow, error-prone, and scales poorly across many values.
+
+**How it works:** apply semantic color automatically when a value crosses configurable bounds, so anomalies surface pre-attentively. The `ThresholdValue` component encapsulates this pattern for the common case.
+
+```tsx
+<ThresholdValue value={latency} warnAt={100} errorAt={500} format={v => `${v}ms`} />
+```
+
+`ThresholdValue` selects from three severity levels:
+
+| Severity | Condition (default) | Condition (inverted) | Color | Indicator |
+|----------|---------------------|----------------------|-------|-----------|
+| Normal | `value < warnAt` | `value > warnAt` | `--color-positive` | `●` |
+| Warning | `value >= warnAt` | `value <= warnAt` | `--color-warning` | `▲` |
+| Error | `value >= errorAt` | `value <= errorAt` | `--color-negative` | `⬥` |
+
+The indicator symbol provides redundant encoding so colour is never the sole channel.
+
+**Applying the pattern to custom displays:** any component can implement threshold highlighting by following the same logic — compare value against bounds, select the appropriate semantic token, and pair colour with a non-colour indicator. The key rule is: if a value has operational bounds that users care about, the interface should highlight crossings rather than forcing the user to discover them.
+
+**When to use:** monitoring panels (Tier 1 glanceable values), table cell renderers for metrics with SLAs or targets, metric cards where deviation from normal matters.
+
+**When not to use:** values without meaningful thresholds (e.g., a stock price has no inherent "warn" level), or values where the thresholds are user-specific and not yet configurable.
+
+**Source file:** `src/components/primitives/ThresholdValue.tsx`
+
+---
+
+## Panel Purpose Declaration
+
+**The problem:** panels accumulate features over time as developers add fields and controls without a clear framework for what belongs in each panel. This leads to the "80 fields across 5 tabs" anti-pattern documented in [HRT's Task Watcher redesign](https://www.hudsonrivertrading.com/hrtbeat/optimizing-ux-ui-design-for-trading/).
+
+**How it works:** every panel component declares its purpose using a JSDoc `@goals` tag:
+
+```tsx
+/** @goals monitor */
+export function WatchlistPanel() { ... }
+```
+
+Valid goals: `monitor`, `investigate`, `act`. These correspond to the three universal goal categories for trading UIs described in the [design checklist](../philosophy/design-checklist.md):
+
+| Goal | The user wants to… |
+|------|---------------------|
+| **Monitor** | Watch for change without active effort |
+| **Investigate** | Understand why something happened |
+| **Act** | Execute a decision |
+
+**The rule:** a panel should serve one primary goal. A `@goals` tag listing two goals is a signal that the panel may be doing too much. It is not an error — some panels legitimately bridge two goals (e.g., an order book that is both monitoring and acting) — but it should prompt the author to consider whether splitting would produce a clearer interface.
+
+**This is documentation, not runtime enforcement.** Its value is in forcing the developer to articulate why the panel exists before adding content to it. When a new field is proposed, the `@goals` tag provides an immediate test: does this field serve the panel's stated goal?
+
+**See also:** the [design checklist](../philosophy/design-checklist.md) for the full pre-flight checklist and anti-pattern guidance.

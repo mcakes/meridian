@@ -159,6 +159,8 @@ function InstrumentsPalette() {
               <div
                 key={inst.symbol}
                 onClick={() => setSelectedSymbol(inst.symbol)}
+                onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = 'var(--bg-highlight)'; }}
+                onMouseLeave={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent'; }}
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -235,6 +237,8 @@ function WatchlistPalette() {
         <div
           key={sym}
           onClick={() => setSelectedSymbol(sym)}
+          onMouseEnter={(e) => { if (sym !== selectedSymbol) e.currentTarget.style.backgroundColor = 'var(--bg-highlight)'; }}
+          onMouseLeave={(e) => { if (sym !== selectedSymbol) e.currentTarget.style.backgroundColor = 'transparent'; }}
           style={{
             fontSize: 11,
             padding: '3px 4px',
