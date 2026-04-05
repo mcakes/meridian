@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi } from 'vitest';
+import type * as Plotly from 'plotly.js';
 
 // Prevent plotly's browser-only internals from crashing jsdom during module load
 vi.mock('react-plotly.js', () => ({ default: () => null }));
@@ -20,7 +21,7 @@ describe('buildBidAskTraces', () => {
   });
 
   it('lower bound uses bid values with transparent line', () => {
-    const [lower] = buildBidAskTraces(series, '#ff0000');
+    const [lower] = buildBidAskTraces(series, '#ff0000') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(lower.x).toEqual([
       new Date(1000000),
       new Date(2000000),
@@ -33,7 +34,7 @@ describe('buildBidAskTraces', () => {
   });
 
   it('upper bound uses ask values with fill to lower bound', () => {
-    const [, upper] = buildBidAskTraces(series, '#ff0000');
+    const [, upper] = buildBidAskTraces(series, '#ff0000') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(upper.y).toEqual([103, 104, 105]);
     expect(upper.fill).toBe('tonexty');
     expect(upper.showlegend).toBe(false);
@@ -41,7 +42,7 @@ describe('buildBidAskTraces', () => {
   });
 
   it('center line plots mid = 0.5*(bid+ask)', () => {
-    const [, , center] = buildBidAskTraces(series, '#ff0000');
+    const [, , center] = buildBidAskTraces(series, '#ff0000') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(center.y).toEqual([101.5, 102.5, 103.5]);
     expect(center.line).toEqual({ color: '#ff0000' });
     expect(center.showlegend).toBe(true);
@@ -71,7 +72,7 @@ describe('buildMeanStdevTraces', () => {
   });
 
   it('lower bound uses mean - stdev', () => {
-    const [lower] = buildMeanStdevTraces(series, '#00ff00');
+    const [lower] = buildMeanStdevTraces(series, '#00ff00') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(lower.y).toEqual([45, 54, 63]);
     expect(lower.line).toEqual({ color: 'transparent' });
     expect(lower.showlegend).toBe(false);
@@ -79,7 +80,7 @@ describe('buildMeanStdevTraces', () => {
   });
 
   it('upper bound uses mean + stdev with fill', () => {
-    const [, upper] = buildMeanStdevTraces(series, '#00ff00');
+    const [, upper] = buildMeanStdevTraces(series, '#00ff00') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(upper.y).toEqual([55, 66, 77]);
     expect(upper.fill).toBe('tonexty');
     expect(upper.showlegend).toBe(false);
@@ -87,7 +88,7 @@ describe('buildMeanStdevTraces', () => {
   });
 
   it('center line plots mean values', () => {
-    const [, , center] = buildMeanStdevTraces(series, '#00ff00');
+    const [, , center] = buildMeanStdevTraces(series, '#00ff00') as [Plotly.ScatterData, Plotly.ScatterData, Plotly.ScatterData];
     expect(center.y).toEqual([50, 60, 70]);
     expect(center.line).toEqual({ color: '#00ff00' });
     expect(center.showlegend).toBe(true);

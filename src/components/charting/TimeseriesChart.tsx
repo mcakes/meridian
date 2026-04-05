@@ -38,7 +38,7 @@ export function buildBidAskTraces(
   const x = toDateArray(series.times);
   const yaxis = series.yaxis ?? 'y';
 
-  const lower: Plotly.ScatterData = {
+  const lower = {
     type: 'scatter',
     x,
     y: series.bid,
@@ -49,7 +49,7 @@ export function buildBidAskTraces(
     yaxis,
   };
 
-  const upper: Plotly.ScatterData = {
+  const upper = {
     type: 'scatter',
     x,
     y: series.ask,
@@ -62,8 +62,8 @@ export function buildBidAskTraces(
     yaxis,
   };
 
-  const mid = series.bid.map((b, i) => 0.5 * (b + series.ask[i]));
-  const center: Plotly.ScatterData = {
+  const mid = series.bid.map((b, i) => 0.5 * (b + series.ask[i]!));
+  const center = {
     type: 'scatter',
     x,
     y: mid,
@@ -74,7 +74,7 @@ export function buildBidAskTraces(
     yaxis,
   };
 
-  return [lower, upper, center];
+  return [lower, upper, center] as Plotly.ScatterData[];
 }
 
 export function buildMeanStdevTraces(
@@ -84,10 +84,10 @@ export function buildMeanStdevTraces(
   const x = toDateArray(series.times);
   const yaxis = series.yaxis ?? 'y';
 
-  const lower: Plotly.ScatterData = {
+  const lower = {
     type: 'scatter',
     x,
-    y: series.mean.map((m, i) => m - series.stdev[i]),
+    y: series.mean.map((m, i) => m - series.stdev[i]!),
     mode: 'lines',
     line: { color: 'transparent' },
     showlegend: false,
@@ -95,10 +95,10 @@ export function buildMeanStdevTraces(
     yaxis,
   };
 
-  const upper: Plotly.ScatterData = {
+  const upper = {
     type: 'scatter',
     x,
-    y: series.mean.map((m, i) => m + series.stdev[i]),
+    y: series.mean.map((m, i) => m + series.stdev[i]!),
     mode: 'lines',
     line: { color: 'transparent' },
     fill: 'tonexty',
@@ -108,7 +108,7 @@ export function buildMeanStdevTraces(
     yaxis,
   };
 
-  const center: Plotly.ScatterData = {
+  const center = {
     type: 'scatter',
     x,
     y: series.mean,
@@ -119,7 +119,7 @@ export function buildMeanStdevTraces(
     yaxis,
   };
 
-  return [lower, upper, center];
+  return [lower, upper, center] as Plotly.ScatterData[];
 }
 
 export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: TimeseriesChartProps) {
