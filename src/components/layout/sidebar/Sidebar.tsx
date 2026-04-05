@@ -15,7 +15,6 @@ export function Sidebar({
   const { state, dispatch, registerSide, unregisterSide, paletteRegistry } = useSidebarContext();
   const sideState = state[side];
   const isExpanded = sideState.expanded;
-  const resizeRef = useRef<{ startX: number; startWidth: number } | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const { setNodeRef: setDroppableRef, isOver } = useDroppable({ id: `sidebar-${side}` });
