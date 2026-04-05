@@ -40,8 +40,6 @@ const contentStyle: CSSProperties = {
   boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
   zIndex: 9999,
   userSelect: 'none',
-  animationDuration: '150ms',
-  animationTimingFunction: 'ease',
 };
 
 const arrowStyle: CSSProperties = {
