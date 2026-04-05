@@ -6,7 +6,7 @@ function makeState(overrides?: Partial<SidebarState>): SidebarState {
   return {
     left: { expanded: false, width: 260, paletteOrder: [], expandedPalettes: [] },
     right: { expanded: true, width: 260, paletteOrder: [], expandedPalettes: [] },
-    paletteLocations: {},
+    paletteHeights: {}, paletteLocations: {},
     ...overrides,
   };
 }
@@ -44,7 +44,7 @@ describe('sidebarReducer', () => {
   it('toggles palette expanded state', () => {
     const state = makeState({
       left: { expanded: true, width: 260, paletteOrder: ['a'], expandedPalettes: [] },
-      paletteLocations: { a: 'left' },
+      paletteHeights: {}, paletteLocations: { a: 'left' },
     });
     const result = sidebarReducer(state, { type: 'toggle-palette', paletteId: 'a' });
     expect(result.left.expandedPalettes).toEqual(['a']);
@@ -56,7 +56,7 @@ describe('sidebarReducer', () => {
   it('focuses a palette — expands sidebar and palette', () => {
     const state = makeState({
       left: { expanded: false, width: 260, paletteOrder: ['a', 'b'], expandedPalettes: [] },
-      paletteLocations: { a: 'left', b: 'left' },
+      paletteHeights: {}, paletteLocations: { a: 'left', b: 'left' },
     });
     const result = sidebarReducer(state, { type: 'focus-palette', paletteId: 'b' });
     expect(result.left.expanded).toBe(true);
@@ -74,7 +74,7 @@ describe('sidebarReducer', () => {
   it('reorders palettes within a sidebar', () => {
     const state = makeState({
       left: { expanded: true, width: 260, paletteOrder: ['a', 'b', 'c'], expandedPalettes: [] },
-      paletteLocations: { a: 'left', b: 'left', c: 'left' },
+      paletteHeights: {}, paletteLocations: { a: 'left', b: 'left', c: 'left' },
     });
     const result = sidebarReducer(state, {
       type: 'reorder',
@@ -88,7 +88,7 @@ describe('sidebarReducer', () => {
     const state = makeState({
       left: { expanded: true, width: 260, paletteOrder: ['a', 'b'], expandedPalettes: ['a'] },
       right: { expanded: true, width: 260, paletteOrder: ['c'], expandedPalettes: [] },
-      paletteLocations: { a: 'left', b: 'left', c: 'right' },
+      paletteHeights: {}, paletteLocations: { a: 'left', b: 'left', c: 'right' },
     });
     const result = sidebarReducer(state, {
       type: 'move-palette',

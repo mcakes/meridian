@@ -11,7 +11,7 @@ function makeCtx(overrides?: Partial<SidebarState>): SidebarContextValue {
   const state: SidebarState = {
     left: { expanded: true, width: 260, paletteOrder: ['a', 'b'], expandedPalettes: [] },
     right: { expanded: true, width: 260, paletteOrder: [], expandedPalettes: [] },
-    paletteLocations: { a: 'left', b: 'left' },
+    paletteHeights: {}, paletteLocations: { a: 'left', b: 'left' },
     ...overrides,
   };
   return {
@@ -53,7 +53,7 @@ describe('Sidebar', () => {
   it('renders collapsed as icon rail', () => {
     const ctx = makeCtx({
       left: { expanded: false, width: 260, paletteOrder: ['a', 'b'], expandedPalettes: [] },
-      paletteLocations: { a: 'left', b: 'left' },
+      paletteHeights: {}, paletteLocations: { a: 'left', b: 'left' },
     });
     const { container } = renderSidebar(ctx);
     const sidebar = container.querySelector('.meridian-sidebar');
@@ -82,7 +82,7 @@ describe('Sidebar', () => {
   it('dispatches focus-palette when icon clicked in collapsed state', () => {
     const ctx = makeCtx({
       left: { expanded: false, width: 260, paletteOrder: ['a'], expandedPalettes: [] },
-      paletteLocations: { a: 'left' },
+      paletteHeights: {}, paletteLocations: { a: 'left' },
     });
     const { container } = renderSidebar(ctx);
     const iconButton = within(container).getAllByRole('button').find(

@@ -6,6 +6,7 @@ export interface SidebarState {
   left: SidebarSideState;
   right: SidebarSideState;
   paletteLocations: Record<string, SidebarSide>;
+  paletteHeights: Record<string, number | null>;
 }
 
 export interface SidebarSideState {

@@ -76,7 +76,10 @@ export function Sidebar({
   if (!isExpanded) {
     return (
       <div
-        ref={sidebarRef}
+        ref={(node) => {
+          sidebarRef.current = node;
+          setDroppableRef(node);
+        }}
         className={`meridian-sidebar meridian-sidebar--${side} meridian-sidebar--collapsed`}
       >
         <div className="meridian-sidebar__header">

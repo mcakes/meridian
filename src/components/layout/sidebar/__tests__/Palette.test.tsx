@@ -12,7 +12,7 @@ function makeCtx(overrides?: Partial<SidebarState>): SidebarContextValue {
   const state: SidebarState = {
     left: { expanded: true, width: 260, paletteOrder: ['test-palette'], expandedPalettes: [] },
     right: { expanded: true, width: 260, paletteOrder: [], expandedPalettes: [] },
-    paletteLocations: { 'test-palette': 'left' },
+    paletteHeights: {}, paletteLocations: { 'test-palette': 'left' },
     ...overrides,
   };
   return {
@@ -67,7 +67,7 @@ describe('Palette', () => {
   it('shows expanded body when palette is in expandedPalettes', () => {
     const ctx = makeCtx({
       left: { expanded: true, width: 260, paletteOrder: ['test-palette'], expandedPalettes: ['test-palette'] },
-      paletteLocations: { 'test-palette': 'left' },
+      paletteHeights: {}, paletteLocations: { 'test-palette': 'left' },
     });
     renderPalette(ctx);
     const wrapper = screen.getByTestId('palette-content').closest('.meridian-palette__body-wrapper');

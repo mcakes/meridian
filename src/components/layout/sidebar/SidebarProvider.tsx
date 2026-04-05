@@ -4,19 +4,21 @@ import {
   useRef,
   useEffect,
   useState,
+  cloneElement,
   Children,
   isValidElement,
 } from 'react';
-import type { ReactNode } from 'react';
+import type { ReactNode, ReactElement } from 'react';
 import {
   DndContext,
   DragOverlay,
+  pointerWithin,
   closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
+import type { DragStartEvent, DragOverEvent, DragEndEvent, CollisionDetection } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { SidebarState, SidebarSide, PaletteDefinition, PaletteProps, SidebarProps } from './types';
 import { sidebarReducer, buildInitialState } from './sidebarReducer';
@@ -148,9 +150,76 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
+  // Collision detection: use pointerWithin to find which sidebar the pointer is
+  // inside, then closestCenter among that sidebar's palettes for sort position.
+  // When pointer is outside all sidebars, only consider palette-level droppables
+  // (not sidebar containers) to avoid spurious highlights from closestCenter.
+  const collisionDetection: CollisionDetection = useCallback((args) => {
+    const pointerHits = pointerWithin(args);
+    const sidebarHit = pointerHits.find(
+      (h) => String(h.id) === 'sidebar-left' || String(h.id) === 'sidebar-right',
+    );
+    if (sidebarHit) {
+      const targetSide: SidebarSide = String(sidebarHit.id) === 'sidebar-left' ? 'left' : 'right';
+      const palettesInTarget = state[targetSide].paletteOrder;
+      const filtered = args.droppableContainers.filter(
+        (c) => palettesInTarget.includes(String(c.id)),
+      );
+      if (filtered.length > 0) {
+        const hits = closestCenter({ ...args, droppableContainers: filtered });
+        if (hits.length > 0) return hits;
+      }
+      return [sidebarHit];
+    }
+    // Outside both sidebars: only match palettes, not sidebar containers
+    const palettesOnly = args.droppableContainers.filter(
+      (c) => String(c.id) !== 'sidebar-left' && String(c.id) !== 'sidebar-right',
+    );
+    return closestCenter({ ...args, droppableContainers: palettesOnly });
+  }, [state]);
+
+  /** Resolve which sidebar a drop target belongs to. */
+  const resolveOverSide = useCallback((overId: string): SidebarSide | null => {
+    if (overId === 'sidebar-left') return 'left';
+    if (overId === 'sidebar-right') return 'right';
+    return state.paletteLocations[overId] ?? null;
+  }, [state]);
+
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveDragId(String(event.active.id));
   }, []);
+
+  // Move palettes between containers in real-time during drag.
+  // This is required for dnd-kit multi-container sortable — without it,
+  // the source SortableContext still owns the item and snaps it back.
+  const handleDragOver = useCallback(
+    (event: DragOverEvent) => {
+      const { active, over } = event;
+      if (!over) return;
+
+      const activeId = String(active.id);
+      const overId = String(over.id);
+      const activeSide = state.paletteLocations[activeId];
+      if (!activeSide) return;
+
+      const overSide = resolveOverSide(overId);
+      if (!overSide || overSide === activeSide) return;
+
+      // Move the palette to the target sidebar
+      const isSidebarDrop = overId === 'sidebar-left' || overId === 'sidebar-right';
+      const toIndex = isSidebarDrop
+        ? state[overSide].paletteOrder.length
+        : Math.max(0, state[overSide].paletteOrder.indexOf(overId));
+
+      dispatch({
+        type: 'move-palette',
+        paletteId: activeId,
+        toSide: overSide,
+        toIndex,
+      });
+    },
+    [state, dispatch, resolveOverSide],
+  );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -163,21 +232,7 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
       const activeSide = state.paletteLocations[activeId];
       if (!activeSide) return;
 
-      // Check if dropped on the other sidebar's droppable
-      if (overId === 'sidebar-left' || overId === 'sidebar-right') {
-        const toSide = overId === 'sidebar-left' ? 'left' : 'right' as SidebarSide;
-        if (toSide !== activeSide) {
-          dispatch({
-            type: 'move-palette',
-            paletteId: activeId,
-            toSide,
-            toIndex: state[toSide].paletteOrder.length,
-          });
-        }
-        return;
-      }
-
-      // Reorder within same sidebar
+      // Reorder within same sidebar (cross-sidebar already handled in onDragOver)
       const overSide = state.paletteLocations[overId];
       if (overSide && overSide === activeSide) {
         const order = state[activeSide].paletteOrder;
@@ -190,34 +245,46 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
             paletteOrder: arrayMove(order, oldIndex, newIndex),
           });
         }
-      } else if (overSide && overSide !== activeSide) {
-        // Dropped on a palette in the other sidebar
-        const toIndex = state[overSide].paletteOrder.indexOf(overId);
-        dispatch({
-          type: 'move-palette',
-          paletteId: activeId,
-          toSide: overSide,
-          toIndex: toIndex >= 0 ? toIndex : state[overSide].paletteOrder.length,
-        });
       }
     },
     [state, dispatch],
   );
 
-  // Separate Sidebar children from content children
-  const leftSidebar: ReactNode[] = [];
-  const rightSidebar: ReactNode[] = [];
+  // Extract palette elements from all sidebars, then redistribute based on state.
+  // This is necessary because palettes can be dragged between sidebars — the React
+  // elements must physically move to the target Sidebar's children.
+  const paletteElements = new Map<string, ReactElement>();
+  const sidebarShells: { side: SidebarSide; element: ReactElement }[] = [];
   const content: ReactNode[] = [];
 
   Children.forEach(children, (child) => {
     if (isValidElement(child) && child.type === Sidebar) {
-      const side = (child.props as { side: SidebarSide }).side;
-      if (side === 'left') leftSidebar.push(child);
-      else rightSidebar.push(child);
+      const sidebarProps = child.props as SidebarProps;
+      Children.forEach(sidebarProps.children, (paletteChild) => {
+        if (isValidElement(paletteChild) && paletteChild.type === Palette) {
+          const pp = paletteChild.props as PaletteProps;
+          paletteElements.set(pp.id, paletteChild);
+        }
+      });
+      sidebarShells.push({ side: sidebarProps.side, element: child });
     } else {
       content.push(child);
     }
   });
+
+  // Rebuild each sidebar with palettes ordered by state
+  const leftSidebar: ReactNode[] = [];
+  const rightSidebar: ReactNode[] = [];
+
+  for (const { side, element } of sidebarShells) {
+    const order = state[side].paletteOrder;
+    const palettes = order
+      .map((id) => paletteElements.get(id))
+      .filter((el): el is ReactElement => el !== undefined);
+    const cloned = cloneElement(element as ReactElement<SidebarProps>, { key: side, children: palettes });
+    if (side === 'left') leftSidebar.push(cloned);
+    else rightSidebar.push(cloned);
+  }
 
   return (
     <SidebarContext.Provider
@@ -225,8 +292,9 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
     >
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={collisionDetection}
         onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
         <div className="meridian-sidebar-layout">

@@ -38,7 +38,7 @@ export function buildInitialState(
     }
   }
 
-  return { left, right, paletteLocations };
+  return { left, right, paletteLocations, paletteHeights: {} };
 }
 
 export type SidebarAction =
@@ -48,7 +48,8 @@ export type SidebarAction =
   | { type: 'focus-palette'; paletteId: string }
   | { type: 'set-width'; side: SidebarSide; width: number }
   | { type: 'reorder'; side: SidebarSide; paletteOrder: string[] }
-  | { type: 'move-palette'; paletteId: string; toSide: SidebarSide; toIndex: number };
+  | { type: 'move-palette'; paletteId: string; toSide: SidebarSide; toIndex: number }
+  | { type: 'set-palette-height'; paletteId: string; height: number | null };
 
 export function sidebarReducer(state: SidebarState, action: SidebarAction): SidebarState {
   switch (action.type) {
@@ -113,6 +114,16 @@ export function sidebarReducer(state: SidebarState, action: SidebarAction): Side
       };
     }
 
+    case 'set-palette-height': {
+      const next = { ...state.paletteHeights };
+      if (action.height === null) {
+        delete next[action.paletteId];
+      } else {
+        next[action.paletteId] = action.height;
+      }
+      return { ...state, paletteHeights: next };
+    }
+
     case 'move-palette': {
       const fromSide = state.paletteLocations[action.paletteId];
       if (!fromSide) return state;
@@ -132,7 +143,7 @@ export function sidebarReducer(state: SidebarState, action: SidebarAction): Side
       return {
         ...state,
         [fromSide]: { ...from, paletteOrder: newFromOrder, expandedPalettes: newFromExpanded },
-        [action.toSide]: { ...to, paletteOrder: newToOrder, expandedPalettes: newToExpanded },
+        [action.toSide]: { ...to, paletteOrder: newToOrder, expandedPalettes: newToExpanded, expanded: true },
         paletteLocations: { ...state.paletteLocations, [action.paletteId]: action.toSide },
       };
     }

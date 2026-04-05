@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { PaletteProps } from './types';
@@ -7,9 +7,11 @@ import { useSidebarContext } from './SidebarContext';
 export function Palette({ id, title, icon, defaultExpanded = false, children }: PaletteProps) {
   const { state, dispatch, registerPalette, unregisterPalette } = useSidebarContext();
   const registeredRef = useRef(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   const side = state.paletteLocations[id];
   const isExpanded = side ? state[side].expandedPalettes.includes(id) : false;
+  const maxHeight = state.paletteHeights[id] ?? null;
 
   useEffect(() => {
     if (!registeredRef.current) {
@@ -35,6 +37,49 @@ export function Palette({ id, title, icon, defaultExpanded = false, children }: 
     transition,
   };
 
+  const handleResizeStart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      const el = bodyRef.current;
+      if (!el) return;
+
+      const startY = e.clientY;
+      const startHeight = el.getBoundingClientRect().height;
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        const delta = moveEvent.clientY - startY;
+        const newHeight = Math.max(40, startHeight + delta);
+        el.style.maxHeight = `${newHeight}px`;
+      };
+
+      const handleMouseUp = (upEvent: MouseEvent) => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        const delta = upEvent.clientY - startY;
+        const finalHeight = Math.max(40, startHeight + delta);
+        dispatch({ type: 'set-palette-height', paletteId: id, height: finalHeight });
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [],
+  );
+
+  const handleDoubleClick = useCallback(() => {
+    dispatch({ type: 'set-palette-height', paletteId: id, height: null });
+    if (bodyRef.current) {
+      bodyRef.current.style.maxHeight = '';
+    }
+  }, [dispatch, id]);
+
+  const isConstrained = maxHeight !== null;
+  const wrapperClass = [
+    'meridian-palette__body-wrapper',
+    isExpanded && !isConstrained ? 'meridian-palette__body-wrapper--expanded' : '',
+    isExpanded && isConstrained ? 'meridian-palette__body-wrapper--constrained' : '',
+  ].filter(Boolean).join(' ');
+
   return (
     <div
       ref={setNodeRef}
@@ -52,13 +97,24 @@ export function Palette({ id, title, icon, defaultExpanded = false, children }: 
         </span>
         <span className="meridian-palette__title">{title}</span>
       </div>
-      <div className={`meridian-palette__body-wrapper${isExpanded ? ' meridian-palette__body-wrapper--expanded' : ''}`}>
-        <div className="meridian-palette__body">
+      <div className={wrapperClass}>
+        <div
+          ref={bodyRef}
+          className="meridian-palette__body"
+          style={isConstrained && isExpanded ? { maxHeight } : undefined}
+        >
           <div className="meridian-palette__body-inner">
             {children}
           </div>
         </div>
       </div>
+      {isExpanded && (
+        <div
+          className="meridian-palette__vresize"
+          onMouseDown={handleResizeStart}
+          onDoubleClick={handleDoubleClick}
+        />
+      )}
     </div>
   );
 }
