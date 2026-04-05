@@ -7,6 +7,7 @@ export { Tag } from './primitives/Tag';
 export { ThresholdValue } from './primitives/ThresholdValue';
 export { HealthBar } from './primitives/HealthBar';
 export { HeatmapCell } from './primitives/HeatmapCell';
+export { Spinner } from './primitives/Spinner';
 
 // Inputs
 export { Toggle } from './inputs/Toggle';
