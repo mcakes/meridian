@@ -23,41 +23,41 @@ import {
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const darkTheme = themeQuartz.withPart(colorSchemeDark).withParams({
+const densityParams = {
+  compact:     { fontSize: 12, dataFontSize: 12, rowHeight: 24, headerHeight: 24, cellHorizontalPadding: 6 },
+  default:     { fontSize: 13, dataFontSize: 13, rowHeight: 32, headerHeight: 28, cellHorizontalPadding: 8 },
+  comfortable: { fontSize: 13, dataFontSize: 13, rowHeight: 40, headerHeight: 32, cellHorizontalPadding: 10 },
+} as const;
+
+const darkParams = {
   backgroundColor: '#24283b',
   foregroundColor: '#c0caf5',
   borderColor: '#292e42',
   chromeBackgroundColor: '#24283b',
   headerFontSize: 11,
   headerFontWeight: 500,
-  fontSize: 13,
-  rowHeight: 32,
-  headerHeight: 28,
-  cellHorizontalPadding: 8,
   borderRadius: 0,
+  wrapperBorderRadius: 0,
   oddRowBackgroundColor: '#292e42',
   rowHoverColor: '#3b4261',
   selectedRowBackgroundColor: '#343a52',
   fontFamily: "var(--font-sans)",
-});
+};
 
-const lightTheme = themeQuartz.withPart(colorSchemeLight).withParams({
+const lightParams = {
   backgroundColor: '#f8f8fb',
   foregroundColor: '#1a1b26',
   borderColor: '#d8d8de',
   chromeBackgroundColor: '#f8f8fb',
   headerFontSize: 11,
   headerFontWeight: 500,
-  fontSize: 13,
-  rowHeight: 32,
-  headerHeight: 28,
-  cellHorizontalPadding: 8,
   borderRadius: 0,
-  oddRowBackgroundColor: '#e8e8ed',
-  rowHoverColor: '#e0e0e6',
+  wrapperBorderRadius: 0,
+  oddRowBackgroundColor: '#f0f0f5',
+  rowHoverColor: '#e4e4ea',
   selectedRowBackgroundColor: '#d8d8de',
   fontFamily: "var(--font-sans)",
-});
+};
 
 interface DataTableProps {
   columns: ColDef[];
@@ -75,14 +75,11 @@ export function DataTable({
   groupBy,
 }: DataTableProps) {
   const { theme: currentTheme } = useTheme();
-  const agTheme = currentTheme === 'dark' ? darkTheme : lightTheme;
-
-  const densityClass =
-    density === 'compact'
-      ? 'density-compact'
-      : density === 'comfortable'
-        ? 'density-comfortable'
-        : '';
+  const colorScheme = currentTheme === 'dark' ? colorSchemeDark : colorSchemeLight;
+  const themeParams = currentTheme === 'dark' ? darkParams : lightParams;
+  const agTheme = themeQuartz
+    .withPart(colorScheme)
+    .withParams({ ...themeParams, ...densityParams[density] });
 
   const components = useMemo(
     () => ({
@@ -119,7 +116,7 @@ export function DataTable({
 
   return (
     <div
-      className={`ag-theme-meridian ${densityClass}`}
+      className="ag-theme-meridian"
       style={{ width: '100%', height: '100%' }}
     >
       <AgGridReact

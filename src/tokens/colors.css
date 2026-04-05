@@ -34,6 +34,9 @@
   --border-subtle: #292e42;
   --border-default: #3b4261;
   --border-active: #565f89;
+
+  /* Shadows */
+  --shadow-elevation: rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="light"] {
@@ -56,7 +59,7 @@
   --color-accent: #7c4dab;
 
   /* Backgrounds */
-  --bg-base: #f0f0f3;
+  --bg-base: #ebebf0;
   --bg-surface: #f8f8fb;
   --bg-muted: #e8e8ed;
   --bg-overlay: #d8d8de;
@@ -72,4 +75,7 @@
   --border-subtle: #d8d8de;
   --border-default: #c0c0c8;
   --border-active: #9a9aa8;
+
+  /* Shadows */
+  --shadow-elevation: rgba(0, 0, 0, 0.1);
 }

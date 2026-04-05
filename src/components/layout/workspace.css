@@ -1,16 +1,32 @@
 /* FlexLayout base overrides — Meridian design tokens */
 
-/* Tab strip (tabset header) */
+/* Root layout — override base theme font and background */
+.flexlayout__layout {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  background-color: var(--bg-base);
+}
+
+/* Tab strip (tabset header) — neutralise gray theme's inset box-shadow */
 .flexlayout__tabset_header {
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
   box-shadow: none;
 }
 
+/* Neutralise gray theme's gradient on selected tabset */
+.flexlayout__tabset-maximized {
+  background-image: none;
+  background-color: var(--bg-base);
+}
+
 /* Tab strip bar (the row containing tab buttons) */
 .flexlayout__tabset_tabbar_outer {
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 1px 4px var(--shadow-elevation);
+  position: relative;
+  z-index: 1;
 }
 
 /* Active tabset indicator — remove default gradient */
@@ -26,6 +42,14 @@
   padding: 3px 12px;
   border: none;
   background: transparent;
+  box-shadow: none;
+}
+
+/* Neutralise gray theme's box-shadow and border-radius on top/bottom tab variants */
+.flexlayout__tab_button_top,
+.flexlayout__tab_button_bottom {
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .flexlayout__tab_button--unselected {
@@ -35,8 +59,8 @@
 
 /* Selected tab */
 .flexlayout__tab_button--selected {
-  color: var(--text-primary);
-  font-weight: 600;
+  color: var(--text-secondary);
+  font-weight: 500;
   background: var(--bg-muted);
 }
 
@@ -128,13 +152,27 @@
 }
 
 /* Overflow popup menu */
+.flexlayout__popup_menu_container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
+
 .flexlayout__popup_menu_item {
   color: var(--text-primary);
   background: var(--bg-surface);
+  border-radius: 0;
 }
 
 .flexlayout__popup_menu_item:hover {
   background: var(--bg-muted);
+}
+
+/* Border buttons — neutralise gray theme's inset shadow */
+.flexlayout__border_button {
+  box-shadow: none;
+  border-radius: 0;
 }
 
 /* Remove all default border-radius for clean edges */
@@ -144,6 +182,8 @@
 .flexlayout__tab_button,
 .flexlayout__tab_button--selected,
 .flexlayout__tab_button--unselected,
+.flexlayout__tab_button_top,
+.flexlayout__tab_button_bottom,
 .flexlayout__tab_button_textbox,
 .flexlayout__tab_button_trailing,
 .flexlayout__outline_rect,
@@ -151,15 +191,35 @@
 .flexlayout__drag_rect,
 .flexlayout__popup_menu_item,
 .flexlayout__border_button,
+.flexlayout__border_button_trailing,
 .flexlayout__splitter,
 .flexlayout__splitter_drag,
 .flexlayout__splitter_handle {
   border-radius: 0;
 }
 
-/* Override hover/media border-radius from base CSS */
+/* Remove all default box-shadow — flat style only */
+.flexlayout__tabset_header,
+.flexlayout__tabset-selected,
+.flexlayout__tab_button,
+.flexlayout__tab_button_top,
+.flexlayout__tab_button_bottom,
+.flexlayout__border_button {
+  box-shadow: none;
+}
+
+/* Remove all gradients */
+.flexlayout__tabset-selected,
+.flexlayout__tabset-maximized {
+  background-image: none;
+}
+
+/* Override hover/media border-radius and shadows from base CSS */
 @media (hover: hover) {
   .flexlayout__splitter:hover {
     border-radius: 0;
+  }
+  .flexlayout__popup_menu_item:hover {
+    background-color: var(--bg-muted);
   }
 }

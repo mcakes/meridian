@@ -8,13 +8,13 @@ export function MetricCard({ label, value, sublabel }: MetricCardProps) {
   return (
     <div
       style={{
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-muted)',
         border: '1px solid var(--border-subtle)',
-        borderRadius: 4,
-        padding: '8px 12px',
+        borderRadius: 2,
+        padding: '4px 8px',
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
+        gap: 1,
         minWidth: 0,
       }}
     >
@@ -31,8 +31,9 @@ export function MetricCard({ label, value, sublabel }: MetricCardProps) {
       </span>
       <span
         style={{
-          fontSize: 16,
+          fontSize: 13,
           color: 'var(--text-primary)',
+          fontFamily: 'var(--font-mono)',
           fontWeight: 600,
           fontVariantNumeric: 'tabular-nums',
         }}

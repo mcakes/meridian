@@ -25,6 +25,7 @@ export function NumericCell(params: ICellRendererParams) {
       style={{
         display: 'block',
         textAlign: 'right',
+        fontFamily: 'var(--font-mono)',
         fontVariantNumeric: 'tabular-nums',
         backgroundColor: bgColor,
         transition: 'background-color 100ms ease',
