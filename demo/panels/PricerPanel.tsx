@@ -17,16 +17,18 @@ function SectionHeader({ index, label }: SectionHeaderProps) {
         display: 'flex',
         alignItems: 'center',
         gap: 6,
-        marginBottom: 6,
-        marginTop: 12,
+        marginBottom: 4,
+        marginTop: 8,
       }}
     >
       <CatDot index={index} />
       <span
         style={{
-          fontSize: 13,
+          fontSize: 11,
           fontWeight: 600,
           color: 'var(--text-secondary)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
         }}
       >
         {label}
@@ -44,8 +46,8 @@ function MetricGrid({ children }: MetricGridProps) {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-        gap: 6,
+        gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+        gap: 4,
       }}
     >
       {children}
@@ -67,13 +69,13 @@ export function PricerPanel() {
             alignItems: 'center',
             justifyContent: 'center',
             color: 'var(--text-muted)',
-            fontSize: 14,
+            fontSize: 12,
           }}
         >
           Select an instrument
         </div>
       ) : (
-        <div style={{ padding: '0 12px 12px' }}>
+        <div style={{ padding: '0 8px 8px' }}>
           {/* Market Data */}
           <SectionHeader index={0} label="Market Data" />
           <MetricGrid>

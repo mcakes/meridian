@@ -69,7 +69,7 @@ const COLUMNS: ColDef[] = [
     flex: 1,
     minWidth: 80,
     valueFormatter: (params) => fmtK(params.value as number),
-    cellStyle: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' },
+    cellStyle: { textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' },
   },
 ];
 

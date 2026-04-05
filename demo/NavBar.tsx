@@ -27,8 +27,11 @@ export function NavBar({
         alignItems: 'center',
         backgroundColor: 'var(--bg-surface)',
         borderBottom: '1px solid var(--border-subtle)',
+        boxShadow: '0 1px 4px var(--shadow-elevation)',
         padding: '0 12px',
         gap: 16,
+        position: 'relative',
+        zIndex: 1,
       }}
     >
       {/* Left: Brand */}

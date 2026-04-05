@@ -37,7 +37,7 @@ export function ChartPanel() {
             alignItems: 'center',
             justifyContent: 'center',
             color: 'var(--text-muted)',
-            fontSize: 14,
+            fontSize: 12,
           }}
         >
           Select an instrument
