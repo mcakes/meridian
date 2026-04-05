@@ -97,7 +97,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *:not([role="status"]) {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
