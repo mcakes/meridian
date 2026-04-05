@@ -36,6 +36,7 @@ export { Chart } from './charting/Chart';
 export { ToastContainer, showToast } from './feedback/Toast';
 export { Modal } from './feedback/Modal';
 export { NotificationFeed } from './feedback/NotificationFeed';
+export { Tooltip, TooltipProvider } from './feedback/Tooltip';
 
 // Menus
 export { DropdownMenu } from './menus/DropdownMenu';
