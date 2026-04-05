@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 
 type Theme = 'dark' | 'light';
 
@@ -15,10 +15,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return stored === 'light' ? 'light' : 'dark';
   });
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('meridian-theme', theme);
-  }, [theme]);
+  // Set data-theme synchronously so that CSS vars are available during render
+  // (e.g. Chart reads getComputedStyle). localStorage is also sync-safe.
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('meridian-theme', theme);
 
   const toggle = useCallback(() => {
     setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
