@@ -10,6 +10,8 @@ import { Sparkline } from '@/components/data/Sparkline';
 import { ThresholdValue } from '@/components/primitives/ThresholdValue';
 import { HealthBar } from '@/components/primitives/HealthBar';
 import { HeatmapCell } from '@/components/primitives/HeatmapCell';
+import { Spinner } from '@/components/primitives/Spinner';
+import { Toolbar } from '@/components/layout/Toolbar';
 
 function FlashDemo() {
   const [flashValue, setFlashValue] = useState(187.42);
@@ -208,6 +210,44 @@ export default function PrimitivesPage() {
                 {corr.toFixed(2)}
               </HeatmapCell>
             ))}
+          </div>
+        </ComponentDemo>
+      </Section>
+
+      <Section title="Spinner">
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '0 0 12px 0' }}>
+          Inline loading indicator. CSS border spinner in three sizes, designed
+          for toolbar chrome and other compact contexts.
+        </p>
+        <ComponentDemo label="Size Variants">
+          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Spinner size="xs" />
+              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>xs</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Spinner />
+              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>sm (default)</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Spinner size="md" />
+              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>md</span>
+            </div>
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="Custom Color">
+          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+            <Spinner color="var(--color-info)" />
+            <Spinner color="var(--color-positive)" />
+            <Spinner color="var(--color-warning)" />
+          </div>
+        </ComponentDemo>
+        <ComponentDemo label="In Toolbar">
+          <div style={{ maxWidth: 300 }}>
+            <Toolbar>
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginRight: 'auto' }}>Positions</span>
+              <Spinner />
+            </Toolbar>
           </div>
         </ComponentDemo>
       </Section>
