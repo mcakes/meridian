@@ -1,24 +1,22 @@
 import { Section } from '../../components/Section';
 import { Figure } from '../../components/Figure';
 
-const projectStructure = `src/
-  tokens/          Design tokens (CSS custom properties)
-    colors.css     Dark and light theme color values
-    typography.css Font families and type scale
-    spacing.css    4px-based spacing scale
-    borders.css    Border radius and focus ring
-    index.css      Imports + Tailwind @theme + global defaults
+const projectStructure = `src/                 Library (the package)
+  components/        Meridian component library
+    primitives/      CatDot, PriceChange, FlashCell, MetricCard, Tag
+    inputs/          Toggle, NumberInput, Select, DatePicker, Autocomplete
+    data/            DataTable (AG Grid), Sparkline, cell renderers
+    charting/        Chart (Plotly), Meridian Plotly template
+    layout/          Panel, PanelHeader, Toolbar, Workspace
+    feedback/        Toast, Modal, NotificationFeed
+  hooks/             useTheme, useWorkspace, useFlash
+  providers/         ThemeProvider
+  tokens/            Design tokens (CSS custom properties)
+  lib/               Utility functions
+  index.ts           Public API barrel
 
-  components/      Meridian component library
-    primitives/    CatDot, PriceChange, FlashCell, MetricCard, Tag
-    inputs/        Toggle, NumberInput, Select, DatePicker, Autocomplete
-    data/          DataTable (AG Grid), Sparkline, cell renderers
-    charting/      Chart (Plotly), Meridian Plotly template
-    layout/        Panel, PanelHeader, Toolbar, Workspace
-    feedback/      Toast, Modal, NotificationFeed
-
-  providers/       ThemeProvider, DataProvider
-  hooks/           useTheme, useMarketData, useWorkspace, useFlash`;
+site/                Documentation site (separate app)
+demo/                Trading demo app (separate app)`;
 
 export default function GettingStarted() {
   return (
