@@ -49,6 +49,7 @@ export default function Notifications() {
           authors="Various"
           title="Managing Digital Notifications and Stress: Evidence from a Hybrid Laboratory and Field Study"
           source="2025"
+          url="https://www.researchgate.net/publication/396180740_Managing_Digital_Notifications_and_Stress_Evidence_from_a_Hybrid_Laboratory_and_Field_Study_on_Cognitive_Load_HRV_and_Well-being/link/68e0ab3cffdca73694b552f0/download?_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InB1YmxpY2F0aW9uIiwicGFnZSI6InB1YmxpY2F0aW9uIn19"
         />
         <Citation
           id={29}

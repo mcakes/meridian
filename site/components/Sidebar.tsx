@@ -55,10 +55,6 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Menus', path: '/components/menus' },
     ],
   },
-  {
-    title: 'Demo',
-    items: [{ label: 'Trading App', path: '/demo' }],
-  },
 ];
 
 const groupLabelStyle: React.CSSProperties = {

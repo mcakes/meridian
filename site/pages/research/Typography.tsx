@@ -56,7 +56,7 @@ export default function TypographyResearch() {
 
       <Section title="References">
         <Citation id={19} authors="Inforiver" title="Best Fonts for Financial Reporting" source="2024" url="https://inforiver.com/blog/general/best-fonts-financial-reporting/" />
-        <Citation id={30} authors="Smashing Magazine" title="Typefaces for Fintech Products" source="2023" />
+        <Citation id={30} authors="Smashing Magazine" title="Typefaces for Fintech Products" source="2023" url="https://www.smashingmagazine.com/2023/10/choose-typefaces-fintech-products-guide-part1/" />
       </Section>
     </div>
   );

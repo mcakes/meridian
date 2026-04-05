@@ -42,8 +42,8 @@ export default function WorkspaceLayout() {
       <Section title="References">
         <Citation id={21} authors="Bloomberg" title="Bloomberg Launchpad" source="Documentation PDF" />
         <Citation id={22} authors="OpenFin" title="Platform API — Multiple Layouts" source="2023" url="https://www.openfin.co/blog/openfins-platform-api-introducing-multiple-layouts/" />
-        <Citation id={23} authors="Patel, V." title="Psychology-Driven Layouts: Designing for How Traders Think" source="2025" />
-        <Citation id={24} authors="Sweller, J." title="Cognitive Load During Problem Solving" source="Cognitive Science, 1988" />
+        <Citation id={23} authors="Patel, V." title="Psychology-Driven Layouts: Designing for How Traders Think" source="2025" url="http://medium.com/design-bootcamp/psychology-driven-layouts-designing-for-how-traders-think-b11e2e7cac5c" />
+        <Citation id={24} authors="Sweller, J." title="Cognitive Load During Problem Solving" source="Cognitive Science, 1988" url="https://mrbartonmaths.com/resourcesnew/8.%20Research/Explicit%20Instruction/Cognitive%20Load%20during%20problem%20solving.pdf" />
       </Section>
     </div>
   );

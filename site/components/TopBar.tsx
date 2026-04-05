@@ -48,24 +48,6 @@ export function TopBar() {
       >
         {theme === 'dark' ? '☀ Light' : '☾ Dark'}
       </button>
-      <a
-        href="https://github.com/anthropics/meridian"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          color: 'var(--text-secondary)',
-          fontSize: 12,
-          padding: '4px 10px',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 2,
-          textDecoration: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-        }}
-      >
-        GitHub ↗
-      </a>
     </div>
   );
 }

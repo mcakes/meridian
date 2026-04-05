@@ -127,12 +127,14 @@ export default function ColorSystem() {
           authors="Ware, C."
           title="Information Visualization: Perception for Design"
           source="Elsevier, 2004"
+          url="https://www.researchgate.net/profile/Colin-Ware/publication/224285723_Information_Visualization_Perception_for_Design_Second_Edition/links/53ce92780cf24377a65dd024/Information-Visualization-Perception-for-Design-Second-Edition.pdf?_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InB1YmxpY2F0aW9uIiwicGFnZSI6InB1YmxpY2F0aW9uIn19"
         />
         <Citation
           id={6}
           authors="Bertin, J."
           title="Semiology of Graphics"
           source="1983"
+          url="https://countersubject.biz/wp-content/uploads/2024/08/Semiology-of-Graphics-Diagrams-Networks-Maps-Jacques-Bertin-Z-Library.pdf"
         />
         <Citation
           id={7}
@@ -145,30 +147,35 @@ export default function ColorSystem() {
           authors="Tseng, C. et al."
           title="Revisiting Categorical Color Perception in Scatterplots"
           source="arXiv:2404.03787, 2024"
+          url="https://arxiv.org/pdf/2404.03787"
         />
         <Citation
           id={9}
           authors="Pathari, F. et al."
           title="Dark vs. Light Mode: Effects on Eye Fatigue"
           source="2024"
+          url="https://personales.upv.es/thinkmind/dl/conferences/achi/achi_2024/achi_2024_3_150_20069.pdf"
         />
         <Citation
           id={10}
           authors="Shrestha, A. et al."
           title="Effects of Dark Mode on University Students"
           source="arXiv:2409.10895, 2024"
+          url="https://arxiv.org/pdf/2409.10895"
         />
         <Citation
           id={11}
           authors="Various"
           title="Text Color and Visual Fatigue under Negative Polarity"
           source="PMC, 2024"
+          url="https://pmc.ncbi.nlm.nih.gov/articles/PMC11175232/pdf/sensors-24-03516.pdf"
         />
         <Citation
           id={12}
           authors="Gramazio, C. et al."
           title="Colorgorical: Creating Discriminable Color Palettes"
           source="2016"
+          url="https://vis.cs.brown.edu/docs/pdf/Gramazio-2016-CCD.pdf"
         />
         <Citation
           id={13}
@@ -189,12 +196,14 @@ export default function ColorSystem() {
           authors="Vi\u00e9not, F., Brettel, H. & Mollon, J."
           title="Digital Video Colourmaps for Checking Legibility by Dichromats"
           source="Color Research & Application, 1999"
+          url="https://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf"
         />
         <Citation
           id={16}
           authors="Bujack, R. et al."
           title="Accessible Color Sequences"
           source="arXiv:2107.02270, 2021"
+          url="https://arxiv.org/pdf/2107.02270"
         />
         <Citation
           id={17}
@@ -207,6 +216,7 @@ export default function ColorSystem() {
           authors="Heer, J. & Stone, M."
           title="Color Naming Models for Color Selection"
           source="CHI 2012"
+          url="http://vis.stanford.edu/files/2012-ColorNameModels-CHI.pdf"
         />
       </Section>
     </div>
