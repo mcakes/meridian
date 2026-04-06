@@ -4,13 +4,13 @@ import Plot from 'react-plotly.js';
 import { useTheme } from '@/hooks/useTheme';
 import { getMeridianLayout, getMeridianConfig } from './meridian-plotly-template';
 
-interface ChartProps {
+interface CandlestickChartProps {
   data: Plotly.Data[];
   layout?: Partial<Plotly.Layout>;
   config?: Partial<Plotly.Config>;
 }
 
-export function Chart({ data, layout, config }: ChartProps) {
+export function CandlestickChart({ data, layout, config }: CandlestickChartProps) {
   const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const plotElRef = useRef<Plotly.PlotlyHTMLElement | null>(null);

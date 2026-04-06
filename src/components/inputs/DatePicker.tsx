@@ -104,12 +104,13 @@ export function DatePicker({ value, onChange, label }: DatePickerProps) {
     year: yearRef,
   }), []);
 
-  // Clean up buffer timer on unmount
+  // Clean up buffer timer on unmount or when segment changes
   useEffect(() => {
     return () => {
       if (bufferTimerRef.current) clearTimeout(bufferTimerRef.current);
+      setDigitBuffer('');
     };
-  }, []);
+  }, [activeSegment]);
 
   // Sync internal state when value prop changes externally
   useEffect(() => {

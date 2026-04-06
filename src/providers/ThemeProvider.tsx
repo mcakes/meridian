@@ -27,15 +27,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [theme]);
 
   const toggle = useCallback(() => {
-    setTheme((t) => {
-      const next = t === 'dark' ? 'light' : 'dark';
-      // Set data-theme synchronously so getComputedStyle in child renders
-      // (e.g. Chart reading CSS vars) sees the new values immediately,
-      // rather than lagging one toggle behind.
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('meridian-theme', next);
-      return next;
-    });
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
   }, []);
 
   return (

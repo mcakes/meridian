@@ -45,17 +45,17 @@ const darkParams = {
 };
 
 const lightParams = {
-  backgroundColor: '#f8f8fb',
+  backgroundColor: '#f5f5fa',
   foregroundColor: '#1a1b26',
-  borderColor: '#d8d8de',
-  chromeBackgroundColor: '#f8f8fb',
+  borderColor: '#ccccd8',
+  chromeBackgroundColor: '#f5f5fa',
   headerFontSize: 11,
   headerFontWeight: 500,
   borderRadius: 0,
   wrapperBorderRadius: 0,
-  oddRowBackgroundColor: '#f0f0f5',
-  rowHoverColor: '#e4e4ea',
-  selectedRowBackgroundColor: '#d8d8de',
+  oddRowBackgroundColor: '#eaeaf0',
+  rowHoverColor: '#e4e4eb',
+  selectedRowBackgroundColor: '#dcdce8',
   fontFamily: "var(--font-sans)",
 };
 

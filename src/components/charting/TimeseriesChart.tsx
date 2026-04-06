@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type * as Plotly from 'plotly.js';
 import { useTheme } from '@/hooks/useTheme';
-import { Chart } from './Chart';
+import { CandlestickChart } from './CandlestickChart';
 
 interface BidAskSeries {
   times: number[];
@@ -206,5 +206,5 @@ export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: Timeserie
 
   const mergedLayout = { ...layout, ...y2LayoutOverride };
 
-  return <Chart data={finalTraces as Plotly.Data[]} layout={mergedLayout} config={config} />;
+  return <CandlestickChart data={finalTraces as Plotly.Data[]} layout={mergedLayout} config={config} />;
 }

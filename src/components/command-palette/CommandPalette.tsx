@@ -185,11 +185,11 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
   const [retryCounter, setRetryCounter] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const commands = ctx?.commands ?? [];
-  const isOpen = ctx?.isOpen ?? false;
-  const close = ctx?.close ?? (() => {});
-  const frequency = ctx?.frequency ?? new Map();
-  const recordExecution = ctx?.recordExecution ?? (() => {});
+  if (!ctx) {
+    throw new Error('CommandPalette must be used within a CommandPaletteProvider');
+  }
+
+  const { commands, isOpen, close, frequency, recordExecution } = ctx;
 
   // Reset state when palette opens/closes
   useEffect(() => {
@@ -253,8 +253,6 @@ export function CommandPalette({ maxResults = 12 }: CommandPaletteProps) {
   useEffect(() => {
     setActiveIndex((i) => Math.min(Math.max(i, 0), Math.max(visibleCount - 1, 0)));
   }, [visibleCount]);
-
-  if (!ctx) return null;
 
   function handleSelect(command: Command) {
     if (command.args && command.args.length > 0) {

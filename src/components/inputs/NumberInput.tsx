@@ -80,7 +80,7 @@ export function NumberInput({
           className="m-stepper"
           type="button"
           aria-label="Decrease"
-          tabIndex={-1}
+          tabIndex={0}
           onClick={() => update(value - step)}
           style={{ borderRight: '1px solid var(--border-subtle)' }}
         >
@@ -137,7 +137,7 @@ export function NumberInput({
           className="m-stepper"
           type="button"
           aria-label="Increase"
-          tabIndex={-1}
+          tabIndex={0}
           onClick={() => update(value + step)}
           style={{ borderLeft: '1px solid var(--border-subtle)' }}
         >

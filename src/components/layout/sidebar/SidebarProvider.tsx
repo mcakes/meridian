@@ -88,9 +88,9 @@ function extractInitFromChildren(
 }
 
 export function SidebarProvider({ children, state: controlledState, onStateChange }: SidebarProviderProps) {
-  const [activeSides, setActiveSides] = useState<Set<SidebarSide>>(new Set());
+  const [activeSides, setActiveSides] = useState<Set<SidebarSide>>(() => new Set());
   const paletteRegistrations = useRef<Map<string, { palette: PaletteDefinition; side: SidebarSide }>>(new Map());
-  const [paletteRegistry, setPaletteRegistry] = useState<Map<string, PaletteDefinition>>(new Map());
+  const [paletteRegistry, setPaletteRegistry] = useState<Map<string, PaletteDefinition>>(() => new Map());
 
   const [internalState, rawDispatch] = useReducer(sidebarReducer, undefined, () => {
     const { palettes, sidebars } = extractInitFromChildren(children);

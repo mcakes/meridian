@@ -194,14 +194,14 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px var(--shadow-elevation);
 }
 
 /* ── Overflow popup menu ── */
 .flexlayout__popup_menu_container {
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 12px var(--shadow-elevation);
   border-radius: 6px;
   padding: 4px;
 }

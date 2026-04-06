@@ -33,7 +33,7 @@ export { SidebarProvider, Sidebar, Palette } from './layout/sidebar';
 export type { SidebarState, SidebarSide } from './layout/sidebar';
 
 // Charting
-export { Chart } from './charting/Chart';
+export { CandlestickChart } from './charting/CandlestickChart';
 export { TimeseriesChart } from './charting/TimeseriesChart';
 
 // Feedback

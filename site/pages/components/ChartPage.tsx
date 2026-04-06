@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Section } from '../../components/Section';
 import { ComponentDemo } from '../../components/ComponentDemo';
 import { TokenTable } from '../../components/TokenTable';
-import { Chart } from '@/components/charting/Chart';
+import { CandlestickChart } from '@/components/charting/CandlestickChart';
 import { TimeseriesChart } from '@/components/charting/TimeseriesChart';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -84,7 +84,7 @@ export default function ChartPage() {
       <Section title="Candlestick Chart">
         <ComponentDemo label="Candlestick — OHLC">
           <div style={{ height: 350 }}>
-            <Chart
+            <CandlestickChart
               data={[{
                 type: 'candlestick',
                 x: candles.map(c => c.time),

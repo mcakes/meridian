@@ -20,6 +20,7 @@ export function Spinner({ size = 'sm', color = 'var(--text-muted)', label = 'Loa
         borderTopColor: color,
         borderRadius: '50%',
         animation: 'spin 0.8s linear infinite',
+        willChange: 'transform',
         flexShrink: 0,
       }}
     />

@@ -12,10 +12,11 @@ interface SelectProps {
   onChange: (v: string) => void;
   options: SelectOption[];
   label?: string;
+  'aria-label'?: string;
   disabled?: boolean;
 }
 
-export function Select({ value, onChange, options, label, disabled = false }: SelectProps) {
+export function Select({ value, onChange, options, label, 'aria-label': ariaLabel, disabled = false }: SelectProps) {
   const [open, setOpen] = useState(false);
   const labelId = useId();
 
@@ -46,6 +47,7 @@ export function Select({ value, onChange, options, label, disabled = false }: Se
         <RadixSelect.Trigger
           className="m-input-wrap"
           aria-labelledby={label ? labelId : undefined}
+          aria-label={!label ? ariaLabel : undefined}
           style={{
             display: 'flex',
             alignItems: 'center',

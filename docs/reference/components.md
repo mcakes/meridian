@@ -497,12 +497,12 @@ The base config enables scroll zoom, sets double-click to reset, removes the Plo
 
 **Usage:**
 ```tsx
-<Chart
+<CandlestickChart
   data={[{ type: 'scatter', x: dates, y: prices, mode: 'lines' }]}
   layout={{ title: { text: 'AAPL' } }}
 />
 
-<Chart
+<CandlestickChart
   data={[{
     type: 'candlestick',
     x: dates, open: opens, high: highs, low: lows, close: closes,

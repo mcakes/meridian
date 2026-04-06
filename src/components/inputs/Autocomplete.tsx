@@ -67,6 +67,11 @@ export function Autocomplete({
   placeholder,
   label,
 }: AutocompleteProps) {
+  if (onSelect && !onChange) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Autocomplete: `onSelect` is deprecated. Use `onChange` instead.');
+    }
+  }
   const handleChange = onChange ?? onSelect!;
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -76,6 +81,12 @@ export function Autocomplete({
   const [openAbove, setOpenAbove] = useState(false);
   const labelId = useId();
   const listboxId = useId();
+
+  useEffect(() => {
+    return () => {
+      if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
+    };
+  }, []);
 
   const updateDirection = useCallback(() => {
     const el = containerRef.current;

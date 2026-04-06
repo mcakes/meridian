@@ -22,7 +22,7 @@ describe('PanelHeader', () => {
     const spans = container.querySelectorAll('span');
     // Only the title span should exist; no sibling div for actions
     expect(spans.length).toBe(1);
-    const parentDiv = spans[0].parentElement!;
+    const parentDiv = spans[0]!.parentElement!;
     expect(parentDiv.children.length).toBe(1);
   });
 });

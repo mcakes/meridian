@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, cleanup, act } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, cleanup } from '@testing-library/react';
 import { FlashCell } from '../FlashCell';
 
 afterEach(() => cleanup());

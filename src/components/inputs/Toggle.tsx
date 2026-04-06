@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import './inputs.css';
 
 interface ToggleProps {
@@ -7,8 +8,10 @@ interface ToggleProps {
 }
 
 export function Toggle({ value, onChange, label }: ToggleProps) {
+  const toggleId = useId();
   return (
     <label
+      htmlFor={toggleId}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -18,9 +21,11 @@ export function Toggle({ value, onChange, label }: ToggleProps) {
       }}
     >
       <button
+        id={toggleId}
         className="m-toggle-track"
         role="switch"
         aria-checked={value}
+        aria-label={label}
         onClick={() => onChange(!value)}
         style={{
           backgroundColor: value ? 'var(--color-info)' : 'var(--bg-muted)',

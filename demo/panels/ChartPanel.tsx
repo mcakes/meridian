@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Panel } from '@/components/layout/Panel';
-import { Chart } from '@/components/charting/Chart';
+import { CandlestickChart } from '@/components/charting/CandlestickChart';
 import { useDataContext } from '../providers/DataProvider';
 import { useTheme } from '@/hooks/useTheme';
 import type { Candle } from '../data/types';
@@ -43,7 +43,7 @@ export function ChartPanel() {
           Select an instrument
         </div>
       ) : (
-        <Chart
+        <CandlestickChart
           data={[
             {
               type: 'candlestick' as const,
@@ -66,8 +66,8 @@ export function ChartPanel() {
             },
             {
               type: 'scatter' as const,
-              x: [candles[0] ? new Date(candles[0].time * 1000) : undefined],
-              y: [candles[0]?.close],
+              x: candles[0] ? [new Date(candles[0].time * 1000)] : [],
+              y: candles[0] ? [candles[0].close] : [],
               yaxis: 'y2',
               mode: 'markers',
               marker: { opacity: 0 },

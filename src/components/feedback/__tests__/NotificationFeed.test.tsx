@@ -57,6 +57,6 @@ describe('NotificationFeed', () => {
     // Only the dismiss button should exist, no action button
     const buttons = screen.getAllByRole('button');
     expect(buttons.length).toBe(1);
-    expect(buttons[0].classList.contains('m-close')).toBe(true);
+    expect(buttons[0]!.classList.contains('m-close')).toBe(true);
   });
 });
