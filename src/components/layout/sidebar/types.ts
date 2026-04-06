@@ -23,12 +23,15 @@ export interface PaletteDefinition {
   defaultExpanded: boolean;
 }
 
+export type TogglePosition = 'top' | 'bottom' | 'hidden';
+
 export interface SidebarProps {
   side: SidebarSide;
   defaultExpanded?: boolean;
   defaultWidth?: number;
   minWidth?: number;
   maxWidth?: number;
+  togglePosition?: TogglePosition;
   children: ReactNode;
 }
 

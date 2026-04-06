@@ -1,3 +1,5 @@
+import '../shared.css';
+
 interface Notification {
   id: string;
   message: string;
@@ -74,10 +76,10 @@ export function NotificationFeed({ notifications, onDismiss }: NotificationFeedP
           </span>
           {notification.action && (
             <span
+              className="m-action-link"
               style={{
                 color: 'var(--color-info)',
                 fontSize: 12,
-                cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
               }}
@@ -86,23 +88,9 @@ export function NotificationFeed({ notifications, onDismiss }: NotificationFeedP
             </span>
           )}
           <button
+            className="m-close"
             onClick={() => onDismiss(notification.id)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--text-muted)',
-              fontSize: 14,
-              lineHeight: 1,
-              padding: 0,
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-primary)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)';
-            }}
+            style={{ flexShrink: 0 }}
           >
             ×
           </button>

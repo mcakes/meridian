@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import '../shared.css';
 
 type ToastVariant = 'info' | 'warning' | 'error';
 
@@ -90,18 +91,7 @@ export function ToastContainer() {
           >
             {toast.message}
           </span>
-          <button
-            onClick={() => dismiss(toast.id)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--text-muted)',
-              fontSize: 14,
-              lineHeight: 1,
-              padding: 0,
-            }}
-          >
+          <button className="m-close" onClick={() => dismiss(toast.id)}>
             ×
           </button>
         </div>

@@ -1,0 +1,14 @@
+/* DropdownMenu item hover/focus */
+.m-menu-item {
+  transition: background-color 150ms ease;
+}
+.m-menu-item:not([data-disabled]):hover,
+.m-menu-item:not([data-disabled]):focus,
+.m-menu-item:not([data-disabled])[data-highlighted] {
+  background-color: var(--bg-highlight);
+}
+.m-menu-item[data-variant="destructive"]:not([data-disabled]):hover,
+.m-menu-item[data-variant="destructive"]:not([data-disabled]):focus,
+.m-menu-item[data-variant="destructive"]:not([data-disabled])[data-highlighted] {
+  background-color: color-mix(in srgb, var(--color-negative) 12%, transparent);
+}

@@ -10,6 +10,7 @@ export function Sidebar({
   defaultWidth: _defaultWidth = 260,
   minWidth = 200,
   maxWidth = 480,
+  togglePosition = 'top',
   children,
 }: SidebarProps) {
   const { state, dispatch, registerSide, unregisterSide, paletteRegistry } = useSidebarContext();
@@ -73,6 +74,20 @@ export function Sidebar({
 
   const paletteIds = sideState.paletteOrder;
 
+  const toggleRow = togglePosition !== 'hidden' ? (
+    <div className="meridian-sidebar__header">
+      <button
+        className="meridian-sidebar__toggle"
+        onClick={() => dispatch({ type: 'toggle-sidebar', side })}
+        aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+      >
+        {isExpanded
+          ? (side === 'left' ? '\u25C0' : '\u25B6')
+          : (side === 'left' ? '\u25B6' : '\u25C0')}
+      </button>
+    </div>
+  ) : null;
+
   if (!isExpanded) {
     return (
       <div
@@ -82,15 +97,7 @@ export function Sidebar({
         }}
         className={`meridian-sidebar meridian-sidebar--${side} meridian-sidebar--collapsed`}
       >
-        <div className="meridian-sidebar__header">
-          <button
-            className="meridian-sidebar__toggle"
-            onClick={() => dispatch({ type: 'toggle-sidebar', side })}
-            aria-label="Expand sidebar"
-          >
-            {side === 'left' ? '\u25B6' : '\u25C0'}
-          </button>
-        </div>
+        {togglePosition === 'top' && toggleRow}
         <div className="meridian-sidebar__icon-strip">
           {paletteIds.map((id) => {
             const meta = paletteRegistry.get(id);
@@ -106,6 +113,7 @@ export function Sidebar({
             );
           })}
         </div>
+        {togglePosition === 'bottom' && toggleRow}
       </div>
     );
   }
@@ -119,20 +127,13 @@ export function Sidebar({
       className={`meridian-sidebar meridian-sidebar--${side} meridian-sidebar--expanded${isOver ? ' meridian-sidebar--drop-target' : ''}`}
       style={{ width: sideState.width }}
     >
-      <div className="meridian-sidebar__header">
-        <button
-          className="meridian-sidebar__toggle"
-          onClick={() => dispatch({ type: 'toggle-sidebar', side })}
-          aria-label="Collapse sidebar"
-        >
-          {side === 'left' ? '\u25C0' : '\u25B6'}
-        </button>
-      </div>
+      {togglePosition === 'top' && toggleRow}
       <div className="meridian-sidebar__palettes">
         <SortableContext items={paletteIds} strategy={verticalListSortingStrategy}>
           {children}
         </SortableContext>
       </div>
+      {togglePosition === 'bottom' && toggleRow}
       <div
         className="meridian-sidebar__resize-handle"
         onMouseDown={handleResizeStart}

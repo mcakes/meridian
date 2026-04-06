@@ -5,6 +5,7 @@ import { PriceChange } from '@/components/primitives/PriceChange';
 import { Tag } from '@/components/primitives/Tag';
 import { Sparkline } from '@/components/data/Sparkline';
 import { HeatmapCell } from '@/components/primitives/HeatmapCell';
+import '../shared.css';
 
 export function NumericCell(params: ICellRendererParams) {
   const decimals: number = (params.colDef?.cellRendererParams as { decimals?: number } | undefined)?.decimals ?? 2;
@@ -67,25 +68,11 @@ export function SparklineCell(params: ICellRendererParams) {
 export function ActionCell(_params: ICellRendererParams) {
   return (
     <button
+      className="m-close"
       style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        color: 'var(--text-muted)',
         fontSize: 16,
         padding: '0 4px',
-        lineHeight: 1,
         borderRadius: 2,
-      }}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLButtonElement;
-        el.style.color = 'var(--text-primary)';
-        el.style.backgroundColor = 'var(--bg-highlight)';
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLButtonElement;
-        el.style.color = 'var(--text-muted)';
-        el.style.backgroundColor = 'transparent';
       }}
     >
       ...

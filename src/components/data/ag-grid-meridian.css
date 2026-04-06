@@ -1,7 +1,7 @@
 .ag-theme-meridian {
   --ag-background-color: var(--bg-surface);
-  --ag-header-background-color: var(--bg-surface);
-  --ag-odd-row-background-color: var(--bg-muted);
+  --ag-header-background-color: var(--bg-muted);
+  --ag-odd-row-background-color: var(--bg-base);
   --ag-row-hover-color: var(--bg-highlight);
   --ag-selected-row-background-color: var(--bg-overlay);
   --ag-border-color: var(--border-subtle);

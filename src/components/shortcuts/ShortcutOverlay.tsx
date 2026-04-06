@@ -6,6 +6,7 @@ import { getEffectiveKey } from './ShortcutProvider';
 import { KeyBadge } from './KeyBadge';
 import { keyboardEventToCombo } from './hotkeys';
 import type { Shortcut } from './types';
+import '../shared.css';
 
 interface ShortcutOverlayProps {
   hotkey?: string;
@@ -184,9 +185,13 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
                 const isOverridden = overrides.has(shortcut.id);
                 const dimmed = recordingId !== null && !isRecording;
 
+                const clickable = !disabled && !dimmed && !isRecording;
+
                 return (
                   <div key={shortcut.id}>
                     <div
+                      className={clickable ? 'm-row-interactive' : undefined}
+                      onClick={clickable ? () => startRecording(shortcut.id) : undefined}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -194,6 +199,7 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
                         padding: '4px 20px',
                         fontSize: 13,
                         opacity: dimmed ? 0.3 : 1,
+                        cursor: clickable ? 'pointer' : undefined,
                         transition: 'opacity 150ms ease',
                       }}
                     >
@@ -205,24 +211,15 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
                           hotkey={effectiveKey}
                           muted={disabled}
                           recording={isRecording}
-                          onClick={disabled || dimmed ? undefined : () => startRecording(shortcut.id)}
                         />
                         {isOverridden && !isRecording && resetBinding && (
                           <span
+                            className="m-link"
                             onClick={() => resetBinding(shortcut.id)}
                             style={{
-                              cursor: 'pointer',
                               fontSize: 13,
-                              color: 'var(--text-muted)',
                               lineHeight: 1,
                               padding: '0 2px',
-                              transition: 'color 150ms ease',
-                            }}
-                            onMouseEnter={(e) => {
-                              (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
-                            }}
-                            onMouseLeave={(e) => {
-                              (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
                             }}
                           >
                             ×
@@ -257,19 +254,9 @@ export function ShortcutOverlay({ hotkey = '?' }: ShortcutOverlayProps) {
           {overrides.size > 0 && resetAllBindings && (
             <div style={{ padding: '8px 20px 4px', borderTop: '1px solid var(--border-subtle)' }}>
               <span
+                className="m-link"
                 onClick={resetAllBindings}
-                style={{
-                  cursor: 'pointer',
-                  fontSize: 11,
-                  color: 'var(--text-muted)',
-                  transition: 'color 150ms ease',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
-                }}
+                style={{ fontSize: 11 }}
               >
                 Reset all to defaults
               </span>

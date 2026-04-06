@@ -1,4 +1,5 @@
 import { useTheme } from '@/hooks/useTheme';
+import { Button } from '@/components/inputs/Button';
 
 export function TopBar() {
   const { theme, toggle } = useTheme();
@@ -31,23 +32,9 @@ export function TopBar() {
         Design System
       </span>
       <div style={{ flex: 1 }} />
-      <button
-        onClick={toggle}
-        style={{
-          backgroundColor: 'var(--bg-muted)',
-          border: '1px solid var(--border-subtle)',
-          color: 'var(--text-primary)',
-          fontSize: 12,
-          padding: '4px 10px',
-          borderRadius: 2,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-        }}
-      >
+      <Button size="sm" onClick={toggle}>
         {theme === 'dark' ? '☀ Light' : '☾ Dark'}
-      </button>
+      </Button>
     </div>
   );
 }

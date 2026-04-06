@@ -1,16 +1,7 @@
 import { Section } from '../../components/Section';
 import { ComponentDemo } from '../../components/ComponentDemo';
 import { DropdownMenu } from '@/components/menus/DropdownMenu';
-
-const triggerStyle: React.CSSProperties = {
-  backgroundColor: 'var(--bg-muted)',
-  border: '1px solid var(--border-default)',
-  color: 'var(--text-primary)',
-  fontSize: 12,
-  padding: '6px 12px',
-  borderRadius: 2,
-  cursor: 'pointer',
-};
+import { Button } from '@/components/inputs/Button';
 
 export default function MenusPage() {
   return (
@@ -30,7 +21,7 @@ export default function MenusPage() {
         <ComponentDemo label="Basic Action Menu">
           <DropdownMenu>
             <DropdownMenu.Trigger>
-              <button style={triggerStyle}>Actions ▾</button>
+              <Button size="sm">Actions ▾</Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
               <DropdownMenu.Label>File</DropdownMenu.Label>
@@ -46,7 +37,7 @@ export default function MenusPage() {
         <ComponentDemo label="With Disabled Items">
           <DropdownMenu>
             <DropdownMenu.Trigger>
-              <button style={triggerStyle}>Order ▾</button>
+              <Button size="sm">Order ▾</Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
               <DropdownMenu.Item onSelect={() => {}}>Edit Order</DropdownMenu.Item>
@@ -61,7 +52,7 @@ export default function MenusPage() {
           <div style={{ display: 'flex', gap: 12 }}>
             <DropdownMenu>
               <DropdownMenu.Trigger>
-                <button style={triggerStyle}>Bottom Start (default)</button>
+                <Button size="sm">Bottom Start (default)</Button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content>
                 <DropdownMenu.Item onSelect={() => {}}>Option A</DropdownMenu.Item>
@@ -70,7 +61,7 @@ export default function MenusPage() {
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenu.Trigger>
-                <button style={triggerStyle}>Bottom End</button>
+                <Button size="sm">Bottom End</Button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content align="end">
                 <DropdownMenu.Item onSelect={() => {}}>Option A</DropdownMenu.Item>

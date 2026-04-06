@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+import './inputs.css';
 
 interface NumberInputProps {
   value: number;
@@ -26,7 +27,6 @@ export function NumberInput({
   suffix,
   label,
 }: NumberInputProps) {
-  const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const update = (next: number) => {
@@ -50,22 +50,6 @@ export function NumberInput({
     }
   };
 
-  const stepperButtonStyle: React.CSSProperties = {
-    width: 28,
-    flexShrink: 0,
-    height: '100%',
-    border: 'none',
-    backgroundColor: 'var(--bg-surface)',
-    color: 'var(--text-secondary)',
-    cursor: 'pointer',
-    fontSize: 14,
-    lineHeight: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 0,
-  };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {label && (
@@ -80,6 +64,7 @@ export function NumberInput({
         </span>
       )}
       <div
+        className="m-input-wrap"
         style={{
           display: 'inline-flex',
           alignItems: 'stretch',
@@ -87,27 +72,15 @@ export function NumberInput({
           border: '1px solid var(--border-default)',
           borderRadius: 2,
           overflow: 'hidden',
-          boxShadow: focused ? '0 0 0 2px var(--color-info)' : 'none',
-          transition: 'box-shadow 150ms ease',
         }}
       >
         <button
+          className="m-stepper"
           type="button"
           aria-label="Decrease"
           tabIndex={-1}
           onClick={() => update(value - step)}
-          style={{
-            ...stepperButtonStyle,
-            borderRight: '1px solid var(--border-subtle)',
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              'var(--bg-muted)';
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              'var(--bg-surface)';
-          }}
+          style={{ borderRight: '1px solid var(--border-subtle)' }}
         >
           −
         </button>
@@ -126,8 +99,6 @@ export function NumberInput({
             value={value}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
             min={min}
             max={max}
             step={step}
@@ -160,22 +131,12 @@ export function NumberInput({
           )}
         </div>
         <button
+          className="m-stepper"
           type="button"
           aria-label="Increase"
           tabIndex={-1}
           onClick={() => update(value + step)}
-          style={{
-            ...stepperButtonStyle,
-            borderLeft: '1px solid var(--border-subtle)',
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              'var(--bg-muted)';
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              'var(--bg-surface)';
-          }}
+          style={{ borderLeft: '1px solid var(--border-subtle)' }}
         >
           +
         </button>

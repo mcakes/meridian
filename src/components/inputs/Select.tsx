@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
+import './inputs.css';
 
 interface SelectOption {
   value: string;
@@ -15,7 +16,6 @@ interface SelectProps {
 
 export function Select({ value, onChange, options, label }: SelectProps) {
   const [open, setOpen] = useState(false);
-  const [focused, setFocused] = useState(false);
 
   const selectedLabel =
     options.find((o) => o.value === value)?.label ?? value;
@@ -40,8 +40,7 @@ export function Select({ value, onChange, options, label }: SelectProps) {
         onOpenChange={setOpen}
       >
         <RadixSelect.Trigger
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          className="m-input-wrap"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -56,8 +55,6 @@ export function Select({ value, onChange, options, label }: SelectProps) {
             fontSize: 13,
             cursor: 'pointer',
             outline: 'none',
-            boxShadow: focused ? '0 0 0 2px var(--color-info)' : 'none',
-            transition: 'box-shadow 150ms ease',
             textAlign: 'left',
           }}
         >
@@ -119,23 +116,11 @@ interface SelectItemProps {
 function SelectItem({ value, label, selected }: SelectItemProps) {
   return (
     <RadixSelect.Item
+      className="m-select-item"
       value={value}
       style={{
-        padding: '6px 8px',
-        fontSize: 13,
-        cursor: 'pointer',
-        outline: 'none',
         color: selected ? 'var(--color-info)' : 'var(--text-primary)',
         fontWeight: selected ? 600 : 400,
-        userSelect: 'none',
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.backgroundColor =
-          'var(--bg-highlight)';
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.backgroundColor =
-          'transparent';
       }}
     >
       <RadixSelect.ItemText>{label}</RadixSelect.ItemText>

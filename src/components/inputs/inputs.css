@@ -1,0 +1,133 @@
+/* Shared styles for input components */
+
+/* ── Input wrapper — border highlight + focus ring ── */
+.m-input-wrap {
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+.m-input-wrap:hover {
+  border-color: var(--border-active);
+}
+.m-input-wrap:focus-within {
+  box-shadow: 0 0 0 2px var(--color-info);
+}
+
+/* ── Stepper buttons (NumberInput ± buttons) ── */
+.m-stepper {
+  width: 28px;
+  flex-shrink: 0;
+  height: 100%;
+  border: none;
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.m-stepper:hover {
+  background-color: var(--bg-muted);
+}
+
+/* ── Toggle switch track ── */
+.m-toggle-track {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  outline: none;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+.m-toggle-track:hover {
+  opacity: 0.8;
+}
+.m-toggle-track:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-info);
+}
+
+/* ── Select dropdown items ── */
+.m-select-item {
+  padding: 6px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.m-select-item:hover {
+  background-color: var(--bg-highlight);
+}
+
+/* ── Calendar navigation button ── */
+.m-cal-nav {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.m-cal-nav:hover {
+  background-color: var(--bg-highlight);
+}
+
+/* ── Calendar day cell ── */
+.m-cal-day {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  outline: none;
+}
+.m-cal-day:not([data-selected="true"]):hover {
+  background-color: var(--bg-highlight);
+}
+
+/* ── Calendar toggle (dropdown arrow) ── */
+.m-cal-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+}
+.m-cal-toggle:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-highlight);
+}
+
+/* ── Autocomplete input ── */
+.m-autocomplete-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 2px;
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.m-autocomplete-input:hover {
+  border-color: var(--border-active);
+}
+.m-autocomplete-input:focus {
+  box-shadow: 0 0 0 2px var(--color-info);
+}

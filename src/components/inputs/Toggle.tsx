@@ -1,3 +1,5 @@
+import './inputs.css';
+
 interface ToggleProps {
   value: boolean;
   onChange: (v: boolean) => void;
@@ -16,28 +18,12 @@ export function Toggle({ value, onChange, label }: ToggleProps) {
       }}
     >
       <button
+        className="m-toggle-track"
         role="switch"
         aria-checked={value}
         onClick={() => onChange(!value)}
         style={{
-          position: 'relative',
-          width: 36,
-          height: 20,
-          borderRadius: 10,
-          border: 'none',
-          padding: 0,
-          cursor: 'pointer',
           backgroundColor: value ? 'var(--color-info)' : 'var(--bg-muted)',
-          transition: 'background-color 150ms ease',
-          flexShrink: 0,
-          outline: 'none',
-        }}
-        onFocus={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
-            '0 0 0 2px var(--color-info)';
-        }}
-        onBlur={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
         }}
       >
         <span

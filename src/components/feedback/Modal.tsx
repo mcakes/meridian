@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import type { ReactNode } from 'react';
+import '../shared.css';
 
 interface ModalProps {
   open: boolean;
@@ -55,21 +56,8 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
               {title}
             </Dialog.Title>
             <Dialog.Close
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--text-muted)',
-                fontSize: 16,
-                lineHeight: 1,
-                padding: 0,
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-primary)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)';
-              }}
+              className="m-close"
+              style={{ fontSize: 16 }}
             >
               ×
             </Dialog.Close>

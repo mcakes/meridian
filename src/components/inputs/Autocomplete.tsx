@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { fuzzyMatch } from '@/lib/format';
+import './inputs.css';
 
 interface AutocompleteItem {
   label: string;
@@ -66,6 +67,21 @@ export function Autocomplete({
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [openAbove, setOpenAbove] = useState(false);
+
+  const updateDirection = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    setOpenAbove(spaceBelow < 220);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    updateDirection();
+  }, [open, updateDirection]);
 
   type MatchedItem = {
     item: AutocompleteItem;
@@ -149,8 +165,9 @@ export function Autocomplete({
           {label}
         </span>
       )}
-      <div style={{ position: 'relative' }}>
+      <div ref={containerRef} style={{ position: 'relative' }}>
         <input
+          className="m-autocomplete-input"
           type="text"
           value={query}
           onChange={handleInputChange}
@@ -158,35 +175,17 @@ export function Autocomplete({
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder={placeholder}
-          style={{
-            width: '100%',
-            height: 32,
-            padding: '0 8px',
-            backgroundColor: 'var(--bg-surface)',
-            border: '1px solid var(--border-default)',
-            borderRadius: 2,
-            color: 'var(--text-primary)',
-            fontSize: 13,
-            outline: 'none',
-            boxSizing: 'border-box',
-          }}
-          onFocusCapture={(e) => {
-            (e.currentTarget as HTMLInputElement).style.boxShadow =
-              '0 0 0 2px var(--color-info)';
-          }}
-          onBlurCapture={(e) => {
-            (e.currentTarget as HTMLInputElement).style.boxShadow = 'none';
-          }}
         />
 
         {showDropdown && (
           <div
             style={{
               position: 'absolute',
-              top: '100%',
+              ...(openAbove
+                ? { bottom: '100%', marginBottom: 4 }
+                : { top: '100%', marginTop: 4 }),
               left: 0,
               right: 0,
-              marginTop: 4,
               backgroundColor: 'var(--bg-surface)',
               border: '1px solid var(--border-default)',
               borderRadius: 4,

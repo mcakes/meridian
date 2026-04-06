@@ -43,15 +43,6 @@ export function KeyBadge({ hotkey, muted = false, onClick, recording = false }: 
         display: 'inline-flex',
         gap: 3,
         cursor: onClick ? 'pointer' : undefined,
-        borderRadius: 2,
-        padding: '0 2px',
-        transition: 'background-color 150ms ease',
-      }}
-      onMouseEnter={(e) => {
-        if (onClick) (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--bg-highlight)';
-      }}
-      onMouseLeave={(e) => {
-        if (onClick) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
       }}
     >
       {parts.map((part, i) => (

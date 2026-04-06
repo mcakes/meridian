@@ -1,0 +1,41 @@
+/* Common interactive patterns used across components */
+
+/* ── Close / dismiss button ── */
+.m-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+.m-close:hover {
+  color: var(--text-primary);
+}
+
+/* ── Text link (muted → primary on hover) ── */
+.m-link {
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 150ms ease;
+}
+.m-link:hover {
+  color: var(--text-primary);
+}
+
+/* ── Row that highlights on hover ── */
+.m-row-interactive {
+  transition: background-color 150ms ease;
+}
+.m-row-interactive:hover {
+  background-color: var(--bg-highlight);
+}
+
+/* ── Inline action link (dims on hover) ── */
+.m-action-link {
+  cursor: pointer;
+}
+.m-action-link:hover {
+  opacity: 0.7;
+}

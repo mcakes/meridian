@@ -4,6 +4,8 @@ import { WatchlistPanel } from './WatchlistPanel';
 import { ChartPanel } from './ChartPanel';
 import { PricerPanel } from './PricerPanel';
 import { TimeseriesPanel } from './TimeseriesPanel';
+import { OrderEntryPanel } from './OrderEntryPanel';
+import { SystemMonitorPanel } from './SystemMonitorPanel';
 
 export interface PanelDefinition {
   type: string;
@@ -12,10 +14,12 @@ export interface PanelDefinition {
 }
 
 export const PANEL_REGISTRY: PanelDefinition[] = [
-  { type: 'watchlist', title: 'Watchlist', component: () => <WatchlistPanel /> },
-  { type: 'chart',     title: 'Chart',     component: () => <ChartPanel /> },
-  { type: 'pricer',      title: 'Pricer',      component: () => <PricerPanel /> },
-  { type: 'timeseries',  title: 'Timeseries',  component: () => <TimeseriesPanel /> },
+  { type: 'watchlist',      title: 'Watchlist',       component: () => <WatchlistPanel /> },
+  { type: 'chart',          title: 'Chart',           component: () => <ChartPanel /> },
+  { type: 'pricer',         title: 'Pricer',          component: () => <PricerPanel /> },
+  { type: 'timeseries',     title: 'Timeseries',      component: () => <TimeseriesPanel /> },
+  { type: 'order-entry',    title: 'Order Entry',     component: () => <OrderEntryPanel /> },
+  { type: 'system-monitor', title: 'System Monitor',  component: () => <SystemMonitorPanel /> },
 ];
 
 export function panelFactory(node: TabNode): ReactNode {

@@ -72,6 +72,17 @@
   flex-shrink: 0;
 }
 
+/* When toggle row is at the bottom, swap border direction */
+.meridian-sidebar__palettes + .meridian-sidebar__header {
+  border-bottom: none;
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.meridian-sidebar__icon-strip + .meridian-sidebar__header {
+  border-bottom: none;
+  border-top: 1px solid var(--sidebar-border);
+}
+
 .meridian-sidebar--collapsed .meridian-sidebar__header {
   justify-content: center;
 }

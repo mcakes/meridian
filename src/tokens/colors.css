@@ -20,7 +20,7 @@
   /* Backgrounds */
   --bg-base: #1a1b26;
   --bg-surface: #24283b;
-  --bg-muted: #292e42;
+  --bg-muted: #303750;
   --bg-overlay: #343a52;
   --bg-highlight: #3b4261;
 
@@ -59,16 +59,16 @@
   --color-accent: #7c4dab;
 
   /* Backgrounds */
-  --bg-base: #ebebf0;
-  --bg-surface: #f8f8fb;
-  --bg-muted: #e8e8ed;
-  --bg-overlay: #d8d8de;
-  --bg-highlight: #e0e0e6;
+  --bg-base: #f0f0f5;
+  --bg-surface: #e8e8ee;
+  --bg-muted: #e0e0e8;
+  --bg-overlay: #d2d2dc;
+  --bg-highlight: #c8c8d2;
 
   /* Text */
   --text-primary: #1a1b26;
   --text-secondary: #4a4b5c;
-  --text-muted: #8b8c9a;
+  --text-muted: #5c5d6e;
   --text-inverse: #f0f0f3;
 
   /* Borders */

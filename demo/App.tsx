@@ -169,7 +169,7 @@ function InstrumentsPalette() {
                   padding: '3px 4px',
                   borderRadius: 2,
                   cursor: 'pointer',
-                  backgroundColor: isSelected ? 'var(--bg-muted)' : 'transparent',
+                  backgroundColor: isSelected ? 'var(--bg-highlight)' : 'transparent',
                   fontSize: 11,
                 }}
               >
@@ -414,7 +414,7 @@ export function App() {
           }}
         >
           <SidebarProvider>
-            <Sidebar side="left" defaultExpanded defaultWidth={200}>
+            <Sidebar side="left" defaultExpanded defaultWidth={200} togglePosition="bottom">
               <Palette id="instruments" title="Instruments" icon={<List size={14} />} defaultExpanded>
                 <InstrumentsPalette />
               </Palette>
@@ -447,7 +447,7 @@ export function App() {
                 />
               </div>
             </div>
-            <Sidebar side="right" defaultWidth={220}>
+            <Sidebar side="right" defaultWidth={220} togglePosition="bottom">
               <Palette id="positions" title="Positions" icon={<Briefcase size={14} />} defaultExpanded>
                 <PositionsPalette />
               </Palette>

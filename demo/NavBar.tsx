@@ -33,7 +33,7 @@ export function NavBar({
         flexShrink: 0,
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-base)',
         borderBottom: '1px solid var(--border-subtle)',
         boxShadow: '0 1px 4px var(--shadow-elevation)',
         padding: '0 12px',
