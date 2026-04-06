@@ -3,7 +3,7 @@
   --color-cat-0: #7aa2f7;
   --color-cat-1: #9ece6a;
   --color-cat-2: #e06c75;
-  --color-cat-3: #41c5b0;
+  --color-cat-3: #2db5b5;
   --color-cat-4: #ff9e64;
   --color-cat-5: #d6a0e8;
   --color-cat-6: #80d8e8;
@@ -19,10 +19,15 @@
   --bg-muted: #303750;
   --bg-overlay: #343a52;
   --bg-highlight: #3b4261;
+  --bg-hover: #2a2f45;
+  --bg-active: #3b4261;
+  --bg-selected: #2d2b4a;
+  --bg-disabled: #1e2030;
   --text-primary: #c0caf5;
   --text-secondary: #a9b1d6;
-  --text-muted: #565f89;
+  --text-muted: #7580aa;
   --text-inverse: #1a1b26;
+  --text-disabled: #3b4060;
   --border-subtle: #292e42;
   --border-default: #3b4261;
   --border-active: #565f89;
@@ -34,7 +39,7 @@
   --color-cat-0: #7aa2f7;
   --color-cat-1: #9ece6a;
   --color-cat-2: #e06c75;
-  --color-cat-3: #41c5b0;
+  --color-cat-3: #2db5b5;
   --color-cat-4: #ff9e64;
   --color-cat-5: #d6a0e8;
   --color-cat-6: #80d8e8;
@@ -54,12 +59,17 @@
   --bg-muted: #303750;
   --bg-overlay: #343a52;
   --bg-highlight: #3b4261;
+  --bg-hover: #2a2f45;
+  --bg-active: #3b4261;
+  --bg-selected: #2d2b4a;
+  --bg-disabled: #1e2030;
 
   /* Text */
   --text-primary: #c0caf5;
   --text-secondary: #a9b1d6;
-  --text-muted: #565f89;
+  --text-muted: #7580aa;
   --text-inverse: #1a1b26;
+  --text-disabled: #3b4060;
 
   /* Borders */
   --border-subtle: #292e42;
@@ -75,7 +85,7 @@
   --color-cat-0: #4a76c9;
   --color-cat-1: #4d7a1f;
   --color-cat-2: #c4525c;
-  --color-cat-3: #32a18a;
+  --color-cat-3: #1f8a8a;
   --color-cat-4: #c97a3e;
   --color-cat-5: #9e6fb8;
   --color-cat-6: #4a9fad;
@@ -90,20 +100,25 @@
   --color-accent: #7c4dab;
 
   /* Backgrounds */
-  --bg-base: #f0f0f5;
-  --bg-surface: #e8e8ee;
-  --bg-muted: #e0e0e8;
-  --bg-overlay: #d2d2dc;
-  --bg-highlight: #c8c8d2;
+  --bg-base: #f5f5fa;
+  --bg-surface: #eaeaf0;
+  --bg-muted: #dfdfe6;
+  --bg-overlay: #d4d4dc;
+  --bg-highlight: #c9c9d2;
+  --bg-hover: #e4e4eb;
+  --bg-active: #d4d4dc;
+  --bg-selected: #dcdce8;
+  --bg-disabled: #ececf0;
 
   /* Text */
   --text-primary: #1a1b26;
   --text-secondary: #4a4b5c;
-  --text-muted: #5c5d6e;
+  --text-muted: #6e6f86;
   --text-inverse: #f0f0f3;
+  --text-disabled: #a0a0ad;
 
   /* Borders */
-  --border-subtle: #d8d8de;
+  --border-subtle: #ccccd8;
   --border-default: #c0c0c8;
   --border-active: #9a9aa8;
 

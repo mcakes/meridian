@@ -30,12 +30,17 @@
   --color-muted: var(--bg-muted);
   --color-overlay: var(--bg-overlay);
   --color-highlight: var(--bg-highlight);
+  --color-hover: var(--bg-hover);
+  --color-active: var(--bg-active);
+  --color-selected: var(--bg-selected);
+  --color-disabled: var(--bg-disabled);
 
   /* Text */
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
   --color-text-inverse: var(--text-inverse);
+  --color-text-disabled: var(--text-disabled);
 
   /* Borders */
   --color-border-subtle: var(--border-subtle);
