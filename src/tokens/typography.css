@@ -1,7 +1,4 @@
 :root {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
   --text-panel-title: 600 16px/22px var(--font-sans);
   --text-section: 600 13px/18px var(--font-sans);
   --text-column-header: 500 11px/14px var(--font-sans);

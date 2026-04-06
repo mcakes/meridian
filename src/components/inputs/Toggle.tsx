@@ -34,7 +34,7 @@ export function Toggle({ value, onChange, label }: ToggleProps) {
             width: 16,
             height: 16,
             borderRadius: 8,
-            backgroundColor: value ? '#ffffff' : 'var(--text-muted)',
+            backgroundColor: value ? 'var(--text-inverse)' : 'var(--text-muted)',
             transform: value ? 'translateX(16px)' : 'translateX(0)',
             transition: 'transform 150ms ease, background-color 150ms ease',
             display: 'block',

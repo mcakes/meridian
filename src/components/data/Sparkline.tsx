@@ -17,12 +17,16 @@ export function Sparkline({
     return <svg width={width} height={height} />;
   }
 
-  const min = Math.min(...data);
-  const max = Math.max(...data);
+  let min = Infinity;
+  let max = -Infinity;
+  for (const v of data) {
+    if (v < min) min = v;
+    if (v > max) max = v;
+  }
   const range = max - min || 1; // avoid division by zero when all values equal
 
   const points = data.map((value, index) => {
-    const x = (index / (data.length - 1)) * width;
+    const x = data.length === 1 ? width / 2 : (index / (data.length - 1)) * width;
     const y = height - ((value - min) / range) * height;
     return `${x},${y}`;
   });

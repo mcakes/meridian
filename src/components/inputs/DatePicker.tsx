@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import { useRef, useState, useCallback, useEffect, useMemo, useId } from 'react';
 import * as Popover from '@radix-ui/react-popover';
 import './inputs.css';
 
@@ -80,7 +80,8 @@ function getCalendarDays(year: number, month: number): { date: Date; inMonth: bo
 }
 
 export function DatePicker({ value, onChange, label }: DatePickerProps) {
-  const today = new Date();
+  const todayRef = useRef(new Date());
+  const today = todayRef.current;
   const initial = value ?? today;
 
   const [day, setDay] = useState(initial.getDate());
@@ -95,6 +96,7 @@ export function DatePicker({ value, onChange, label }: DatePickerProps) {
   const dayRef = useRef<HTMLSpanElement>(null);
   const monthRef = useRef<HTMLSpanElement>(null);
   const yearRef = useRef<HTMLSpanElement>(null);
+  const labelId = useId();
 
   const segmentRefs = useMemo<Record<Segment, React.RefObject<HTMLSpanElement | null>>>(() => ({
     day: dayRef,
@@ -328,7 +330,7 @@ export function DatePicker({ value, onChange, label }: DatePickerProps) {
   };
 
   // Calendar display state derived from current segments
-  const calDays = getCalendarDays(year, month);
+  const calDays = useMemo(() => getCalendarDays(year, month), [year, month]);
 
   const segmentStyle = (seg: Segment): React.CSSProperties => ({
     padding: '2px 2px',
@@ -372,7 +374,8 @@ export function DatePicker({ value, onChange, label }: DatePickerProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {label && (
-        <span
+        <label
+          id={labelId}
           style={{
             fontSize: 12,
             color: 'var(--text-secondary)',
@@ -380,12 +383,14 @@ export function DatePicker({ value, onChange, label }: DatePickerProps) {
           }}
         >
           {label}
-        </span>
+        </label>
       )}
       <Popover.Root open={calendarOpen} onOpenChange={setCalendarOpen}>
         <div
           ref={containerRef}
           className="m-input-wrap"
+          role="group"
+          aria-labelledby={label ? labelId : undefined}
           onFocus={handleContainerFocus}
           onBlur={handleContainerBlur}
           onKeyDown={handleKeyDown}
@@ -570,7 +575,7 @@ export function DatePicker({ value, onChange, label }: DatePickerProps) {
 
                 let cellColor = inMonth ? 'var(--text-primary)' : 'var(--text-muted)';
                 if (isToday && !isSelected) cellColor = 'var(--color-info)';
-                if (isSelected) cellColor = '#ffffff';
+                if (isSelected) cellColor = 'var(--text-inverse)';
 
                 return (
                   <button

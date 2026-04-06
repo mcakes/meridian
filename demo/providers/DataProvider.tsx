@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { MarketDataProvider } from '../data/types';
 import { SimulatedMarketData } from '../data/SimulatedMarketData';
 
@@ -11,8 +11,17 @@ interface DataContextValue {
 const DataContext = createContext<DataContextValue | null>(null);
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const providerRef = useRef(new SimulatedMarketData());
+  const providerRef = useRef<SimulatedMarketData | null>(null);
+  if (!providerRef.current) {
+    providerRef.current = new SimulatedMarketData();
+  }
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      providerRef.current?.destroy();
+    };
+  }, []);
 
   return (
     <DataContext.Provider value={{

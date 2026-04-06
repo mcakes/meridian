@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
 import './inputs.css';
 
@@ -12,10 +12,12 @@ interface SelectProps {
   onChange: (v: string) => void;
   options: SelectOption[];
   label?: string;
+  disabled?: boolean;
 }
 
-export function Select({ value, onChange, options, label }: SelectProps) {
+export function Select({ value, onChange, options, label, disabled = false }: SelectProps) {
   const [open, setOpen] = useState(false);
+  const labelId = useId();
 
   const selectedLabel =
     options.find((o) => o.value === value)?.label ?? value;
@@ -24,6 +26,7 @@ export function Select({ value, onChange, options, label }: SelectProps) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {label && (
         <span
+          id={labelId}
           style={{
             fontSize: 12,
             color: 'var(--text-secondary)',
@@ -38,9 +41,11 @@ export function Select({ value, onChange, options, label }: SelectProps) {
         onValueChange={onChange}
         open={open}
         onOpenChange={setOpen}
+        disabled={disabled}
       >
         <RadixSelect.Trigger
           className="m-input-wrap"
+          aria-labelledby={label ? labelId : undefined}
           style={{
             display: 'flex',
             alignItems: 'center',

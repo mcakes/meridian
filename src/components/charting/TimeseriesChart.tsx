@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type * as Plotly from 'plotly.js';
 import { useTheme } from '@/hooks/useTheme';
 import { Chart } from './Chart';
@@ -24,17 +25,34 @@ interface TimeseriesChartProps {
 }
 
 function getCSSVar(name: string): string {
+  if (typeof document === 'undefined') return '';
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
 function withAlpha(color: string, alpha: number): string {
-  if (color.startsWith('#')) {
-    const r = parseInt(color.slice(1, 3), 16);
-    const g = parseInt(color.slice(3, 5), 16);
-    const b = parseInt(color.slice(5, 7), 16);
+  // Handle hex colors (3, 4, 6, or 8 digit)
+  const hexMatch = /^#([0-9a-f]{3,8})$/i.exec(color);
+  if (hexMatch) {
+    const hex = hexMatch[1]!;
+    let r: number, g: number, b: number;
+    if (hex.length === 3 || hex.length === 4) {
+      r = parseInt(hex[0]! + hex[0]!, 16);
+      g = parseInt(hex[1]! + hex[1]!, 16);
+      b = parseInt(hex[2]! + hex[2]!, 16);
+    } else {
+      r = parseInt(hex.slice(0, 2), 16);
+      g = parseInt(hex.slice(2, 4), 16);
+      b = parseInt(hex.slice(4, 6), 16);
+    }
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
-  return color.replace(')', `, ${alpha})`).replace('rgb(', 'rgba(');
+  // Handle rgb() and rgba() — replace or append alpha
+  const rgbMatch = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)$/.exec(color);
+  if (rgbMatch) {
+    return `rgba(${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}, ${alpha})`;
+  }
+  // Fallback: use color-mix for any CSS color value (hsl, oklch, named colors, etc.)
+  return `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, transparent)`;
 }
 
 function toDateArray(epochSeconds: number[]): Date[] {
@@ -133,33 +151,36 @@ export function buildMeanStdevTraces(
 }
 
 export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: TimeseriesChartProps) {
-  // Subscribe to theme changes so getCSSVar picks up updated CSS custom properties
-  // on re-render when the user switches themes. The value is intentionally unused.
-  const { theme: _ } = useTheme();
+  // Subscribe to theme so we re-read CSS vars when the user toggles theme
+  const { theme } = useTheme();
 
-  // Use ScatterData[] so the y2 injection block can safely access .yaxis, .x, .y
-  // without type assertions on every property access. Cast to Plotly.Data[] at the
-  // Chart call site, which is the only place the broader union type is required.
-  const traces: Plotly.ScatterData[] = [];
+  const traces = useMemo(() => {
+    const result: Plotly.ScatterData[] = [];
 
-  if (bidAsk) {
-    const color = getCSSVar('--color-cat-0');
-    traces.push(...buildBidAskTraces(bidAsk, color));
-  }
+    if (bidAsk) {
+      const color = getCSSVar('--color-cat-0');
+      result.push(...buildBidAskTraces(bidAsk, color));
+    }
 
-  if (meanStdev) {
-    const color = getCSSVar('--color-cat-1');
-    traces.push(...buildMeanStdevTraces(meanStdev, color));
-  }
+    if (meanStdev) {
+      const color = getCSSVar('--color-cat-1');
+      result.push(...buildMeanStdevTraces(meanStdev, color));
+    }
+
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- theme triggers CSS var re-read
+  }, [bidAsk, meanStdev, theme]);
 
   const usesY2 = traces.some((t) => t.yaxis === 'y2');
   let y2LayoutOverride: Partial<Plotly.Layout> | undefined;
+  // Copy traces so we can append the phantom y2 trace without mutating the memoized array
+  const finalTraces = [...traces];
 
   if (!usesY2) {
     // No trace targets y2 — inject an invisible trace so the mirrored left axis renders
     const firstY = traces.find((t) => t.y && (t.y as number[]).length > 0);
     if (firstY) {
-      traces.push({
+      finalTraces.push({
         type: 'scatter',
         x: [(firstY.x as Date[])[0]!],
         y: [(firstY.y as number[])[0]!],
@@ -185,5 +206,5 @@ export function TimeseriesChart({ bidAsk, meanStdev, layout, config }: Timeserie
 
   const mergedLayout = { ...layout, ...y2LayoutOverride };
 
-  return <Chart data={traces as Plotly.Data[]} layout={mergedLayout} config={config} />;
+  return <Chart data={finalTraces as Plotly.Data[]} layout={mergedLayout} config={config} />;
 }

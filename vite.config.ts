@@ -35,6 +35,10 @@ export default defineConfig({
         '@dnd-kit/sortable',
         '@dnd-kit/utilities',
       ],
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+      },
     },
     cssFileName: 'meridian',
   },

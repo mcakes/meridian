@@ -20,10 +20,17 @@ export function Sidebar({
 
   const { setNodeRef: setDroppableRef, isOver } = useDroppable({ id: `sidebar-${side}` });
 
+  // Store active resize cleanup so we can teardown on unmount
+  const resizeCleanupRef = useRef<(() => void) | null>(null);
+
   useEffect(() => {
     registerSide(side);
-    return () => unregisterSide(side);
-  }, [side]);
+    return () => {
+      unregisterSide(side);
+      // Clean up any in-progress resize drag listeners
+      resizeCleanupRef.current?.();
+    };
+  }, [side, registerSide, unregisterSide]);
 
   const handleResizeStart = useCallback(
     (e: React.MouseEvent) => {
@@ -45,9 +52,14 @@ export function Sidebar({
         if (el) el.style.width = `${newWidth}px`;
       };
 
-      const handleMouseUp = (upEvent: MouseEvent) => {
+      const cleanup = () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        resizeCleanupRef.current = null;
+      };
+
+      const handleMouseUp = (upEvent: MouseEvent) => {
+        cleanup();
 
         // Re-enable transition
         if (el) el.style.transition = '';
@@ -68,6 +80,7 @@ export function Sidebar({
 
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      resizeCleanupRef.current = cleanup;
     },
     [side, sideState.width, minWidth, maxWidth, dispatch],
   );

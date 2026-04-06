@@ -8,6 +8,7 @@ export function Palette({ id, title, icon, defaultExpanded = false, children }: 
   const { state, dispatch, registerPalette, unregisterPalette } = useSidebarContext();
   const registeredRef = useRef(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const resizeCleanupRef = useRef<(() => void) | null>(null);
 
   const side = state.paletteLocations[id];
   const isExpanded = side ? state[side].expandedPalettes.includes(id) : false;
@@ -20,6 +21,7 @@ export function Palette({ id, title, icon, defaultExpanded = false, children }: 
     }
     return () => {
       unregisterPalette(id);
+      resizeCleanupRef.current?.();
     };
   }, [id]);
 
@@ -52,9 +54,14 @@ export function Palette({ id, title, icon, defaultExpanded = false, children }: 
         el.style.maxHeight = `${newHeight}px`;
       };
 
-      const handleMouseUp = (upEvent: MouseEvent) => {
+      const cleanup = () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        resizeCleanupRef.current = null;
+      };
+
+      const handleMouseUp = (upEvent: MouseEvent) => {
+        cleanup();
         const delta = upEvent.clientY - startY;
         const finalHeight = Math.max(40, startHeight + delta);
         dispatch({ type: 'set-palette-height', paletteId: id, height: finalHeight });
@@ -62,8 +69,9 @@ export function Palette({ id, title, icon, defaultExpanded = false, children }: 
 
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      resizeCleanupRef.current = cleanup;
     },
-    [],
+    [dispatch, id],
   );
 
   const handleDoubleClick = useCallback(() => {

@@ -2,7 +2,6 @@ import { useFlash } from '@/hooks/useFlash';
 
 interface FlashCellProps {
   value: number;
-  previousValue?: number;
   format?: (n: number) => string;
 }
 

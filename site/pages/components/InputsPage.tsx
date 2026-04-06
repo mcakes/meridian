@@ -144,7 +144,7 @@ export default function InputsPage() {
                 { label: 'Pfizer Inc.', value: 'PFE', sublabel: 'NYSE' },
                 { label: 'Exxon Mobil', value: 'XOM', sublabel: 'NYSE' },
               ]}
-              onSelect={() => {}}
+              onChange={() => {}}
               placeholder="Search instruments..."
               label="Instrument"
             />

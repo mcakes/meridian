@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useId } from 'react';
 import './inputs.css';
 
 interface NumberInputProps {
@@ -28,6 +28,7 @@ export function NumberInput({
   label,
 }: NumberInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const labelId = useId();
 
   const update = (next: number) => {
     onChange(clamp(next, min, max));
@@ -53,7 +54,8 @@ export function NumberInput({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {label && (
-        <span
+        <label
+          id={labelId}
           style={{
             fontSize: 12,
             color: 'var(--text-secondary)',
@@ -61,7 +63,7 @@ export function NumberInput({
           }}
         >
           {label}
-        </span>
+        </label>
       )}
       <div
         className="m-input-wrap"
@@ -102,6 +104,7 @@ export function NumberInput({
             min={min}
             max={max}
             step={step}
+            aria-labelledby={label ? labelId : undefined}
             style={{
               width: '100%',
               height: '100%',

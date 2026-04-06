@@ -65,17 +65,21 @@ export function SparklineCell(params: ICellRendererParams) {
   return <Sparkline data={data} width={80} height={24} />;
 }
 
-export function ActionCell(_params: ICellRendererParams) {
+export function ActionCell(params: ICellRendererParams) {
+  const onClick = (params.colDef?.cellRendererParams as { onClick?: (data: unknown) => void } | undefined)?.onClick;
+
   return (
     <button
       className="m-close"
+      aria-label="Row actions"
+      onClick={() => onClick?.(params.data)}
       style={{
         fontSize: 16,
         padding: '0 4px',
         borderRadius: 2,
       }}
     >
-      ...
+      &#x2026;
     </button>
   );
 }

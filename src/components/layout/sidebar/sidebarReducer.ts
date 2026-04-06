@@ -127,6 +127,23 @@ export function sidebarReducer(state: SidebarState, action: SidebarAction): Side
     case 'move-palette': {
       const fromSide = state.paletteLocations[action.paletteId];
       if (!fromSide) return state;
+
+      // Same-side move: reorder within the sidebar
+      if (fromSide === action.toSide) {
+        const side = state[fromSide];
+        const oldOrder = side.paletteOrder;
+        const oldIndex = oldOrder.indexOf(action.paletteId);
+        if (oldIndex === -1) return state;
+        const newOrder = oldOrder.filter((id) => id !== action.paletteId);
+        const insertAt = Math.min(action.toIndex, newOrder.length);
+        newOrder.splice(insertAt, 0, action.paletteId);
+        return {
+          ...state,
+          [fromSide]: { ...side, paletteOrder: newOrder },
+        };
+      }
+
+      // Cross-side move
       const from = state[fromSide];
       const to = state[action.toSide];
       const wasExpanded = from.expandedPalettes.includes(action.paletteId);

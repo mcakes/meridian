@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Model, Action, Actions, DockLocation } from 'flexlayout-react';
 import type { IJsonModel } from 'flexlayout-react';
 
@@ -14,6 +14,7 @@ export function useWorkspace(
   builtInPresets: Record<string, IJsonModel>,
 ) {
   const [model, setModel] = useState<Model>(() => {
+    if (typeof window === 'undefined') return createModel(defaultPreset);
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
@@ -24,6 +25,10 @@ export function useWorkspace(
     }
     return createModel(defaultPreset);
   });
+
+  // Keep a ref to the current model so addPanel always uses the latest instance
+  const modelRef = useRef(model);
+  modelRef.current = model;
 
   const [activePreset, setActivePreset] = useState<string | null>(() => {
     return localStorage.getItem(STORAGE_KEY) ? null : defaultPresetName;
@@ -54,14 +59,15 @@ export function useWorkspace(
   }, [defaultPreset, defaultPresetName]);
 
   const addPanel = useCallback((type: string, title: string) => {
-    const activeTabset = model.getActiveTabset();
+    const currentModel = modelRef.current;
+    const activeTabset = currentModel.getActiveTabset();
     const targetId = activeTabset
       ? activeTabset.getId()
-      : model.getRoot().getId();
+      : currentModel.getRoot().getId();
     const dockLocation = activeTabset
       ? DockLocation.CENTER
       : DockLocation.RIGHT;
-    model.doAction(
+    currentModel.doAction(
       Actions.addNode(
         { type: 'tab', name: title, component: type },
         targetId,
@@ -69,7 +75,7 @@ export function useWorkspace(
         -1,
       ),
     );
-  }, [model]);
+  }, []);
 
   return {
     model,

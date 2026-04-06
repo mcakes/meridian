@@ -1,17 +1,17 @@
 import { Section } from '../../components/Section';
 
 const spacingTokens = [
-  { label: 'px', px: 1, vars: ['--space-px', '--spacing-px'] },
-  { label: '0', px: 0, vars: ['--space-0'] },
-  { label: '0.5', px: 2, vars: ['--space-0-5', '--spacing-0-5'] },
-  { label: '1', px: 4, vars: ['--space-1', '--spacing-1'] },
-  { label: '1.5', px: 6, vars: ['--space-1-5', '--spacing-1-5'] },
-  { label: '2', px: 8, vars: ['--space-2', '--spacing-2'] },
-  { label: '3', px: 12, vars: ['--space-3', '--spacing-3'] },
-  { label: '4', px: 16, vars: ['--space-4', '--spacing-4'] },
-  { label: '5', px: 20, vars: ['--space-5', '--spacing-5'] },
-  { label: '6', px: 24, vars: ['--space-6', '--spacing-6'] },
-  { label: '8', px: 32, vars: ['--space-8', '--spacing-8'] },
+  { label: 'px', px: 1, vars: ['--spacing-px'] },
+  { label: '0', px: 0, vars: ['--spacing-0'] },
+  { label: '0.5', px: 2, vars: ['--spacing-0-5'] },
+  { label: '1', px: 4, vars: ['--spacing-1'] },
+  { label: '1.5', px: 6, vars: ['--spacing-1-5'] },
+  { label: '2', px: 8, vars: ['--spacing-2'] },
+  { label: '3', px: 12, vars: ['--spacing-3'] },
+  { label: '4', px: 16, vars: ['--spacing-4'] },
+  { label: '5', px: 20, vars: ['--spacing-5'] },
+  { label: '6', px: 24, vars: ['--spacing-6'] },
+  { label: '8', px: 32, vars: ['--spacing-8'] },
 ];
 
 export default function Spacing() {

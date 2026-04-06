@@ -10,6 +10,7 @@ interface Notification {
 interface NotificationFeedProps {
   notifications: Notification[];
   onDismiss: (id: string) => void;
+  onAction?: (id: string) => void;
 }
 
 function formatTime(timestamp: number): string {
@@ -19,7 +20,7 @@ function formatTime(timestamp: number): string {
   });
 }
 
-export function NotificationFeed({ notifications, onDismiss }: NotificationFeedProps) {
+export function NotificationFeed({ notifications, onDismiss, onAction }: NotificationFeedProps) {
   if (notifications.length === 0) {
     return (
       <div
@@ -75,17 +76,22 @@ export function NotificationFeed({ notifications, onDismiss }: NotificationFeedP
             {notification.message}
           </span>
           {notification.action && (
-            <span
+            <button
               className="m-action-link"
+              onClick={() => onAction?.(notification.id)}
               style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
                 color: 'var(--color-info)',
                 fontSize: 12,
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
+                cursor: 'pointer',
               }}
             >
               {notification.action}
-            </span>
+            </button>
           )}
           <button
             className="m-close"

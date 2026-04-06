@@ -82,7 +82,7 @@ export function OrderEntryPanel() {
           label="Instrument"
           items={instrumentItems}
           placeholder="Search symbol..."
-          onSelect={(item) => setSelectedSymbol(item.value)}
+          onChange={(item) => setSelectedSymbol(item.value)}
         />
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>

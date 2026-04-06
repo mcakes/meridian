@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback, useEffect, useMemo, useId } from 'react';
 import { fuzzyMatch } from '@/lib/format';
 import './inputs.css';
 
@@ -10,7 +10,10 @@ interface AutocompleteItem {
 
 interface AutocompleteProps {
   items: AutocompleteItem[];
-  onSelect: (item: AutocompleteItem) => void;
+  /** Called when the user selects an item. Alias: acts as the onChange handler. */
+  onChange: (item: AutocompleteItem) => void;
+  /** @deprecated Use `onChange` instead. */
+  onSelect?: (item: AutocompleteItem) => void;
   placeholder?: string;
   label?: string;
 }
@@ -59,16 +62,20 @@ function HighlightedText({ text, ranges }: HighlightedTextProps) {
 
 export function Autocomplete({
   items,
+  onChange,
   onSelect,
   placeholder,
   label,
 }: AutocompleteProps) {
+  const handleChange = onChange ?? onSelect!;
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [openAbove, setOpenAbove] = useState(false);
+  const labelId = useId();
+  const listboxId = useId();
 
   const updateDirection = useCallback(() => {
     const el = containerRef.current;
@@ -89,16 +96,17 @@ export function Autocomplete({
     ranges: { start: number; end: number }[];
   };
 
-  const matches: MatchedItem[] = query
-    ? items
-        .map((item) => {
-          const result = fuzzyMatch(item.label, query);
-          if (!result) return null;
-          return { item, score: result.score, ranges: result.ranges };
-        })
-        .filter((x): x is MatchedItem => x !== null)
-        .sort((a, b) => b.score - a.score)
-    : [];
+  const matches: MatchedItem[] = useMemo(() => {
+    if (!query) return [];
+    return items
+      .map((item) => {
+        const result = fuzzyMatch(item.label, query);
+        if (!result) return null;
+        return { item, score: result.score, ranges: result.ranges };
+      })
+      .filter((x): x is MatchedItem => x !== null)
+      .sort((a, b) => b.score - a.score);
+  }, [items, query]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -133,7 +141,7 @@ export function Autocomplete({
     setQuery(item.label);
     setOpen(false);
     setActiveIndex(-1);
-    onSelect(item);
+    handleChange(item);
   };
 
   const handleFocus = () => {
@@ -156,6 +164,7 @@ export function Autocomplete({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {label && (
         <span
+          id={labelId}
           style={{
             fontSize: 12,
             color: 'var(--text-secondary)',
@@ -169,6 +178,12 @@ export function Autocomplete({
         <input
           className="m-autocomplete-input"
           type="text"
+          role="combobox"
+          aria-expanded={showDropdown}
+          aria-controls={listboxId}
+          aria-activedescendant={activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined}
+          aria-labelledby={label ? labelId : undefined}
+          aria-autocomplete="list"
           value={query}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
@@ -179,6 +194,8 @@ export function Autocomplete({
 
         {showDropdown && (
           <div
+            id={listboxId}
+            role="listbox"
             style={{
               position: 'absolute',
               ...(openAbove
@@ -209,6 +226,9 @@ export function Autocomplete({
               matches.map(({ item, ranges }, i) => (
                 <div
                   key={item.value}
+                  id={`${listboxId}-option-${i}`}
+                  role="option"
+                  aria-selected={i === activeIndex}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleSelect(item);

@@ -13,7 +13,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'default', size = 'md', icon = false, disabled = false, className, style, children, ...rest },
+  { variant = 'default', size = 'md', icon = false, disabled = false, type = 'button', className, style, children, ...rest },
   ref,
 ) {
   return (
@@ -23,6 +23,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       data-variant={variant}
       data-size={size}
       data-icon={icon}
+      type={type}
       disabled={disabled}
       style={style}
       {...rest}

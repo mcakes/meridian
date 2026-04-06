@@ -22,6 +22,7 @@ import type { DragStartEvent, DragOverEvent, DragEndEvent, CollisionDetection } 
 import { arrayMove } from '@dnd-kit/sortable';
 import type { SidebarState, SidebarSide, PaletteDefinition, PaletteProps, SidebarProps } from './types';
 import { sidebarReducer, buildInitialState } from './sidebarReducer';
+import type { SidebarAction } from './sidebarReducer';
 
 import { SidebarContext } from './SidebarContext';
 import { Sidebar } from './Sidebar';
@@ -98,16 +99,27 @@ export function SidebarProvider({ children, state: controlledState, onStateChang
 
   const state = controlledState ?? internalState;
 
-  const dispatch = rawDispatch;
+  // When controlled, apply actions to the controlled state and notify the owner
+  // instead of letting the internal reducer drift out of sync.
+  const dispatch = useCallback(
+    (action: SidebarAction) => {
+      if (controlledState && onStateChange) {
+        onStateChange(sidebarReducer(controlledState, action));
+      } else {
+        rawDispatch(action);
+      }
+    },
+    [controlledState, onStateChange],
+  );
 
-  // Fire onStateChange after internal state changes
-  const prevStateRef = useRef(state);
+  // Fire onStateChange for uncontrolled mode after internal state changes
+  const prevStateRef = useRef(internalState);
   useEffect(() => {
-    if (prevStateRef.current !== internalState && onStateChange) {
+    if (!controlledState && prevStateRef.current !== internalState && onStateChange) {
       onStateChange(internalState);
     }
     prevStateRef.current = internalState;
-  }, [internalState, onStateChange]);
+  }, [internalState, onStateChange, controlledState]);
 
   const registerPalette = useCallback((palette: PaletteDefinition, side: SidebarSide) => {
     paletteRegistrations.current.set(palette.id, { palette, side });

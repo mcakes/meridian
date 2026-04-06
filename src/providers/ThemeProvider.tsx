@@ -1,6 +1,6 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useLayoutEffect, useState, type ReactNode } from 'react';
 
-type Theme = 'dark' | 'light';
+export type Theme = 'dark' | 'light';
 
 interface ThemeContextValue {
   theme: Theme;
@@ -9,16 +9,22 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem('meridian-theme');
-    return stored === 'light' ? 'light' : 'dark';
-  });
+function getStoredTheme(): Theme {
+  if (typeof window === 'undefined') return 'dark';
+  const stored = localStorage.getItem('meridian-theme');
+  return stored === 'light' ? 'light' : 'dark';
+}
 
-  // Set data-theme synchronously so that CSS vars are available during render
-  // (e.g. Chart reads getComputedStyle). localStorage is also sync-safe.
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('meridian-theme', theme);
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(getStoredTheme);
+
+  // Apply data-theme synchronously before paint so CSS vars are available
+  // immediately (e.g. Chart reads getComputedStyle). useLayoutEffect is the
+  // correct place for DOM mutations that must happen before the browser paints.
+  useLayoutEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('meridian-theme', theme);
+  }, [theme]);
 
   const toggle = useCallback(() => {
     setTheme((t) => (t === 'dark' ? 'light' : 'dark'));

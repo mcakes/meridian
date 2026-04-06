@@ -127,7 +127,7 @@ function CodeBlock({ code }: { code: string }) {
   return (
     <pre
       style={{
-        background: 'var(--bg-canvas)',
+        background: 'var(--bg-base)',
         border: '1px solid var(--border-subtle)',
         borderRadius: 4,
         padding: '14px 16px',
@@ -228,7 +228,7 @@ export default function ShortcutsPage() {
               key={item.name}
               style={{
                 padding: '12px 14px',
-                background: 'var(--bg-canvas)',
+                background: 'var(--bg-base)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: 4,
               }}

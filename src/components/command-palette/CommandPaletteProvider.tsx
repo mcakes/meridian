@@ -13,6 +13,7 @@ import type {
   CommandPaletteContextValue,
   FrequencyMap,
 } from './types';
+import { parseHotkey, matchesHotkey } from '../shortcuts/hotkeys';
 
 // --- Registry reducer (exported for testing) ---
 
@@ -41,23 +42,6 @@ export function registryReducer(
 
 export const CommandPaletteContext =
   createContext<CommandPaletteContextValue | null>(null);
-
-// --- Hotkey parsing ---
-
-function parseHotkey(hotkey: string): { key: string; mod: boolean } {
-  const parts = hotkey.toLowerCase().split('+');
-  const mod = parts.includes('mod');
-  const key = parts.filter((p) => p !== 'mod')[0] ?? '';
-  return { key, mod };
-}
-
-function matchesHotkey(
-  e: KeyboardEvent,
-  parsed: { key: string; mod: boolean },
-): boolean {
-  if (parsed.mod && !(e.metaKey || e.ctrlKey)) return false;
-  return e.key.toLowerCase() === parsed.key;
-}
 
 // --- Provider ---
 

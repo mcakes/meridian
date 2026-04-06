@@ -10,7 +10,7 @@ export function useFlash(value: number) {
       const direction = value > prevRef.current ? 'up' : 'down';
       setFlash(direction);
       clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => setFlash(null), 100);
+      timeoutRef.current = setTimeout(() => setFlash(null), 350);
       prevRef.current = value;
     }
   }, [value]);
