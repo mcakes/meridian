@@ -19,6 +19,8 @@ function lazyPage(factory: () => Promise<{ default: React.ComponentType }>) {
   );
 }
 
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -51,4 +53,4 @@ export const router = createBrowserRouter([
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
-]);
+], { basename });
